@@ -23,9 +23,9 @@ namespace WebApplication.Controllers
             return View("Index");
         }
 
-        public IActionResult Privacy()
+        public IActionResult Job()
         {
-            return View();
+            return View("Job");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WebApplication</title>
+    <title>@ViewData["Title"]</title>
     <meta name="description" content="">
     <meta name="author" content="">
 	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
@@ -45,7 +45,7 @@
 	<body class="smart-style-2">
 		<header id="header">
 			<div id="logo-group">
-				<span id="logo"> <img src="img/logo.png" alt="SmartAdmin"> </span>
+				<span id="logo"> <img src="img/logo-parttime.png" alt="SmartAdmin"> </span>
 			</div>
 			<div class="pull-right">
 				<div id="hide-menu" class="btn-header pull-right">
@@ -64,18 +64,17 @@
 			<div class="login-info">
 				<span>
 					<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
-						<img src="img/avatars/sunny.png" alt="me" class="online" /> 
-						<span>
-							john.doe 
+						<span class="txt-color-redLight">
+							อาจารย์ 
 						</span>
-						<i class="fa fa-angle-down"></i>
+						@*<i class="fa fa-angle-down"></i>*@
 					</a> 
 				</span>
 			</div>
 			<nav>
 				<ul>
 					<li>
-						<a href="#" title="CreateJob"><i class="fa fa-lg fa-fw fa-pencil-square"></i> <span class="menu-item-parent" style="font-size: 14px;">สร้างงาน</br></span></a>
+						<a href="#" title="CreateJob"><i class="fa fa-lg fa-fw fa-pencil-square"></i> <span class="menu-item-parent" style="font-size: 14px;">งาน</br></span></a>
 					</li>
 				</ul>
 				<ul>
