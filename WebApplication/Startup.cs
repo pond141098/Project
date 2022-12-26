@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SeniorProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,10 +29,28 @@ namespace WebApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                 options.UseSqlServer(
+                     Configuration.GetConnectionString("DefaultConnection")));
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options => {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+            }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+
+            services.AddRazorPages();
+            services.AddControllersWithViews();
+            services.AddDistributedMemoryCache();
+            services.AddMvc().AddXmlSerializerFormatters();
+            services.ConfigureApplicationCookie(option =>
+            {
+                option.LogoutPath = "/Identity/Account/Logout";
+                option.LoginPath = "/Identity/Account/Login";
+                option.AccessDeniedPath = "/Home/AccessDenied";
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
