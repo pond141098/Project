@@ -1,6 +1,6 @@
 ﻿$(function () {
     $("#JsonData").html('<img src="/img/loading.gif" width="50">');
-    $.get("/HomeController/Index", function (JsonResult) {
+    $.get("/Home/Index", function (JsonResult) {
         setTimeout(function () {
 
             $("#JsonData").html(JsonResult);

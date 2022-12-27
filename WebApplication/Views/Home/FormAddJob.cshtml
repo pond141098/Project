@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["title"] = "สร้างงาน";
+    ViewData["title"] = "รับนักศึกษามาปฎิบัติงาน";
 }
 <div id="ribbon">
     <span class="ribbon-button-alignment">
@@ -37,27 +37,41 @@
                                                 * กรุณากรอกข้อมูลให้ครบถ้วน <br>
                                             </legend>
                                             <div class="form-group">
-                                                <label class="col-lg-3 control-label">ชื่อยานพาหนะ <span style="color:red;">*</span></label>
+                                                <label class="col-lg-3 control-label">หัวข้องานที่รับนักศึกษามาทำงาน<span style="color:red;">*</span></label>
                                                 <div class="col-lg-9">
-
+                                                    <input type="text" class="form-control" 
+                                                           data-bv-notempty="true"
+                                                           data-bv-notempty-message="กรุณากรอกข้อมูล"
+                                                           pattern="^[กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์123456789,.() ]+$"
+                                                           data-bv-message="กรุณากรอกภาษาไทยเท่านั้น" />
                                                 </div>
                                             </div>
                                         </fieldset>
                                         <fieldset>
                                             <div class="form-group">
-                                                <label class="col-lg-3 control-label">ราคาปกติ <span style="color:red;">*</span></label>
+                                                <label class="col-lg-3 control-label">สถานที่<span style="color:red;">*</span></label>
                                                 <div class="col-lg-9">
- 
+                               
                                                 </div>
                                             </div>
                                         </fieldset>
-
-
                                         <fieldset>
                                             <div class="form-group">
-                                                <label class="col-lg-3 control-label">ราคาหลังส่วนลด <span style="color:red;">*</span></label>
+                                                <label class="col-lg-3 control-label">รายละเอียดงาน<span style="color:red;">*</span></label>
                                                 <div class="col-lg-9">
-                                                
+                                                    <input type="text" class="form-control"
+                                                           data-bv-notempty="true"
+                                                           data-bv-notempty-message="กรุณากรอกข้อมูล"
+                                                           pattern="^[กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์123456789,.() ]+$"
+                                                           data-bv-message="กรุณากรอกภาษาไทยเท่านั้น" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">วันที่ปิดรับสมัคร<span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    <input type="datetime" class="form-control"/>
                                                 </div>
                                             </div>
                                         </fieldset>
