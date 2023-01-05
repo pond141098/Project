@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SeniorProject.Data;
 using SeniorProject.Models;
 using System;
 using System.Collections.Generic;
@@ -53,7 +54,8 @@ namespace WebApplication.Controllers
 
         public IActionResult CheckTime()
         {
-            return View("CheckTime");
+            var Gets = DB.MASTER_BANK.ToList(); 
+            return PartialView("CheckTime",Gets);
         }
 
 

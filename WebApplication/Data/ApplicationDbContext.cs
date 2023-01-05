@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WebApplication.Data
+namespace SeniorProject.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser,ApplicationRole,string>
     {
@@ -13,5 +13,7 @@ namespace WebApplication.Data
             : base(options)
         {
         }
+
+        public DbSet<MASTER_BANK> MASTER_BANK { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<SeniorProject.Models.MASTER_BANK>
+
+@{
     ViewData["Title"] = "CheckTime";
 }
 
@@ -29,28 +31,25 @@
                                 <thead>
                                     <tr>
                                         <th class="text-align-left">ลำดับ</th>
-                                        <th class="text-align-left">ชื่อนักศึกษา</th>
-                                        <th class="text-align-left">รหัสนักศึกษา</th>
-                                        <th class="text-align-left">หัวข้องาน</th>
-                                        <th class="text-align-center">สถานที่ปฎิบัติงาน</th>
-                                        <th class="text-align-left">วันที่ปฎิบัติงาน</th>
-                                        <th class="text-align-right">เวลาเข้าปฎิบัติงาน</th>
-                                        <th class="text-align-right">เวลาออกปฎิบัติงาน</th>
-                                        <th class="text-align-center">เบอร์ติดต่อ</th>
+                                        <th class="text-align-left">ชื่อธนาคาร</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="text-align-left">1</td>
-                                        <td>นาย พสธร พรหมพยัคฆ์</td>
-                                        <td>1162109050499</td>
-                                        <td>รวบรวมข้อมูลมหาวิทยาลัย</td>
-                                        <td class="text-align-center">งานทะเบียน</td>
-                                        <td>11/10/2022</td>
-                                        <td class="text-align-right">14.00</td>
-                                        <td class="text-align-center">17.00</td>
-                                        <td class="text-align-center">0910000456</td>
-                                    </tr>
+                                    @{
+                                        int Rows = 1;
+                                        foreach (var Get in Model.OrderBy(f => f.banktype_id))
+                                        {
+                                            <tr>
+                                                <td class="text-align-center" width="50">@Rows.</td>
+                                                <td>@Get.banktype_name  </td>
+                                                <td class="text-align-center">
+                                                    <button class="btn btn-warning btn-xs edit" value="@Get.banktype_id"><i class="fa fa-pencil"></i> แก้ไข</button>
+                                                    <button class="btn btn-danger  btn-xs  delete" value="@Get.banktype_id"><i class="fa fa-eraser"></i> ลบ</button>
+                                                </td>
+                                            </tr>
+                                            Rows++;
+                                        }
+                                    }
                                 </tbody>
                             </table>
 
