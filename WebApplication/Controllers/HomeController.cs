@@ -54,9 +54,15 @@ namespace WebApplication.Controllers
 
         public IActionResult CheckTime()
         {
-            var Gets = DB.MASTER_BANK.ToList(); 
-            return PartialView("CheckTime",Gets);
+            return View("CheckTime");
         }
+
+        public IActionResult getCheckTime()
+        {
+            var Gets = DB.MASTER_BANK.ToList();
+            return PartialView("GetCheckTime",Gets);
+        }
+
 
 
 

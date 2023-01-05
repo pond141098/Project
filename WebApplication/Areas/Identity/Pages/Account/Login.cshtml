@@ -60,7 +60,7 @@
 
 </head>
 
-@*<div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+<div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
     <div class="well no-padding">
         <header>
             Sign In
@@ -100,103 +100,7 @@
             </form>
         </section>
     </div>
-</div>*@
-<body>
- 
-  
-  
-  <form> 
-       <img src="~/img/NewLogo6.png"  width="160" height="65"> <input type="button"  class="btn" "cke_contents_ltr"
-                    style="width:175px; height:80; font-size:16px; background-color:#E8E8E8; color:#303030 ; "value="กองพัฒนานักศึกษา">                
-  
-           <div align="right"> 
-               <!--!คำสั่งให้ปุ่มชิดขวา-->
-        </div>
-      
-  </form>
-   <!--<h1 class="text" style="font-family:'Californian FB'; font-size:10px;"> PART TIME RMUTT</h1>-->
-   
-<section 
-     <div class="well no-padding "><br />
-     <h2 class="text-center"  style="font-family:'Californian FB'; font-size:65px;"> PART TIME RMUTT </h2> 
-     
-     <br /> <br /> <br /> 
-
-        <!-- Jumbotron -->
-
-  <div style="background-color:#E8E8E8"><br />
-    <div class="container" style="background-color:#E8E8E8">
-        <br />
-          <h3 class="my-5 display-3 fw-bold ls-tight" 
-              style="font-family:'Californian FB'; font-size:22px;" >PART TIME <br />
-            <span class="text-primary"
-                  style="font-size:16px;">Of    Rajamangala University   Technology Thanyaburi</span>
-          </h3>
-          <p style="color: hsl(217, 10%, 50.8%); font-size:12px;">
-           เว็บไซต์นี้ทำขึ้นมาเพื่อการจัดหารายได้ระหว่างเรียนของนักศึกษา มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี
-          </p><br />
-       
-            <form>
-
-                    <div class="d-flex align-items-center mb-10 pb-10">
-                    <span class="h1 fw-bold mb-0" style="font-size:16px;"
-                    >เข้าสู่ระบบสำหรับอาจารย์</span> 
-                    </div>
-
-                    
-        <section>
-            
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Input.Username"></label>
-                    <input asp-for="Input.Username" class="form-control" placeholder="รหัสประจำตัว"/>
-                    <span asp-validation-for="Input.Username" class="text-danger"></span>
-                </div>
-
-
-                <div class="form-group">
-                    <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" placeholder="รหัสผ่าน" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label asp-for="Input.RememberMe">
-                            <input asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                    </div>
-                </div>
-             
-                <div class="form-group">
-                <p>
-                <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                </p>
-                <p>
-                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                </p>
-                </div><br />
-
-                   <div class="form-group">
-                    <input type="button"
-                    class="btn " "cke_contents_ltr"
-                    style="width:175px; height:80; font-size:16px; background-color:#C00000; color:white; " value="Back">
-                    <input type="button" 
-                    class="btn btn-primary" "cke_contents_ltr"
-                    style="width:175px; height:80; font-size:16px; background-color:#3366FF; color:white; "value="Sign In">
-                   </div>
-                    <br /> <br />
-            
-        
-                       </section>
-                    </>
-                </form>
-             </div>
-         </div>
-      </div>
-   </se>
-</body>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
