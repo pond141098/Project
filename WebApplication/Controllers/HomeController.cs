@@ -37,32 +37,40 @@ namespace WebApplication.Controllers
             DB = db;
         }
 
+        #region รายชื่อนักศึกษาที่สมัครงาน
         public IActionResult Index()
         {
             return View("Index");
         }
+        #endregion
 
+        #region ขอรับนักศึกษามาปฎิบัติงาน
         public IActionResult Job()
         {
             return View("Job");
         }
-
+        public IActionResult getJob()
+        {
+            var Gets = DB.MASTER_FACULTY.ToList();
+            return PartialView("getJob", Gets);
+        }
         public IActionResult FormAddJob()
         {
             return View("FormAddJob");
         }
+        #endregion
 
+        #region เวลาการทำงานนักศึกษา
         public IActionResult CheckTime()
         {
             return View("CheckTime");
         }
-
         public IActionResult getCheckTime()
         {
             var Gets = DB.MASTER_BANK.ToList();
             return PartialView("GetCheckTime",Gets);
         }
-
+        #endregion
 
 
 

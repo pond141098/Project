@@ -15,5 +15,7 @@ namespace SeniorProject.Data
         }
 
         public DbSet<MASTER_BANK> MASTER_BANK { get; set; }
+        public DbSet<MASTER_FACULTY> MASTER_FACULTY { get; set; }
+        public DbSet<MASTER_BRANCH> MASTER_BRANCH { get; set; }
     }
 }
