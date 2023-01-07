@@ -51,12 +51,38 @@ namespace WebApplication.Controllers
         }
         public IActionResult getJob()
         {
-            var Gets = DB.MASTER_FACULTY.ToList();
+            var Gets = DB.TRANSACTION_JOB.ToList();
             return PartialView("getJob", Gets);
         }
         public IActionResult FormAddJob()
         {
             return View("FormAddJob");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> FormAddJob(TRANSACTION_JOB Model)
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            try
+            {
+                if (DB.TRANSACTION_JOB.Where(w => w.job_name == Model.job_name).Count() > 0)
+                {
+                    return Json(new { valid = false, message = "กรุณาตรวจสอบข้อมูล" });
+                }
+
+                //Model.VehicleDiscountRate = 0;
+                //Model.UpdateDate = DateTime.Now;
+                //Model.UpdateBy = CurrentUser.Id;
+                DB.TRANSACTION_JOB.Add(Model);
+                await DB.SaveChangesAsync();
+                // add log
+                //Helper.AddLogs(CurrentUser.Id, "เพิ่มข้อมูลงาน", HttpContext, SystemName, CurrentUser.OrgCode);
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error.Message });
+            }
+            return Json(new { valid = true, message = "บันทึกข้อมูลสำเร็จ" });
         }
         #endregion
 

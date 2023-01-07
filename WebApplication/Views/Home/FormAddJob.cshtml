@@ -1,4 +1,5 @@
-﻿@{
+﻿@model SeniorProject.Models.TRANSACTION_JOB
+@{
     ViewData["title"] = "รับนักศึกษามาปฎิบัติงาน";
 }
 <div id="ribbon">
@@ -39,7 +40,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">หัวข้องานที่รับนักศึกษามาทำงาน<span style="color:red;">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control"
+                                                    <input type="text" class="form-control" asp-for="job_name"
                                                            data-bv-notempty="true"
                                                            data-bv-notempty-message="กรุณากรอกข้อมูล"
                                                            pattern="^[กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์123456789,.() ]+$"
@@ -51,7 +52,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">รายละเอียดงาน<span style="color:red;">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <textarea class="form-control"
+                                                    <textarea class="form-control" asp-for="job_detail"
                                                               data-bv-notempty-message="กรุณากรอกข้อมูล"
                                                               data-bv-notempty="true"></textarea>
                                                 </div>
@@ -61,7 +62,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">จำนวนวันที่ปฎิบัติงาน<span style="color:red;">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <input type="number" class="form-control"
+                                                    <input type="number" class="form-control" asp-for="amount_date"
                                                         data-bv-notempty="true"
                                                         data-bv-notempty-message="กรุณากรอกข้อมูล"
                                                         pattern="^[1234567890]+$"
@@ -73,7 +74,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">จำนวนนักศึกษาที่ต้องการ<span style="color:red;">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control"
+                                                    <input type="text" class="form-control" asp-for="amount_person"
                                                            data-bv-notempty="true"
                                                            data-bv-notempty-message="กรุณากรอกข้อมูล"
                                                            pattern="^[กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์123456789,.() ]+$"
@@ -85,7 +86,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">วันที่ปิดรับสมัคร<span style="color:red;">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <input type="datetime" class="form-control" />
+                                                    <input type="datetime-local" class="form-control" asp-for="close_register_date" />
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -122,7 +123,7 @@
                     $.ajax(
                         {
                             type: "POST",
-                            url: "/ServiceNineteenForm/FormAddVehicle",
+                            url: "/Home/FormAddJob",
                             contentType: false,
                             processData: false,
                             data: Data,
@@ -136,7 +137,7 @@
                                         timeout: 2000
                                     });
                                     setTimeout(function () {
-                                        window.location.href = "/ServiceNineteenForm/VehicleIndex";
+                                        window.location.href = "/Home/Job";
                                     }, 1000)
                                 } else {
                                     $.smallBox({
