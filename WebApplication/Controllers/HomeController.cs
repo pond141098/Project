@@ -54,11 +54,12 @@ namespace WebApplication.Controllers
             var Gets = DB.TRANSACTION_JOB.ToList();
             return PartialView("getJob", Gets);
         }
+
+        //เพิ่ม
         public IActionResult FormAddJob()
         {
             return View("FormAddJob");
         }
-
         [HttpPost]
         public async Task<IActionResult> FormAddJob(TRANSACTION_JOB Model)
         {
@@ -69,20 +70,68 @@ namespace WebApplication.Controllers
                 {
                     return Json(new { valid = false, message = "กรุณาตรวจสอบข้อมูล" });
                 }
-
-                //Model.VehicleDiscountRate = 0;
-                //Model.UpdateDate = DateTime.Now;
-                //Model.UpdateBy = CurrentUser.Id;
+               
                 DB.TRANSACTION_JOB.Add(Model);
                 await DB.SaveChangesAsync();
-                // add log
-                //Helper.AddLogs(CurrentUser.Id, "เพิ่มข้อมูลงาน", HttpContext, SystemName, CurrentUser.OrgCode);
+                
             }
             catch (Exception Error)
             {
                 return Json(new { valid = false, message = Error.Message });
             }
             return Json(new { valid = true, message = "บันทึกข้อมูลสำเร็จ" });
+        }
+
+
+        //เเก้ไข
+        public IActionResult FormEditJob(int transaction_job_id)
+        {
+            var Get = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).FirstOrDefault();
+            return View("FormEditJob", Get);
+        }
+        [HttpPost]
+        public async Task<IActionResult> FormEditJob(TRANSACTION_JOB Model)
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            try
+            {
+                if (DB.TRANSACTION_JOB.Where(w=>w.transaction_job_id == Model.transaction_job_id).Select(s=>s.job_name).FirstOrDefault()==Model.job_name)
+                {
+                    DB.TRANSACTION_JOB.Update(Model);
+                    await DB.SaveChangesAsync();
+                }
+                else
+                {
+                    if (DB.TRANSACTION_JOB.Where(w => w.job_name == Model.job_name).Count() > 0)
+                    {
+                        return Json(new { valid = false, message = "ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบดีๆ" });
+                    }
+                }
+            }
+            catch (Exception Error)
+            {
+
+                return Json (new {valid = false, message = Error.Message});
+            }
+            return Json(new { valid = true, message = "บันทึกข้อมูลสำเร็จ" });
+        }
+
+        //ลบ
+        public async Task<IActionResult> DeleteJob(int transaction_job_id)
+        {
+            //var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            try
+            {
+                var Get = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).FirstOrDefault();
+                DB.TRANSACTION_JOB.Remove(Get);
+                await DB.SaveChangesAsync();
+            }
+            catch (Exception Error)
+            {
+
+                return Json(new { valid = false, message = Error.Message });
+            }
+            return Json(new { valid = true, message = "ลบข้อมูลสำเร็จ" });
         }
         #endregion
 
@@ -96,6 +145,7 @@ namespace WebApplication.Controllers
             var Gets = DB.MASTER_BANK.ToList();
             return PartialView("GetCheckTime",Gets);
         }
+       
         #endregion
 
 
