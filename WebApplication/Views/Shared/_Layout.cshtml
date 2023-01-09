@@ -61,7 +61,7 @@
             </div>
             <div id="logout" class="btn-header transparent pull-right" style="margin-top:8px;">
                 <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                    <button type="submit" class="nav-link btn btn-link text-dark"><i class="fa fa-sign-out" style="font-size:20px;"></i></button>
+                    <button type="submit" class="nav-link btn btn-link text-dark"><i class="fa fa-power-off" style="font-size:20px;color:burlywood"></i></button>
                 </form>
             </div>
             <div id="search-mobile" class="btn-header transparent pull-right">
@@ -74,7 +74,7 @@
             <span>
                 <a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut" title="@CurrentUser.Email">
                     <span style="font-size: 26px;">
-                        <img src="~/img/avatars/male.png">
+                        <img src="~/img/avatars/3.png">
                         @CurrentUser.Email
                        
                     </span>
