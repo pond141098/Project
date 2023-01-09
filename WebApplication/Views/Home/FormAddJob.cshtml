@@ -1,6 +1,6 @@
 ﻿@model SeniorProject.Models.TRANSACTION_JOB
 @{
-    ViewData["title"] = "รับนักศึกษามาปฎิบัติงาน";
+    ViewData["title"] = "สร้างงาน";
 }
 <div id="ribbon">
     <span class="ribbon-button-alignment">
@@ -9,7 +9,7 @@
         </span>
     </span>
     <ol class="breadcrumb">
-        <li><a href="/Home/Job">หน้าหลัก</a></li>
+        <li><a href="/Home/Job">รับนักศึกษามาปฎิบัติงาน</a></li>
         <li>@ViewData["Title"]</li>
     </ol>
 </div>
@@ -65,7 +65,7 @@
                                                     <input type="number" class="form-control" asp-for="amount_date"
                                                         data-bv-notempty="true"
                                                         data-bv-notempty-message="กรุณากรอกข้อมูล"
-                                                        pattern="^[1234567890]+$"
+                                                        pattern="^[123456789]+$"
                                                         data-bv-message="กรุณากรอกตัวเลขเท่านั้น"/>
                                                 </div>
                                             </div>
@@ -77,8 +77,8 @@
                                                     <input type="text" class="form-control" asp-for="amount_person"
                                                            data-bv-notempty="true"
                                                            data-bv-notempty-message="กรุณากรอกข้อมูล"
-                                                           pattern="^[กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์123456789,.() ]+$"
-                                                           data-bv-message="กรุณากรอกภาษาไทยเท่านั้น" />
+                                                           pattern="^[123456789]+$"
+                                                           data-bv-message="กรุณากรอกตัวเลขเท่านั้น" />
                                                 </div>
                                             </div>
                                         </fieldset>

@@ -56,7 +56,6 @@
     // add data
     $("#Add").click(function () {
         window.location.href = "/Home/FormAddJob";
-        alert('hello');
     });
 
 });
