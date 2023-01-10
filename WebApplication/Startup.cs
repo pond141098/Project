@@ -83,7 +83,7 @@ namespace WebApplication
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Job}/{id?}");
+                    pattern: "{controller=Student}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }
