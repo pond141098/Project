@@ -49,8 +49,7 @@ namespace WebApplication
             {
                 option.LogoutPath = "/Identity/Account/Logout";
                 option.LoginPath = "/Identity/Account/Login";
-                //option.LoginPath = "/Devstudent/Index";
-                option.AccessDeniedPath = "/Home/AccessDenied";
+                option.AccessDeniedPath = "/Identity/Home/AccessDenied";
             });
 
             services.AddControllersWithViews();

@@ -8,9 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Part-Time Rmutt</title>
+    <title>Part-Time RMUTT</title>
     <!-- Favicon-->
     <link rel="icon" type="/image/x-icon" href="/assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/styles.css" rel="stylesheet" />
 </head>
@@ -18,76 +20,112 @@
     <!-- Responsive navbar-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container px-5">
-            <a class="navbar-brand" href="#!">ระบบการจัดการหารายได้เสริมระหว่างเรียนสำหรับนักศึกษา</a>
+            @*<img src="">*@
+            <a class="navbar-brand" href="#!">Part-Time Service</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">เข้าสู่ระบบ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#!">เกี่ยวกับ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#!">ติดต่อ</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" a href="@Url.Action("Job", "Home")">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <!-- Page Content-->
-    <div class="container px-4 px-lg-5">
-        <!-- Heading Row-->
-        <div class="row gx-4 gx-lg-5 align-items-center my-5">
-            <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="~/img/NewLogo6.png" alt="..." /></div>
-            <div class="col-lg-5">
-                <h1 class="font-weight-light">ระบบต้นแบบ <br />PART TIME RMUTT </h1>
-                <p>ระบบต้นแบบการจัดหารายได้เสริมระหว่างเรียนสำหรับนักศึกษา<br />
-                   ภายในมหาวิทยาลัยเทคโนโลยีราชมงคล ธัญบุรี มีการจัดหางานเพื่อให้นักศึกษามีรายได้เสริม โดยทางมหาวิทยาลัยจะมีงบประมาณให้แล้วแจกจ่ายไปตามหน่วยงานและคณะต่างๆ
-เพื่อจ้างงานนักศึกษาที่ขาดแคลนด้านการเงิน โดยจะมีระบบในการจัดการของในส่วนงานหารายได้เสริมของนักศึกษา </p>
-                <a class="btn btn-outline-light" style="background-color:#FF0099; color:white;" href="#!">สมัครงาน ? </a>
-            </div>
-        </div>
-        <!-- Call to Action-->
-        <div class="card text-white bg-secondary my-5 py-4 text-center">
-            <div class="card-body"><p class="text-white m-0" >งานเสริมสำหรับนักศึกษาภายใน มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี<br>Part-Time Rajamangala University of Technology Thanyaburi (RMUTT)</p></div>
-        </div>
-        <!-- Content Row-->
-        <div class="row gx-4 gx-lg-5">
-            <div class="col-md-4 mb-5">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h2 class="card-title">Job One</h2>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem magni quas ex numquam, maxime minus quam molestias corporis quod, ea minima accusamus.</p>
+    <!-- Header-->
+    <header class="bg-success py-5">
+        <div class="container px-5">
+            <div class="row gx-5 justify-content-center">
+                <div class="col-lg-6">
+                    <div class="text-center my-5">
+                        <h1 class="display-5 fw-bolder text-white mb-2">Present your SeniorProject <br> In Computer Science</h1>
+                        <p class="lead text-white-50 mb-4">Job management prototype system earn extra income for students<br>Case Study in Rajamangala University of Technology Thanyaburi</p>
+                        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                            <a class="btn btn-primary btn-lg px-4 me-sm-3" a href="@Url.Action("Job", "Student")">Login</a>
+                        </div>
                     </div>
-                    <div class="card-footer"><a class="btn btn-white btn-sm"style="background-color:#FF0099; color:white;" href="#!">สมัครงาน</a></div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-5">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h2 class="card-title">Job Two</h2>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod tenetur ex natus at dolorem enim! Nesciunt pariatur voluptatem sunt quam eaque, vel, non in id dolore voluptates quos eligendi labore.</p>
-                    </div>
-                    <div class="card-footer" ><a class="btn btn-white btn-sm"style="background-color:#FF0099; color:white;" href="#!">สมัครงาน</a></div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-5">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h2 class="card-title">Job Three</h2>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem magni quas ex numquam, maxime minus quam molestias corporis quod, ea minima accusamus.</p>
-                    </div>
-                    <div class="card-footer"><a class="btn btn-white btn-sm"style="background-color:#FF0099; color:white;" href="#!">สมัครงาน</a></div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Footer-->
-    <footer class="py-5 bg-dark">
-        <div class="container px-4 px-lg-5"><p class="m-0 text-center text-white">Part-Time Rajamangala University of Technology Thanyaburi (RMUTT)</p></div>
-    </footer>
-    <!-- Bootstrap core JS-->
+    </header>
+    <!-- Features section-->
+    <section class="py-5 border-bottom" id="features">
+        <div class="container px-5 my-5">
+            <div class="row gx-5">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
+                    <h2 class="h4 fw-bolder">Featured title</h2>
+                    <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+                    <a class="text-decoration-none" href="#!">
+                        Call to action
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
+                    <h2 class="h4 fw-bolder">Featured title</h2>
+                    <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+                    <a class="text-decoration-none" href="#!">
+                        Call to action
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="col-lg-4">
+                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                    <h2 class="h4 fw-bolder">Featured title</h2>
+                    <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+                    <a class="text-decoration-none" href="#!">
+                        Call to action
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS-->
-    <script src="js/scripts.js"></script>
+    <script src="/js/scripts.js"></script>
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <!-- * *                               SB Forms JS                               * *-->
+    <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+  
+
     <div id="main" role="main">
 
         @RenderBody()
+
+        <!-- About section-->
+        <section class="py-5 border-bottom" id="about">
+            <div class="container px-5 my-5 px-5">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bolder">About</h2>
+                    <p class="lead mb-0">The organizers thought that technology would be used to help solve problems. It will be a web application for university staff & for students to make a web application to make the system more efficient and convenient for all users to reduce problems.</p>
+                </div>
+            </div>
+        </section>
+        <!-- Contact section-->
+        <section class="bg-light py-5" id="contact">
+            <div class="container px-5 my-5 px-5">
+                <div class="text-center mb-5">
+                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-envelope"></i></div>
+                    <h2 class="fw-bolder">Contact</h2>
+                    <p class="lead mb-0">Facebook : oregrmutt</p>
+                    <p class="lead mb-0">Website  : www.oreg.rmutt.ac.th</p>
+                    <p class="lead mb-0">E-mail   : oreg@rmutt.ac.th</p>
+                </div>
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-6">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer class="py-5 bg-dark">
+            <div class="container px-5"><p class="m-0 text-center text-white"> Part-Time Rajamangala University of Technology Thanyaburi (RMUTT)</p></div>
+        </footer>
 
     </div>
 

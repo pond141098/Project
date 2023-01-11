@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SeniorProject.Data;
 using SeniorProject.Models;
+using System.Linq;
 using WebApplication.Controllers;
 
 namespace SeniorProject.Controllers
@@ -34,5 +35,21 @@ namespace SeniorProject.Controllers
         {
             return View("Index");
         }
+        #region รายละเอียดงานที่รับสมัคร
+        public IActionResult Job()
+        {
+            return View("Job");
+        }
+        public IActionResult getJob()
+        {
+            var Get = DB.TRANSACTION_JOB.ToList();
+            return PartialView("getJob", Get);
+        }
+        public IActionResult FormRegisterJob()
+        {
+            return View("FormRegister");
+        }
+        
+        #endregion
     }
 }
