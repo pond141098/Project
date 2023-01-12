@@ -38,17 +38,15 @@ namespace SeniorProject.Controllers
         #region รายละเอียดงานที่รับสมัคร
         public IActionResult Job()
         {
-            return View("Job");
+            var Gets = DB.TRANSACTION_JOB.ToList(); 
+            return PartialView("Job",Gets);
         }
-        public IActionResult getJob()
+        public IActionResult FormRegisterJob(int transaction_job_id)
         {
-            var Get = DB.TRANSACTION_JOB.ToList();
-            return PartialView("getJob", Get);
+            var Gets = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).FirstOrDefault();
+            return View("FormRegisterJob", Gets);
         }
-        public IActionResult FormRegisterJob()
-        {
-            return View("FormRegister");
-        }
+        
         
         #endregion
     }
