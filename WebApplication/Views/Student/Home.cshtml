@@ -1,0 +1,38 @@
+﻿@model IEnumerable<SeniorProject.Models.TRANSACTION_JOB>
+
+@{
+    Layout = "~/Views/Shared/_FrontendLayout.cshtml";
+    ViewData["Title"] = "'หน้าหลัก";
+}
+
+<section class="bg-light py-5 border-bottom">
+    <div class="container px-5 my-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bolder">สวัสดี คุณ...........</h2>
+            <p class="lead mb-0">Hello ...... </p>
+        </div>
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-6 col-xl-5">
+                <div class="card mb-5 mb-xl-0">
+                    <a class="btn" type="button" style="font-size:25px;background-color:#312E81" a href="@Url.Action("Profile","Student")"><font color="#F8FAFC">ประวัติส่วนตัว</font></a>
+                </div>
+            </div>
+            <div class="col-lg-6 col-xl-5">
+                <div class="card mb-5 mb-xl-0">
+                    <a class="btn" type="button" style="font-size:25px;background-color:#312E81" a href="@Url.Action("Job","Student")"><font color="#F8FAFC">สมัครงาน</font></a>
+                </div>
+            </div>
+            <div class="col-lg-6 col-xl-5">
+                <div class="card mb-5 mb-xl-0">
+                    <a class="btn" type="button" style="font-size:25px;background-color:#312E81"><font color="#F8FAFC">ประวัติการสมัครงาน</font></a>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 col-xl-5">
+                <div class="card mb-5 mb-xl-0">
+                    <a class="btn" type="button" style="font-size:25px;background-color:#312E81" ><font color="#F8FAFC">ประวัติการทำงาน</font></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

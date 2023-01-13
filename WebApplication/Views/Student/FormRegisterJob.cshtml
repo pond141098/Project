@@ -2,82 +2,43 @@
 
 @{
     Layout = "~/Views/Shared/_FrontendLayout.cshtml";
-    ViewData["Title"] = "'สมัครงาน";
+    ViewData["Title"] = "สมัครงาน";
 }
 <section class="bg-light py-5 border-bottom">
     <div class="container px-5 my-5">
-        <section class="vh-100" style="background-color: #2779e2;">
-            <div class="container h-100">
-                <div class="row d-flex justify-content-center align-items-center h-100">
-                    <div class="col-xl-9">
-                        <h1 class="text-white mb-4">Register</h1>
-                        <div class="card" style="border-radius: 15px;">
-                            <div class="card-body">
-                                <div class="row align-items-center pt-4 pb-3">
-                                    <div class="col-md-3 ps-5">
-
-                                        <h6 class="mb-0">สาเหตุในการสมัครงาน</h6>
-
-                                    </div>
-                                    <div class="col-md-9 pe-5">
-
-                                        <textarea class="form-control form-control-lg" ></textarea>
-
-                                    </div>
-                                </div>
-                                <hr class="mx-n3">
-                                <div class="row align-items-center py-3">
-                                    <div class="col-md-3 ps-5">
-
-                                        <h6 class="mb-0">ประเภทธนาคาร</h6>
-
-                                    </div>
-                                    <div class="col-md-9 pe-5">
-
-                                        <input type="email" class="form-control form-control-lg" placeholder="example@example.com" />
-
-                                    </div>
-                                </div>
-                                <hr class="mx-n3">
-                                <div class="row align-items-center py-3">
-                                    <div class="col-md-3 ps-5">
-
-                                        <h6 class="mb-0">เลขที่บัญชีธนาคาร</h6>
-
-                                    </div>
-                                    <div class="col-md-9 pe-5">
-
-                                        <input type="email" class="form-control form-control-lg"/>
-
-                                    </div>
-                                </div>
-                                <hr class="mx-n3">
-                                <div class="row align-items-center py-3">
-                                    <div class="col-md-3 ps-5">
-
-                                        <h6 class="mb-0">สำเนาสมุดบัญชีธนาคาร<br>(พร้อมเซ็นรับรอง)</h6>
-
-                                    </div>
-                                    <div class="col-md-9 pe-5">
-
-                                        <input class="form-control form-control-lg" id="formFileLg" type="file" />
-                                        <div class="small text-muted mt-2">
-                                            Upload สำเนาสมุดบัญชีธนาคาร. Max file
-                                            size 50 MB
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <hr class="mx-n3">
-                                <div class="px-5 py-4">
-                                    <button type="submit" class="btn btn-primary btn-lg">Register</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <form>
+            <div class="form-group">
+                <label for="exampleFormControlInput1" style="font-size:20px">สาเหตุในการสมัครงาน</label>
+                <textarea class="form-control" placeholder="อธิบาย..."></textarea>
             </div>
-        </section>
+            <div class="form-group">
+                <br>
+                <label for="exampleFormControlSelect1" style="font-size:20px">ประเภทธนาคาร</label>
+                <select class="form-control" id="exampleFormControlSelect1">
+                    <option>กรุงศรี</option>
+                    <option>ไทยพาณิชย์</option>
+                    <option>กรุงเทพ</option>
+                    <option>กสิกรไทย</option>
+                    <option>กรุงไทย</option>
+                </select>
+            </div>
+            <div>
+                <br>
+                <label for="exampleFormControlInput1" style="font-size:20px">เลขที่บัญชี</label>
+                <input type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <br>
+                <label for="exampleFormControlSelect1" style="font-size:20px">สำเนาสมุดบัญชีธนาคาร (พร้อมเซ็นรับรอง)</label>
+                <input class="form-control form-control-lg" id="formFileLg" type="file" />
+                <div class="small text-muted mt-2">อัปโหลดไฟล์ สำเนาสมุดบัญชีธนาคาร พร้อมเซ็นรับรอง. ขนาดไฟล์ไม่เกิน 50 MB</div>
+            </div>
+            <div class="col-md-12" style="text-align:left">
+                <br>
+                <button class="btn btn-success" type="button" id="submit"><i class="fa fa-save"></i> บันทึก</button>
+            </div>
+            <input type="hidden" name="jobId" value="@ViewBag.jobid">
+        </form>
     </div>
 </section>
 

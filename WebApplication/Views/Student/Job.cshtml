@@ -40,7 +40,10 @@
                                         วันที่ปิดรับสมัคร : @Gets.close_register_date
                                     </li>
                                 </ul>
-                                <div class="d-grid"><a class="btn btn-outline-primary" a href=@Url.Action("FormRegisterJob","Student")>Register</a></div>
+                                <div class="d-grid">
+                                    
+                                    <a href="javascript:void(0)" data-id="@Gets.transaction_job_id" class="btn-u btn-u-dark-blue register">สมัครงาน</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -52,7 +55,12 @@
 </section>
 
 @section Scripts{
-    <link href="/css/styles.css" rel="stylesheet" />
-    <script src="~/js/scripts.js"></script>
-    @*<script type="text/javascript" src="~/js/Student/Job.js"></script>*@
+    <script type="text/javascript">
+        $(function () {
+            // go to FormRegisterJob
+            $(".register").click(function () {
+                window.location.href = "/Student/FormRegisterJob?transaction_job_id=" + $(this).attr("data-id");
+            });
+        });
+    </script>
 }
