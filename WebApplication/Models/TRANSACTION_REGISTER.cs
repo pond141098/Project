@@ -19,6 +19,6 @@ namespace SeniorProject.Models
         public string bank_file { get; set; } 
         public string because_job { get; set; } 
         public DateTime register_date { get; set; } 
-        public int s_id { get; set; } 
+        public string s_id { get; set; } 
     }
 }

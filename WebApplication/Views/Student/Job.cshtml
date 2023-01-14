@@ -39,10 +39,10 @@
                                         <i class="text-primary"></i>
                                         วันที่ปิดรับสมัคร : @Gets.close_register_date
                                     </li>
+                                    <li>
+                                        <a href="javascript:void(0)" data-id="@Gets.transaction_job_id" class="btn-u btn-u-sea booking">ยื่นจอง <span class="glyphicon glyphicon-chevron-right"></span></a>
+                                    </li>
                                 </ul>
-                                <div class="d-grid">
-                                    <a href="javascript:void(0)" data-id="@Gets.transaction_job_id" class="btn-u btn-u-dark-blue register">สมัครงาน</a>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -53,13 +53,14 @@
     </div>
 </section>
 
-@section Scripts{
+@section Frontend{
     <script type="text/javascript">
         $(function () {
-            // go to FormRegisterJob
-            $(".register").click(function () {
+            // go to booking
+            $(".booking").click(function () {
                 window.location.href = "/Student/FormRegisterJob?transaction_job_id=" + $(this).attr("data-id");
             });
         });
     </script>
+
 }

@@ -18,8 +18,7 @@ namespace SeniorProject.Models
         public int amount_person { get; set; }
         public int amount_date { get; set; }
         public DateTime close_register_date { get; set; }
-        public string create_by { get; set; }   
-        public DateTime create_date { get; set; }
+        public string create_by { get; set; } 
         public DateTime update_date { get; set; }
 
     }

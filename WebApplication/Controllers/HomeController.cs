@@ -70,7 +70,9 @@ namespace WebApplication.Controllers
                 {
                     return Json(new { valid = false, message = "กรุณาตรวจสอบข้อมูล" });
                 }
-               
+
+                Model.create_by = CurrentUser.Id;
+                Model.update_date = DateTime.Now;
                 DB.TRANSACTION_JOB.Add(Model);
                 await DB.SaveChangesAsync();
                 
@@ -97,6 +99,7 @@ namespace WebApplication.Controllers
             {
                 if (DB.TRANSACTION_JOB.Where(w=>w.transaction_job_id == Model.transaction_job_id).Select(s=>s.job_name).FirstOrDefault()==Model.job_name)
                 {
+                    Model.update_date = DateTime.Now;   
                     DB.TRANSACTION_JOB.Update(Model);
                     await DB.SaveChangesAsync();
                 }
