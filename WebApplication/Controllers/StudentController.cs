@@ -38,13 +38,29 @@ namespace SeniorProject.Controllers
         {
             return View("Index");
         }
-        public IActionResult Home()
+        public async Task<IActionResult> Home()
         {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var Model = DB.TRANSACTION_JOB.ToList();
+            var GetName = DB.Users.Where(w => w.Id == CurrentUser.Id).Select(s => s.FirstName).FirstOrDefault();
+            var GetLastName = DB.Users.Where(w => w.Id == CurrentUser.Id).Select(s => s.LastName).FirstOrDefault();
+
+            ViewBag.Name = GetName;
+            ViewBag.LastName = GetLastName;
+
             return View("Home");
         }
-        public IActionResult Profile()
+        public async Task<IActionResult> Profile()
         {
-            return View("Profile");   
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var Model = DB.Users.Where(w => w.Id == CurrentUser.Id).FirstOrDefault();
+            var GetFaculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.faculty_name).FirstOrDefault();
+            var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == CurrentUser.branch_id).Select(s => s.branch_name).FirstOrDefault();
+
+            ViewBag.Faculty = GetFaculty;
+            ViewBag.Branch = GetBranch;
+
+            return View("Profile",Model);   
         }
         public IActionResult HistoryRegister()
         {
