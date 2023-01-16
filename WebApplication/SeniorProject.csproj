@@ -35,6 +35,7 @@
     <Folder Include="wwwroot\img\realestate\thumbs\" />
     <Folder Include="wwwroot\js\Devstudent\" />
     <Folder Include="wwwroot\js\Office\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
   <ItemGroup>

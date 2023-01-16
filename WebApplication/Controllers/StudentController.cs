@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SeniorProject.Data;
 using SeniorProject.Models;
 using System;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApplication.Controllers;
 
@@ -34,9 +38,26 @@ namespace SeniorProject.Controllers
             _roleManager = roleManager;
             DB = db;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View("Index");
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            if (CurrentUser.role_id == 2)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            //else if(CurrentUser.role_id == 2)
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //}
+            //else if (CurrentUser.role_id == 3)
+            //{
+            //    return RedirectToAction("Index", "Devstudent");
+            //}
+            //else if (CurrentUser.role_id == 4)
+            //{
+            //    return RedirectToAction("Index", "Office");
+            //}
+            return View();
         }
         public async Task<IActionResult> Home()
         {
@@ -60,7 +81,7 @@ namespace SeniorProject.Controllers
             ViewBag.Faculty = GetFaculty;
             ViewBag.Branch = GetBranch;
 
-            return View("Profile",Model);   
+            return View("Profile", Model);
         }
         public IActionResult HistoryRegister()
         {
@@ -69,28 +90,29 @@ namespace SeniorProject.Controllers
         #region รายละเอียดงานที่รับสมัคร
         public IActionResult Job()
         {
-            var Gets = DB.TRANSACTION_JOB.ToList(); 
-            return PartialView("Job",Gets);
+            var Gets = DB.TRANSACTION_JOB.ToList();
+            return PartialView("Job", Gets);
         }
         public IActionResult FormRegisterJob(int transaction_job_id)
         {
-            var Jobid = DB.TRANSACTION_JOB.ToList();
-            var Gets = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == transaction_job_id);
-            ViewBag.Bank = new SelectList(DB.MASTER_BANK.ToList(),"banktype_id","bank_name"); 
-            ViewBag.jobid = transaction_job_id;
+            var GetJobName = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).Select(s => s.job_name).FirstOrDefault();
+            var GetBank = DB.MASTER_BANK.Select(s => s.banktype_name).ToList();
+
+            ViewBag.Bank = GetBank;
+            ViewBag.jobname = GetJobName;
+
             return View("FormRegisterJob");
         }
         [HttpPost]
-        public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model)
+        [Obsolete]
+        public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model, IFormFile[] fileUpload)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
             {
-                if (DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == Model.transaction_register_id).Count() > 0)
-                {
-                    return Json(new { valid = false, message = "กรุณาตรวจสอบข้อมูล" });
-                }
-                Model.register_date= DateTime.Now;
+
+                Model.s_id = CurrentUser.UserName;
+                Model.register_date = DateTime.Now;
                 Model.status_id = 7;
                 DB.TRANSACTION_REGISTER.Add(Model);
                 await DB.SaveChangesAsync();

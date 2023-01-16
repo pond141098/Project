@@ -73,6 +73,8 @@ namespace WebApplication.Controllers
 
                 Model.create_by = CurrentUser.Id;
                 Model.update_date = DateTime.Now;
+                Model.faculty_id = CurrentUser.faculty_id;
+                Model.branch_id = CurrentUser.branch_id;
                 DB.TRANSACTION_JOB.Add(Model);
                 await DB.SaveChangesAsync();
                 

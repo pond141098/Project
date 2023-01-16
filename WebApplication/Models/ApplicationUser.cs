@@ -8,5 +8,6 @@ namespace SeniorProject.Models
         public string LastName { get; set; }   
         public int faculty_id { get; set; }   
         public int branch_id { get; set; }   
+        public int role_id { get; set; }   
     }
 }

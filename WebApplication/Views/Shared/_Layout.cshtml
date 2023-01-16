@@ -3,6 +3,7 @@
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+
 @{
     var CurrentUser = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
 }
@@ -60,7 +61,7 @@
                 <span> <a href="javascript:void(0);" data-action="toggleMenu" title="Collapse Menu"><i class="fa fa-reorder"></i></a> </span>
             </div>
             <div id="logout" class="btn-header transparent pull-right" style="margin-top:8px;">
-                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Student", new { area = "" })">
                     <button type="submit" class="nav-link btn btn-link text-dark"><i class="fa fa-power-off" style="font-size:20px;color:whitesmoke"></i></button>
                 </form>
             </div>
@@ -72,10 +73,10 @@
     <aside id="left-panel">
         <div class="login-info">
             <span>
-                <a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut" title="@CurrentUser.Email">
+                <a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut" title="@CurrentUser.FirstName @CurrentUser.LastName">
                     <span style="font-size: 26px;">
                         <img src="~/img/avatars/3.png">
-                        @CurrentUser.Email
+                        @CurrentUser.FirstName @CurrentUser.LastName
                        
                     </span>
                 </a>
