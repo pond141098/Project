@@ -71,6 +71,7 @@ namespace WebApplication.Controllers
                     return Json(new { valid = false, message = "กรุณาตรวจสอบข้อมูล" });
                 }
 
+                Model.owner_job = CurrentUser.FirstName + " " + CurrentUser.LastName;
                 Model.create_by = CurrentUser.Id;
                 Model.update_date = DateTime.Now;
                 Model.faculty_id = CurrentUser.faculty_id;
@@ -85,7 +86,6 @@ namespace WebApplication.Controllers
             }
             return Json(new { valid = true, message = "บันทึกข้อมูลสำเร็จ" });
         }
-
 
         //เเก้ไข
         public IActionResult FormEditJob(int transaction_job_id)

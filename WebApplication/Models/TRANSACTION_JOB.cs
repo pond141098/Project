@@ -22,6 +22,7 @@ namespace SeniorProject.Models
         public DateTime update_date { get; set; }
         public int faculty_id { get; set; } 
         public int branch_id { get; set; }  
+        public string owner_job { get; set; }   
 
     }
 }
