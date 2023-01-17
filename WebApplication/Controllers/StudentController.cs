@@ -16,7 +16,7 @@ using WebApplication.Controllers;
 
 namespace SeniorProject.Controllers
 {
-    [Authorize]
+    
     public class StudentController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -38,26 +38,9 @@ namespace SeniorProject.Controllers
             _roleManager = roleManager;
             DB = db;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            if (CurrentUser.role_id == 2)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            //else if(CurrentUser.role_id == 2)
-            //{
-            //    return RedirectToAction("Index", "Home");
-            //}
-            //else if (CurrentUser.role_id == 3)
-            //{
-            //    return RedirectToAction("Index", "Devstudent");
-            //}
-            //else if (CurrentUser.role_id == 4)
-            //{
-            //    return RedirectToAction("Index", "Office");
-            //}
-            return View();
+            return View("Index");
         }
         public async Task<IActionResult> Home()
         {
@@ -88,9 +71,10 @@ namespace SeniorProject.Controllers
             return View("HistoryRegister");
         }
         #region รายละเอียดงานที่รับสมัคร
-        public IActionResult Job()
+        public async Task<IActionResult> Job()
         {
-            var Gets = DB.TRANSACTION_JOB.ToList();
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var Gets = DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id).ToList();
             return PartialView("Job", Gets);
         }
         public IActionResult FormRegisterJob(int transaction_job_id)
@@ -103,8 +87,8 @@ namespace SeniorProject.Controllers
 
             return View("FormRegisterJob");
         }
+
         [HttpPost]
-        [Obsolete]
         public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model, IFormFile[] fileUpload)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));

@@ -1,6 +1,6 @@
 ﻿$(function () {
     $("#JsonData").html('<img src="/img/loading.gif" width="50">');
-    $.get("/Home/getJob", function (JsonResult)
+    $.get("/Teacher/getJob", function (JsonResult)
     {
         setTimeout(function () {
 
@@ -15,7 +15,7 @@
                     buttons: '[ไม่][ใช่]'
                 }, function (ButtonPressed) {
                     if (ButtonPressed == "ใช่") {
-                        $.get("/Home/DeleteJob", { "transaction_job_id": Id }, function (response) {
+                        $.get("/Teacher/DeleteJob", { "transaction_job_id": Id }, function (response) {
                             if (response.valid == true) {
                                 $.smallBox({
                                     title: response.message,
@@ -25,7 +25,7 @@
                                     timeout: 1000
                                 });
                                 setTimeout(function () {
-                                    window.location.href = "/Home/Job";
+                                    window.location.href = "/Teacher/Job";
                                 }, 1000)
                             } else {
                                 $.smallBox({
@@ -46,7 +46,7 @@
             });
 
             $("#JsonData").on("click", ".edit", function () {
-                window.location.href = "/Home/FormEditJob?transaction_job_id=" + $(this).val();
+                window.location.href = "/Teacher/FormEditJob?transaction_job_id=" + $(this).val();
             });
 
         }, 200);
@@ -55,7 +55,7 @@
 
     // add data
     $("#Add").click(function () {
-        window.location.href = "/Home/FormAddJob";
+        window.location.href = "/Teacher/FormAddJob";
     });
 
 });
