@@ -9,7 +9,7 @@
         </span>
     </span>
     <ol class="breadcrumb">
-        <li><a href="/Home/Job">รับนักศึกษามาปฎิบัติงาน</a></li>
+        <li><a href="/Teacher/Job">รับนักศึกษามาปฎิบัติงาน</a></li>
         <li>@ViewData["Title"]</li>
     </ol>
 </div>
@@ -123,7 +123,7 @@
                     $.ajax(
                         {
                             type: "POST",
-                            url: "/Home/FormAddJob",
+                            url: "/Teacher/FormAddJob",
                             contentType: false,
                             processData: false,
                             data: Data,
@@ -137,7 +137,7 @@
                                         timeout: 2000
                                     });
                                     setTimeout(function () {
-                                        window.location.href = "/Home/Job";
+                                        window.location.href = "/Teacher/Job";
                                     }, 1000)
                                 } else {
                                     $.smallBox({

@@ -37,10 +37,22 @@ namespace SeniorProject.Controllers
             _roleManager = roleManager;
             DB = db;
         }
-        #region รายชื่อนักศึกษาที่สมัครงาน
+        
         public IActionResult Index()
         {
             return View("Index");
+        }
+
+        #region รายชื่อนักศึกษาที่สมัครงาน
+        public IActionResult ListStudent() 
+        {
+            return View("ListStudent");
+        }
+        public async Task<IActionResult> getListStudent()
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var Gets = DB.TRANSACTION_REGISTER.ToList();
+            return PartialView("getListStudent",Gets);
         }
         #endregion
 
