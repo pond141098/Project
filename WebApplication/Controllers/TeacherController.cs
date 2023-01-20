@@ -1,13 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using iTextSharp.text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Crypto.Engines;
 using SeniorProject.Data;
 using SeniorProject.Models;
+using SeniorProject.ViewModels.Teacher;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -44,15 +50,37 @@ namespace SeniorProject.Controllers
         }
 
         #region รายชื่อนักศึกษาที่สมัครงาน
-        public IActionResult ListStudent() 
+        public async Task<IActionResult> ListStudent(int transaction_job_id) 
         {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            //ViewBag.Jobname = new SelectList(DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id ).ToList(), "transaction_job_id", "job_name");
+
             return View("ListStudent");
         }
         public async Task<IActionResult> getListStudent()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Gets = DB.TRANSACTION_REGISTER.ToList();
-            return PartialView("getListStudent",Gets);
+            
+            var GetJobName = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetPerson = await DB.TRANSACTION_REGISTER.ToListAsync();
+            var GetStatus = await DB.MASTER_STATUS.Where(w => w.status_id == 5 && w.status_id == 6 && w.status_id == 7).FirstOrDefaultAsync();
+            var Models = new List<ListStudentRegister>();
+
+            foreach(var data in GetPerson.Where(w => w.owner_job_id == CurrentUser.Id))
+            {
+                var ViewModel = new ListStudentRegister();
+                ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
+                ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
+                ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
+                ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
+                //ViewModel.status_name = GetPerson.Where(w=>w.status_id =
+                Models.Add(ViewModel);
+
+            }
+
+            //var Gets = await DB.TRANSACTION_REGISTER.Where(w => w.owner_job_id == CurrentUser.Id).ToListAsync();
+            
+            return PartialView("getListStudent",Models);
         }
         #endregion
 
@@ -115,6 +143,8 @@ namespace SeniorProject.Controllers
                 if (DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == Model.transaction_job_id).Select(s => s.job_name).FirstOrDefault() == Model.job_name)
                 {
                     Model.update_date = DateTime.Now;
+                    Model.faculty_id= CurrentUser.faculty_id;
+                    Model.branch_id= CurrentUser.branch_id;
                     DB.TRANSACTION_JOB.Update(Model);
                     await DB.SaveChangesAsync();
                 }

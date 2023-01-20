@@ -44,7 +44,7 @@
                                         อาจารย์ผู้รับผิดชอบ : @Gets.owner_job
                                     </li>
                                     <li>
-                                        <a href="javascript:void(0)" data-id="@Gets.transaction_job_id" class="btn-u btn-u-sea booking">สมัครงาน <span class="glyphicon glyphicon-chevron-right"></span></a>
+                                        <a href="javascript:void(0)" data-id="@Gets.transaction_job_id" class="btn-u btn-u-sea register"> สมัครงาน <span class="glyphicon glyphicon-chevron-right"></span></a>
                                     </li>
                                 </ul>
                             </div>
@@ -60,8 +60,8 @@
 @section Frontend{
     <script type="text/javascript">
         $(function () {
-            // go to booking
-            $(".booking").click(function () {
+            // go to register
+            $(".register").click(function () {
                 window.location.href = "/Student/FormRegisterJob?transaction_job_id=" + $(this).attr("data-id");
             });
         });

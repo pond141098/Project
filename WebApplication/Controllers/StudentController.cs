@@ -13,6 +13,8 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using WebApplication.Controllers;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 
 namespace SeniorProject.Controllers
 {
@@ -24,6 +26,7 @@ namespace SeniorProject.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private ApplicationDbContext DB;
+        private Microsoft.AspNetCore.Hosting.IHostingEnvironment _environment;
 
         public StudentController(
              ILogger<HomeController> logger,
@@ -70,6 +73,22 @@ namespace SeniorProject.Controllers
         {
             return View("HistoryRegister");
         }
+        public async Task<IActionResult>DeleteRegisterJob(int transaction_register_id)
+        {
+            //var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            try
+            {
+                var Model = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
+                DB.TRANSACTION_REGISTER.Remove(Model);
+                await DB.SaveChangesAsync();
+            }
+            catch (Exception Error)
+            {
+
+                return Json(new { valid = false, message = Error.Message });
+            }
+            return Json(new { valid = true, message = "ยกเลิกการสมัครงานสำเร็จ" });
+        }
         #region รายละเอียดงานที่รับสมัคร
         public async Task<IActionResult> Job()
         {
@@ -92,21 +111,41 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model, IFormFile[] fileUpload)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var GetOwner = await DB.TRANSACTION_JOB.Where(w => w.create_by == CurrentUser.Id).Select(s => s.create_by).FirstOrDefaultAsync();
             try
             {
-
+                Model.fullname = CurrentUser.FirstName + " " + CurrentUser.LastName;
                 Model.s_id = CurrentUser.UserName;
                 Model.register_date = DateTime.Now;
                 Model.status_id = 7;
+                Model.owner_job_id = GetOwner;
                 DB.TRANSACTION_REGISTER.Add(Model);
                 await DB.SaveChangesAsync();
 
+                if (fileUpload != null && fileUpload.Length > 0)
+                {
+                    var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads");
+                    foreach (var file in fileUpload)
+                    {
+                        string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        string UniqueFileName = string.Format(@"{0}", Guid.NewGuid()) + fileName.ToString();
+                        using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+
+                        // create file 
+                        Model.bank_file = UniqueFileName;
+                        DB.TRANSACTION_REGISTER.Add(Model);
+                        await DB.SaveChangesAsync();
+                    }
+                }
             }
             catch (Exception Error)
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            return Json(new { valid = true, message = "บันทึกข้อมูลสำเร็จ" });
+            return Json(new { valid = true, message = "hello" });
         }
 
         #endregion

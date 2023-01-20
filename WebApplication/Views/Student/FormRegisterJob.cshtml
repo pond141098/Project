@@ -9,50 +9,99 @@
         <div class="text-center mb-5">
             <h2 class="fw-bolder">@ViewBag.jobname</h2>
         </div>
-        <form id="FormAdd" asp-antiforgery="true"
-              data-bv-message="This value is not valid"
-              data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
-              data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
-              data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
-            <div class="form-group">
-                <label for="exampleFormControlInput1" style="font-size:20px">สาเหตุในการสมัครงาน</label>
-                <textarea class="form-control" placeholder="อธิบาย..." asp-for="because_job"
-                          data-bv-notempty-message="กรุณากรอกข้อมูล"
-                          data-bv-notempty="true"></textarea>
-            </div>
-            <div class="form-group">
-                <br>
-                <label for="exampleFormControlSelect1" style="font-size:20px">ประเภทธนาคาร</label>
-                <select class="form-control" id="exampleFormControlSelect1" asp-for="banktype_id">
-                    <option value="3">กรุงศรี</option>
-                    <option value="5">ไทยพาณิชย์</option>
-                    <option value="2">กรุงเทพ</option>
-                    <option value="4">กสิกรไทย</option>
-                    <option value="1">กรุงไทย</option>
-                    <option value="6">ทหารไทยธนชาติ</option>
-                </select>
-            </div>
-            <div>
-                <br>
-                <label for="exampleFormControlInput1" style="font-size:20px">เลขที่บัญชี</label>
-                <input type="text" class="form-control" asp-for="bank_no"
-                       data-bv-notempty="true"
-                       data-bv-notempty-message="กรุณากรอกข้อมูล"
-                       pattern="^[123456789]+$"
-                       data-bv-message="กรุณากรอกตัวเลขเท่านั้น">
-            </div>
-            <div class="form-group">
-                <br>
-                <label for="exampleFormControlSelect1" style="font-size:20px">สำเนาสมุดบัญชีธนาคาร (พร้อมเซ็นรับรอง)</label>
-                <input class="form-control form-control-lg" id="formFileLg" type="file" asp-for="bank_file" />
-                <div class="small text-muted mt-2">อัปโหลดไฟล์ สำเนาสมุดบัญชีธนาคาร พร้อมเซ็นรับรอง. ขนาดไฟล์ไม่เกิน 50 MB</div>
-            </div>
-            <div class="col-md-12" style="text-align:left">
-                <br>
-                <button class="btn btn-success" type="button" id="submit"><i class="fa fa-save"></i> บันทึก</button>
-            </div>
-            <input type="hidden" asp-for="transaction_job_id">
-        </form>
+        <fieldset>
+            <form id="FormAdd" asp-antiforgery="true"
+                  data-sb-form-api-token="API_TOKEN"
+                  data-bv-message="This value is not valid"
+                  data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
+                  data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
+                  data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                <div class="form-group">
+                    <label for="exampleFormControlInput1" style="font-size:20px">สาเหตุในการสมัครงาน</label>
+                    <textarea class="form-control" placeholder="อธิบาย..." asp-for="because_job"
+                              data-bv-notempty-message="กรุณากรอกข้อมูล"
+                              data-bv-notempty="true"></textarea>
+                </div>
+                <div class="form-group">
+                    <br>
+                    <label for="exampleFormControlSelect1" style="font-size:20px">ประเภทธนาคาร</label>
+                    <select class="form-control" id="exampleFormControlSelect1" asp-for="banktype_id">
+                        <option value="3">กรุงศรี</option>
+                        <option value="5">ไทยพาณิชย์</option>
+                        <option value="2">กรุงเทพ</option>
+                        <option value="4">กสิกรไทย</option>
+                        <option value="1">กรุงไทย</option>
+                        <option value="6">ทหารไทยธนชาติ</option>
+                    </select>
+                </div>
+                <div>
+                    <br>
+                    <label for="exampleFormControlInput1" style="font-size:20px">เลขที่บัญชี</label>
+                    <input type="text" class="form-control" asp-for="bank_no"
+                           data-bv-notempty="true"
+                           data-bv-notempty-message="กรุณากรอกข้อมูล"
+                           pattern="^[123456789]+$"
+                           data-bv-message="กรุณากรอกตัวเลขเท่านั้น">
+                </div>
+                <div class="form-group">
+                    <br>
+                    <label for="exampleFormControlSelect1" style="font-size:20px">สำเนาสมุดบัญชีธนาคาร (พร้อมเซ็นรับรอง)</label>
+                    <input class="form-control form-control-lg" id="formFileLg" type="file" asp-for="bank_file"
+                           pattern="([a-zA-Z0-9\s_\\.\-\(\):])+(.doc|.docx|.pdf)$"
+                           data-bv-message="กรุณาเลือกรูปเอกสาร doc, docx, pdf" />
+                    <div class="small text-muted mt-2">อัปโหลดไฟล์ สำเนาสมุดบัญชีธนาคาร พร้อมเซ็นรับรอง. ขนาดไฟล์ไม่เกิน 50 MB</div>
+                </div>
+                <div class="col-md-12" style="text-align:left">
+                    <br>
+                    <button class="btn btn-success" type="submit" id="submit"> บันทึก</button>
+                </div>
+                <input type="hidden" asp-for="transaction_job_id">
+            </form>
+        </fieldset>
     </div>
 </section>
+
+@section Frontend{
+    <script>
+        $(function () {
+            $('#FormAdd').bootstrapValidator();
+            $("#submit").click(function () {
+                $('#FormAdd').data("bootstrapValidator").validate();
+                if ($('#FormAdd').data("bootstrapValidator").isValid() == true) {
+                    var Data = new FormData($("#FormAdd")[0]);
+                    $.ajax(
+                        {
+                            type: "POST",
+                            url: "/Student/FormRegisterJob",
+                            contentType: false,
+                            processData: false,
+                            data: Data,
+                            success: function (response) {
+                                if (response.valid == true) {
+                                    $.smallBox({
+                                        title: response.message,
+                                        content: "<i class='fa fa-clock-o'></i> <i>" + response.message + "</i>",
+                                        color: "#296191",
+                                        iconSmall: "fa fa-thumbs-up bounce animated",
+                                        timeout: 2000
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "/Student/HistoryRegister";
+                                    }, 1000)
+                                } else {
+                                    $.smallBox({
+                                        title: response.message,
+                                        content: "<i class='fa fa-clock-o'></i> <i>" + response.message + "</i>",
+                                        color: "#FB0404",
+                                        iconSmall: "fa fa-thumbs-up bounce animated",
+                                        timeout: 2000
+                                    });
+                                }
+                            }
+                        });
+                }
+            });
+        });
+    </script>
+}
 
