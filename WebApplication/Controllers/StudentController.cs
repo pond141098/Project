@@ -111,14 +111,15 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model, IFormFile[] fileUpload)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var GetOwner = await DB.TRANSACTION_JOB.Where(w => w.create_by == CurrentUser.Id).Select(s => s.create_by).FirstOrDefaultAsync();
+            var GetOwner = await DB.TRANSACTION_JOB.ToListAsync();
             try
             {
                 Model.fullname = CurrentUser.FirstName + " " + CurrentUser.LastName;
                 Model.s_id = CurrentUser.UserName;
                 Model.register_date = DateTime.Now;
-                Model.status_id = 7;
-                Model.owner_job_id = GetOwner;
+                Model.status_id = 8;
+                Model.owner_job_id = GetOwner.Select(s => s.create_by).FirstOrDefault();
+                Model.transaction_job_id = GetOwner.Select(s => s.transaction_job_id).FirstOrDefault();
                 DB.TRANSACTION_REGISTER.Add(Model);
                 await DB.SaveChangesAsync();
 

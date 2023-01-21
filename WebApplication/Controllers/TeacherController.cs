@@ -50,35 +50,57 @@ namespace SeniorProject.Controllers
         }
 
         #region รายชื่อนักศึกษาที่สมัครงาน
-        public async Task<IActionResult> ListStudent(int transaction_job_id) 
+        public async Task<IActionResult> ListStudent() 
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            //ViewBag.Jobname = new SelectList(DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id ).ToList(), "transaction_job_id", "job_name");
-
+           
             return View("ListStudent");
         }
         public async Task<IActionResult> getListStudent()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            
             var GetJobName = await DB.TRANSACTION_JOB.ToListAsync();
             var GetPerson = await DB.TRANSACTION_REGISTER.ToListAsync();
-            var GetStatus = await DB.MASTER_STATUS.Where(w => w.status_id == 5 && w.status_id == 6 && w.status_id == 7).FirstOrDefaultAsync();
+            var GetStatus = await DB.MASTER_STATUS.ToListAsync();
             var Models = new List<ListStudentRegister>();
 
             foreach(var data in GetPerson.Where(w => w.owner_job_id == CurrentUser.Id))
             {
                 var ViewModel = new ListStudentRegister();
-                ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
-                ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
-                ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
-                ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
-                //ViewModel.status_name = GetPerson.Where(w=>w.status_id =
+                if (data.status_id == 7)
+                {
+                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
+                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
+                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
+                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
+                    ViewModel.status_name = "รออนุมัติ";
+                }else if(data.status_id == 8)
+                {
+                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
+                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
+                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
+                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
+                    ViewModel.status_name = "รอส่งอนุมัติ";
+                }
+                else if (data.status_id == 6)
+                {
+                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
+                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
+                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
+                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
+                    ViewModel.status_name = "ไม่อนุมัติ";
+                }
+                else if(data.status_id == 5)
+                {
+                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
+                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
+                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
+                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
+                    ViewModel.status_name = "อนุมัติ";
+                }
                 Models.Add(ViewModel);
 
             }
-
-            //var Gets = await DB.TRANSACTION_REGISTER.Where(w => w.owner_job_id == CurrentUser.Id).ToListAsync();
             
             return PartialView("getListStudent",Models);
         }
