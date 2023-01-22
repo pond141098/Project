@@ -101,7 +101,6 @@ namespace SeniorProject.Controllers
                 Models.Add(ViewModel);
 
             }
-            
             return PartialView("getListStudent",Models);
         }
         #endregion

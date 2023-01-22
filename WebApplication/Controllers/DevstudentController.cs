@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SeniorProject.Data;
 using SeniorProject.Models;
-using SeniorProject.ViewModels.Teacher;
+using SeniorProject.ViewModels.Devstudent;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -46,52 +46,31 @@ namespace SeniorProject.Controllers
         {
             return View("ListStudentFaculty");
         }
-        public async Task<IActionResult>getListStudentFaculty()
+        public async Task<IActionResult> getListStudentFaculty()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var GetJobName = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetPerson = await DB.TRANSACTION_REGISTER.ToListAsync();
             var GetStatus = await DB.MASTER_STATUS.ToListAsync();
-            var Models = new List<ListStudentRegister>();
+            var GetFaculty = await DB.MASTER_FACULTY.ToListAsync();
+            var Models = new List<ListStudentRegisterFaculty>();
 
-            foreach (var data in GetPerson.Where(w => w.owner_job_id == CurrentUser.Id))
+            //มันเเสดงรายชื่อที่สมัครซ้ำกัน
+            foreach (var data in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
             {
-                var ViewModel = new ListStudentRegister();
-                if (data.status_id == 7)
+                foreach (var item in GetPerson.Where(w => w.transaction_job_id == data.transaction_job_id)) 
                 {
-                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
-                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
-                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
-                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
-                    ViewModel.status_name = "รออนุมัติ";
+                    var Model = new ListStudentRegisterFaculty();
+                    Model.job_faculty_id = CurrentUser.faculty_id;
+                    Model.job_name = data.job_name;
+                    Model.student_name = GetPerson.Where(w => w.transaction_job_id == data.transaction_job_id).Select(s => s.fullname).FirstOrDefault();
+                    Model.s_id = GetPerson.Where(w => w.transaction_job_id == data.transaction_job_id).Select(s => s.s_id).FirstOrDefault();
+                    //มันไปเอาวันที่สร้างงานมาเเสดง
+                    Model.register_date = GetPerson.Where(w => w.register_date != data.update_date).Select(s => s.register_date).FirstOrDefault();
+                    Models.Add(Model);
                 }
-                else if (data.status_id == 8)
-                {
-                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
-                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
-                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
-                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
-                    ViewModel.status_name = "รอส่งอนุมัติ";
-                }
-                else if (data.status_id == 6)
-                {
-                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
-                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
-                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
-                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
-                    ViewModel.status_name = "ไม่อนุมัติ";
-                }
-                else if (data.status_id == 5)
-                {
-                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
-                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
-                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
-                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
-                    ViewModel.status_name = "อนุมัติ";
-                }
-                Models.Add(ViewModel);
-
             }
+
             return PartialView("getListStudentFaculty",Models);
         }
     }

@@ -112,8 +112,15 @@ namespace SeniorProject.Controllers
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetOwner = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
+
             try
             {
+                //เช็คว่านักศึกษาคนนี้ได้ทำการสมัครงานนี้ไปเเล้วหรือยัง
+                if(GetRegister.Where(w =>w.s_id == CurrentUser.UserName && w.transaction_job_id > 1).Count() > 1)
+                {
+                    return Json(new { valid = true, message = "สมัครงานไปเเล้ว จำไม่ได้ไง้!!!" });
+                }
                 Model.fullname = CurrentUser.FirstName + " " + CurrentUser.LastName;
                 Model.s_id = CurrentUser.UserName;
                 Model.register_date = DateTime.Now;
