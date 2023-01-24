@@ -55,7 +55,6 @@ namespace SeniorProject.Controllers
             var GetFaculty = await DB.MASTER_FACULTY.ToListAsync();
             var Models = new List<ListStudentRegisterFaculty>();
 
-            //มันเเสดงรายชื่อที่สมัครซ้ำกัน
             foreach (var data in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
             {
                 foreach (var item in GetPerson.Where(w => w.transaction_job_id == data.transaction_job_id)) 

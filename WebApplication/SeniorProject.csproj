@@ -29,11 +29,9 @@
 
   <ItemGroup>
     <Folder Include="Helpers\" />
-    <Folder Include="ViewModels\Office\" />
     <Folder Include="ViewModels\Student\" />
     <Folder Include="wwwroot\img\realestate\thumbs\" />
     <Folder Include="wwwroot\js\Devstudent\" />
-    <Folder Include="wwwroot\js\Office\" />
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
