@@ -9,6 +9,5 @@ namespace SeniorProject.ViewModels.Devstudent
         public string job_name { get; set; }
         public DateTime register_date { get; set; }
         public string status_name { get; set; }
-        public int job_faculty_id { get; set; }
     }
 }

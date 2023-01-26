@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SeniorProject.Models.TRANSACTION_REGISTER>
+﻿@model IEnumerable<SeniorProject.ViewModels.Student.HistoryRegister>
 
 @{
     Layout = "~/Views/Shared/_FrontendLayout.cshtml";
@@ -15,32 +15,22 @@
             <div class="container py-5">
                 <div class="main-timeline-5">
                     <div class="timeline-5 right-5">
-                        <div class="card">
-                            <div class="card-body p-4">
-                                <h5>ชื่องาน</h5>
-                                <span class="small text-muted"><i class="fas fa-clock me-1"></i></span>
-                                <p class="mt-2 mb-0">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque scelerisque
-                                    diam non nisi semper, et elementum lorem ornare. Maecenas placerat facilisis mollis. Duis
-                                    sagittis ligula in sodales vehicula....
-                                </p>
-                                @*@{
-                                    int Rows = 1;
-                                    foreach (var Gets in Model.OrderBy(f => f.transaction_job_id))
-                                    {
-                                        <h5>ชื่องาน</h5>
+                        @{
+                            int Rows = 1;
+                            foreach (var Gets in Model.OrderBy(f => f.register_date))
+                            {
+                                <div class="card">
+                                    <div class="card-body p-4">
+                                        <h5>@Gets.name</h5>
                                         <span class="small text-muted"><i class="fas fa-clock me-1"></i>@Gets.register_date</span>
                                         <p class="mt-2 mb-0">
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque scelerisque
-                                            diam non nisi semper, et elementum lorem ornare. Maecenas placerat facilisis mollis. Duis
-                                            sagittis ligula in sodales vehicula....
+                                            @Gets.detail
                                         </p>
-
-                                    }
-                                    Rows++;
-                                }*@
-                            </div>
-                        </div>
+                                    </div>
+                                </div>
+                            }
+                            Rows++;
+                        }
                     </div>
                 </div>
             </div>

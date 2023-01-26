@@ -59,17 +59,21 @@ namespace SeniorProject.Controllers
             {
                 foreach (var item in GetPerson.Where(w => w.transaction_job_id == data.transaction_job_id)) 
                 {
-                    var Model = new ListStudentRegisterFaculty();
-                    Model.job_faculty_id = CurrentUser.faculty_id;
-                    Model.job_name = data.job_name;
-                    Model.student_name = GetPerson.Where(w => w.transaction_job_id == data.transaction_job_id).Select(s => s.fullname).FirstOrDefault();
-                    Model.s_id = GetPerson.Where(w => w.transaction_job_id == data.transaction_job_id).Select(s => s.s_id).FirstOrDefault();
-                    //มันไปเอาวันที่สร้างงานมาเเสดง
-                    Model.register_date = GetPerson.Where(w => w.register_date != data.update_date).Select(s => s.register_date).FirstOrDefault();
-                    Models.Add(Model);
+                    foreach(var stat in GetStatus.Where(w => w.status_id == item.status_id))
+                    {
+                        var Model = new ListStudentRegisterFaculty();
+                        if(stat.status_id == 9)
+                        {
+                            Model.job_name = data.job_name;
+                            Model.student_name = item.fullname;
+                            Model.s_id = item.s_id;
+                            Model.register_date = item.register_date;
+                            Model.status_name = stat.status_name;
+                            Models.Add(Model);
+                        }
+                    }
                 }
             }
-
             return PartialView("getListStudentFaculty",Models);
         }
     }

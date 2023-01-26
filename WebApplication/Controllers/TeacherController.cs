@@ -59,48 +59,65 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> getListStudent()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var GetJobName = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetPerson = await DB.TRANSACTION_REGISTER.ToListAsync();
             var GetStatus = await DB.MASTER_STATUS.ToListAsync();
             var Models = new List<ListStudentRegister>();
 
-            foreach(var data in GetPerson.Where(w => w.owner_job_id == CurrentUser.Id))
+            foreach(var data in GetJob.Where(w => w.create_by == CurrentUser.Id))
             {
-                var ViewModel = new ListStudentRegister();
-                if (data.status_id == 7)
+                foreach(var regis in GetPerson.Where(w => w.transaction_job_id == data.transaction_job_id))
                 {
-                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
-                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
-                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
-                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
-                    ViewModel.status_name = "รออนุมัติ";
-                }else if(data.status_id == 8)
-                {
-                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
-                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
-                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
-                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
-                    ViewModel.status_name = "รอส่งอนุมัติ";
+                    foreach (var stat in GetStatus.Where(w => w.status_id == regis.status_id))
+                    {
+                        var model = new ListStudentRegister();
+                        model.student_name = regis.fullname;
+                        model.job_name = data.job_name;
+                        model.s_id = regis.s_id;
+                        model.register_date = regis.register_date;
+                        model.status_name = stat.status_name;
+                        Models.Add(model);
+                    }
                 }
-                else if (data.status_id == 6)
-                {
-                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
-                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
-                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
-                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
-                    ViewModel.status_name = "ไม่อนุมัติ";
-                }
-                else if(data.status_id == 5)
-                {
-                    ViewModel.job_name = GetJobName.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
-                    ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
-                    ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
-                    ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
-                    ViewModel.status_name = "อนุมัติ";
-                }
-                Models.Add(ViewModel);
 
             }
+            //foreach (var data in GetPerson.Where(w => w.owner_job_id == CurrentUser.Id))
+            //{
+            //    var ViewModel = new ListStudentRegister();
+            //    if (data.status_id == 7)
+            //    {
+            //        ViewModel.job_name = GetJob.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
+            //        ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
+            //        ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
+            //        ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
+            //        ViewModel.status_name = "รออนุมัติ";
+            //    }
+            //    else if (data.status_id == 8)
+            //    {
+            //        ViewModel.job_name = GetJob.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
+            //        ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
+            //        ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
+            //        ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
+            //        ViewModel.status_name = "รอส่งอนุมัติ";
+            //    }
+            //    else if (data.status_id == 6)
+            //    {
+            //        ViewModel.job_name = GetJob.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
+            //        ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
+            //        ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
+            //        ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
+            //        ViewModel.status_name = "ไม่อนุมัติ";
+            //    }
+            //    else if (data.status_id == 5)
+            //    {
+            //        ViewModel.job_name = GetJob.Where(w => w.create_by == CurrentUser.Id).Select(s => s.job_name).FirstOrDefault();
+            //        ViewModel.student_name = GetPerson.Select(s => s.fullname).FirstOrDefault();
+            //        ViewModel.s_id = GetPerson.Select(s => s.s_id).FirstOrDefault();
+            //        ViewModel.register_date = GetPerson.Select(s => s.register_date).FirstOrDefault();
+            //        ViewModel.status_name = "อนุมัติ";
+            //    }
+            //    Models.Add(ViewModel);
+            //}
             return PartialView("getListStudent",Models);
         }
         #endregion

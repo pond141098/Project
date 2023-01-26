@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using WebApplication.Controllers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using SeniorProject.ViewModels.Student;
+using System.Collections.Generic;
 
 namespace SeniorProject.Controllers
 {
@@ -69,13 +71,35 @@ namespace SeniorProject.Controllers
 
             return View("Profile", Model);
         }
-        public IActionResult HistoryRegister()
+        public async Task<IActionResult> HistoryRegister()
         {
-            return View("HistoryRegister");
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var Gets = await DB.TRANSACTION_REGISTER.ToListAsync();
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetStatus = await DB.MASTER_STATUS.ToListAsync();
+            var Model = new List<HistoryRegister>();
+
+            foreach (var s in Gets.Where(w => w.s_id == CurrentUser.UserName))
+            {
+                foreach(var data in GetJob)
+                {
+                    foreach(var item in GetStatus)
+                    {
+                        var model = new HistoryRegister();
+                        model.name = data.job_name;
+                        model.detail = data.job_detail;
+                        model.status = item.status_name;
+                        model.register_date = s.register_date;
+                        Model.Add(model);
+                    }
+                }
+            }
+
+            return PartialView("HistoryRegister",Model);
         }
         public async Task<IActionResult>DeleteRegisterJob(int transaction_register_id)
         {
-            //var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
             {
                 var Model = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
@@ -93,8 +117,9 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> Job()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Gets = DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id).ToList();
-            return PartialView("Job", Gets);
+            var Gets = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id).ToListAsync();
+          
+            return PartialView("Job",Gets);
         }
         public IActionResult FormRegisterJob(int transaction_job_id)
         {
@@ -125,11 +150,11 @@ namespace SeniorProject.Controllers
                 Model.s_id = CurrentUser.UserName;
                 Model.register_date = DateTime.Now;
                 Model.status_id = 8;
-                Model.owner_job_id = GetOwner.Select(s => s.create_by).FirstOrDefault();
                 Model.transaction_job_id = GetOwner.Select(s => s.transaction_job_id).FirstOrDefault();
                 DB.TRANSACTION_REGISTER.Add(Model);
                 await DB.SaveChangesAsync();
 
+                //อัพโหลดไฟล์เอกสารสำเนาบัญชีธนาคารพร้อมเซ็นสำเนา
                 if (fileUpload != null && fileUpload.Length > 0)
                 {
                     var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads");
@@ -153,7 +178,8 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            return Json(new { valid = true, message = "hello" });
+            //return Json(new { valid = true, message = "hello" });
+            return RedirectToAction("HistoryRegister","Student");
         }
 
         #endregion
