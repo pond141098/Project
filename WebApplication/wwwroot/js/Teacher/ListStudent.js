@@ -6,9 +6,12 @@
             $("#JsonData").html(JsonResult);
             Datatable();
 
+            $("#JsonData").on("click", ".check", function () {
+                window.location.href = "/Teacher/CheckRegister?transaction_register_id=" + $(this).val();
+            });
+
         }, 200);
     });
-
 });
 
 function Datatable() {

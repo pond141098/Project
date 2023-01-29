@@ -62,7 +62,7 @@ namespace SeniorProject.Controllers
                     foreach(var stat in GetStatus.Where(w => w.status_id == item.status_id))
                     {
                         var Model = new ListStudentRegisterFaculty();
-                        if(stat.status_id == 9)
+                        if(stat.status_id == 9 || stat.status_id == 7)
                         {
                             Model.job_name = data.job_name;
                             Model.student_name = item.fullname;
@@ -71,6 +71,7 @@ namespace SeniorProject.Controllers
                             Model.status_name = stat.status_name;
                             Models.Add(Model);
                         }
+                        
                     }
                 }
             }

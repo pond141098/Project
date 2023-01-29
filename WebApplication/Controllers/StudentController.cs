@@ -81,9 +81,9 @@ namespace SeniorProject.Controllers
 
             foreach (var s in Gets.Where(w => w.s_id == CurrentUser.UserName))
             {
-                foreach(var data in GetJob)
+                foreach(var data in GetJob.Where(w => w.transaction_job_id == s.transaction_job_id))
                 {
-                    foreach(var item in GetStatus)
+                    foreach(var item in GetStatus.Where(w => w.status_id == s.status_id))
                     {
                         var model = new HistoryRegister();
                         model.name = data.job_name;
@@ -94,6 +94,8 @@ namespace SeniorProject.Controllers
                     }
                 }
             }
+
+            ViewBag.regisId = await DB.TRANSACTION_REGISTER.Select(s => s.transaction_register_id).FirstOrDefaultAsync();
 
             return PartialView("HistoryRegister",Model);
         }
@@ -111,7 +113,7 @@ namespace SeniorProject.Controllers
 
                 return Json(new { valid = false, message = Error.Message });
             }
-            return Json(new { valid = true, message = "ยกเลิกการสมัครงานสำเร็จ" });
+            return Json(new { valid = true, message = "ยกเลิกการสมัครงานสำเร็จ/Delete Success" });
         }
         #region รายละเอียดงานที่รับสมัคร
         public async Task<IActionResult> Job()
@@ -142,9 +144,9 @@ namespace SeniorProject.Controllers
             try
             {
                 //เช็คว่านักศึกษาคนนี้ได้ทำการสมัครงานนี้ไปเเล้วหรือยัง
-                if(GetRegister.Where(w =>w.s_id == CurrentUser.UserName && w.transaction_job_id > 1).Count() > 1)
+                if(GetRegister.Where(w =>w.s_id == CurrentUser.UserName && w.transaction_job_id >= 1).Count() >= 1)
                 {
-                    return Json(new { valid = true, message = "สมัครงานไปเเล้ว จำไม่ได้ไง้!!!" });
+                    return Json(new { valid = true, message = "You Rigistered Gone !!!" });
                 }
                 Model.fullname = CurrentUser.FirstName + " " + CurrentUser.LastName;
                 Model.s_id = CurrentUser.UserName;
