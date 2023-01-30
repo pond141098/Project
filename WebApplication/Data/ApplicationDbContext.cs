@@ -23,5 +23,6 @@ namespace SeniorProject.Data
         public DbSet<MASTER_PREFIX> MASTER_PREFIX { get; set; }
         public DbSet<TRANSACTION_JOB> TRANSACTION_JOB { get; set; }
         public DbSet<TRANSACTION_REGISTER> TRANSACTION_REGISTER { get; set; }
+        public DbSet<TRANSACTION_WORKING> TRANSACTION_WORKING { get; set; }
     }
 }

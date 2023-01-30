@@ -90,7 +90,6 @@ namespace SeniorProject.Controllers
                         }
                     }
                 }
-
             }
             return PartialView("getListStudent",Models);
         }
@@ -102,7 +101,7 @@ namespace SeniorProject.Controllers
             return View("CheckRegister",Get);
         }
 
-        //ส่งอนุมัติ
+        //ส่งอนุมัติ ส่งฝ่ายพัฒนานักศึกษา
         [HttpPost]
         public async Task<IActionResult> Approve(TRANSACTION_REGISTER model)
         {

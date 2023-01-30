@@ -38,10 +38,14 @@ namespace SeniorProject.Controllers
             _roleManager = roleManager;
             DB = db;
         }
+
+        //เเดชบอร์ด
         public IActionResult Index()
         {
             return View("Index");
         }
+
+        //ข้อมูลนศ.ที่สมัครงาน
         public IActionResult ListStudentFaculty()
         {
             return View("ListStudentFaculty");
@@ -86,7 +90,7 @@ namespace SeniorProject.Controllers
             return View("CheckRegisterFaculty",Get);
         }
 
-        //อนุมัติ
+        //อนุมัติ ส่งกองพัฒนานักศึกษา
         [HttpPost]
         public async Task<IActionResult> Approve(TRANSACTION_REGISTER model)
         {

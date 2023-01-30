@@ -38,10 +38,14 @@ namespace SeniorProject.Controllers
             _roleManager = roleManager;
             DB = db;
         }
+
+        //แดชบอร์ด
         public IActionResult Index()
         {
             return View();
         }
+
+        //ข้อมมูลนศ.ที่สมัครงาน
         public IActionResult AllListStudent()
         {
             return View("AllListStudent");
