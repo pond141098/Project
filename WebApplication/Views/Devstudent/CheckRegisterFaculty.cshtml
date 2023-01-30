@@ -1,0 +1,195 @@
+﻿@model SeniorProject.Models.TRANSACTION_REGISTER
+@{
+    ViewData["title"] = "ตรวจสอบ/ส่งอนุมัตินักศึกษาที่สมัครงาน";
+}
+<div id="ribbon">
+    <span class="ribbon-button-alignment">
+        <span id="refresh" class="btn btn-ribbon">
+            <i class="fa fa-refresh"></i>
+        </span>
+    </span>
+    <ol class="breadcrumb">
+        <li><a href="/Devstudent/ListStudentFaculty">รายชื่อนักศึกษาที่สมัครงาน</a></li>
+        <li>@ViewData["Title"]</li>
+    </ol>
+</div>
+<div id="content">
+    <section id="widget-grid">
+        <div class="row">
+            <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+                <div class="jarviswidget   jarviswidget-sortable" id="wid-id-2" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" role="widget" style="">
+                    <header role="heading">
+                        <h2 class="font-md"><i class="fa fa-list-ul"></i> @ViewData["Title"]</h2>
+                        <span class="jarviswidget-loader" style="display: none;"><i class="fa fa-refresh fa-spin"></i></span>
+                    </header>
+                    <div role="contentinfo" style="display: block;">
+                        <div class="jarviswidget-editbox"></div>
+                        <div class="widget-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <form id="FormAdd" class="form-horizontal">
+                                        <fieldset>
+                                            <legend style="color:red;">
+                                                * กรุณาตรวจสอบข้อมูลของนักศึกษา <br>
+                                            </legend>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">ชื่อนักศึกษา</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="fullname" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">รหัสนักศึกษา</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="s_id" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">สาเหตุที่สมัครงาน</label>
+                                                <div class="col-lg-9">
+                                                    <textarea class="form-control" asp-for="because_job"></textarea>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">เลขที่บัญชี</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="bank_no" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">ไฟล์สำเนาสมัดบัญชีธนาคาร</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="bank_file" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">วันที่สมัคร</label>
+                                                <div class="col-lg-9">
+                                                    <input type="datetime-local" class="form-control" asp-for="register_date" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <input type="hidden" asp-for="transaction_register_id" />
+                                        <input type="hidden" asp-for="transaction_job_id" />
+                                        <input type="hidden" asp-for="banktype_id" />
+
+                                        <div class="form-actions">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button class="btn btn-success" type="submit" id="submit">ส่งอนุมัติ</button>
+                                                    <button class="btn btn-danger" type="submit" id="notapprove">ไม่อนุมัติ</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+</div>
+
+
+@section Scripts{
+    <!-- bootstrapValidator Form -->
+    <script src="~/js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+    <script src="~/js/fontawesome-iconpicker/fontawesome-iconpicker.min.js"></script>
+    <script>
+        $(function () {
+            $('#FormAdd').bootstrapValidator();
+            //อนุมัติ
+            $("#submit").click(function () {
+                $('#FormAdd').data("bootstrapValidator").validate();
+                if ($('#FormAdd').data("bootstrapValidator").isValid() == true) {
+                    var Data = new FormData($("#FormAdd")[0]);
+                    $.ajax(
+                        {
+                            type: "POST",
+                            url: "/Devstudent/Approve",
+                            contentType: false,
+                            processData: false,
+                            data: Data,
+                            success: function (response) {
+                                if (response.valid == true) {
+                                    $.smallBox({
+                                        title: response.message,
+                                        content: "<i class='fa fa-clock-o'></i> <i>" + response.message + "</i>",
+                                        color: "#296191",
+                                        iconSmall: "fa fa-thumbs-up bounce animated",
+                                        timeout: 2000
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "/Devstudent/ListStudentFaculty";
+                                    }, 1000)
+                                } else {
+                                    $.smallBox({
+                                        title: response.message,
+                                        content: "<i class='fa fa-clock-o'></i> <i>" + response.message + "</i>",
+                                        color: "#FB0404",
+                                        iconSmall: "fa fa-thumbs-up bounce animated",
+                                        timeout: 2000
+                                    });
+
+                                }
+                            }
+                        }
+                    );
+                }
+            });
+
+            //ไม่อนุมัติ
+            $("#notapprove").click(function () {
+                $('#FormAdd').data("bootstrapValidator").validate();
+                if ($('#FormAdd').data("bootstrapValidator").isValid() == true) {
+                    var Data = new FormData($("#FormAdd")[0]);
+                    $.ajax(
+                        {
+                            type: "POST",
+                            url: "/Devstudent/NotApprove",
+                            contentType: false,
+                            processData: false,
+                            data: Data,
+                            success: function (response) {
+                                if (response.valid == true) {
+                                    $.smallBox({
+                                        title: response.message,
+                                        content: "<i class='fa fa-clock-o'></i> <i>" + response.message + "</i>",
+                                        color: "#296191",
+                                        iconSmall: "fa fa-thumbs-up bounce animated",
+                                        timeout: 2000
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "/Devstudent/ListStudentFaculty";
+                                    }, 1000)
+                                } else {
+                                    $.smallBox({
+                                        title: response.message,
+                                        content: "<i class='fa fa-clock-o'></i> <i>" + response.message + "</i>",
+                                        color: "#FB0404",
+                                        iconSmall: "fa fa-thumbs-up bounce animated",
+                                        timeout: 2000
+                                    });
+
+                                }
+                            }
+                        }
+                    );
+                }
+            });
+        });
+    </script>
+}

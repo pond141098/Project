@@ -64,9 +64,10 @@ namespace SeniorProject.Controllers
                     {
                         foreach (var item in GetStatus.Where(w => w.status_id == data.status_id))
                         {
-                            if (item.status_id == 7 || item.status_id == 6)
+                            if (item.status_id == 7 || item.status_id == 6 || item.status_id == 5)
                             {
                                 var Model = new AllListStudentRegister();
+                                Model.id = data.transaction_register_id;
                                 Model.student_name = data.fullname;
                                 Model.student_id = data.s_id;
                                 Model.faculty_name = f.faculty_name;
@@ -79,6 +80,47 @@ namespace SeniorProject.Controllers
                 }
             }
             return PartialView("getAllListStudent", Models);
+        }
+
+        //ตรวจสอบ
+        public IActionResult CheckRegisterAll(int transaction_register_id)
+        {
+            var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
+            return View("CheckRegisterAll", Get);
+        }
+
+        //อนุมัติ
+        [HttpPost]
+        public async Task<IActionResult> Approve(TRANSACTION_REGISTER model)
+        {
+            try
+            {
+                model.status_id = 5;
+                DB.TRANSACTION_REGISTER.Update(model);
+                await DB.SaveChangesAsync();
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error });
+            }
+            return Json(new { valid = false, message = "อนุมัติสำเร็จ" });
+        }
+
+        //ไม่อนุมัติ
+        [HttpPost]
+        public async Task<IActionResult> NotApprove(TRANSACTION_REGISTER model)
+        {
+            try
+            {
+                model.status_id = 6;
+                DB.TRANSACTION_REGISTER.Update(model);
+                await DB.SaveChangesAsync();
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error });
+            }
+            return Json(new { valid = true, message = "ไม่อนุมัติสำเร็จ" });
         }
     }
 }

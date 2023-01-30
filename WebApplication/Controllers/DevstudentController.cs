@@ -64,6 +64,7 @@ namespace SeniorProject.Controllers
                         var Model = new ListStudentRegisterFaculty();
                         if(stat.status_id == 9 || stat.status_id == 7)
                         {
+                            Model.id = item.transaction_register_id;
                             Model.job_name = data.job_name;
                             Model.student_name = item.fullname;
                             Model.s_id = item.s_id;
@@ -76,6 +77,47 @@ namespace SeniorProject.Controllers
                 }
             }
             return PartialView("getListStudentFaculty",Models);
+        }
+
+        //ตรวจสอบ
+        public IActionResult CheckRegisterFaculty(int transaction_register_id)
+        {
+            var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
+            return View("CheckRegisterFaculty",Get);
+        }
+
+        //อนุมัติ
+        [HttpPost]
+        public async Task<IActionResult> Approve(TRANSACTION_REGISTER model)
+        {
+            try
+            {
+                model.status_id = 7;
+                DB.TRANSACTION_REGISTER.Update(model);
+                await DB.SaveChangesAsync();
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error });
+            }
+            return Json(new { valid = true, message = "ส่งอนุมัติสำเร็จ" });
+        }
+
+        //ไม่อนุมัติ
+        [HttpPost]
+        public async Task<IActionResult> NotApprove(TRANSACTION_REGISTER model)
+        {
+            try
+            {
+                model.status_id = 6;
+                DB.TRANSACTION_REGISTER.Update(model);
+                await DB.SaveChangesAsync();
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error });
+            }
+            return Json(new { valid = true, message = "ไม่อนุมัติสำเร็จ" });
         }
     }
 }

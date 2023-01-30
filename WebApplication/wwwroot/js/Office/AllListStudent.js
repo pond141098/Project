@@ -6,6 +6,10 @@
             $("#JsonData").html(JsonResult);
             Datatable();
 
+            $("#JsonData").on("click", ".check", function () {
+                window.location.href = "/Office/CheckRegisterAll?transaction_register_id=" + $(this).val();
+            });
+
         }, 200);
     });
 

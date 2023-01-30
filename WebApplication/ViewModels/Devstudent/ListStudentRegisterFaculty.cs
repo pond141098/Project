@@ -4,6 +4,7 @@ namespace SeniorProject.ViewModels.Devstudent
 {
     public class ListStudentRegisterFaculty
     {
+        public int id { get; set; }
         public string student_name { get; set; }
         public string s_id { get; set; }
         public string job_name { get; set; }

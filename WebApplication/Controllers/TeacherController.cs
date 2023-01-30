@@ -43,11 +43,12 @@ namespace SeniorProject.Controllers
             _roleManager = roleManager;
             DB = db;
         }
-        
+        #region Dashboard
         public IActionResult Index()
         {
             return View("Index");
         }
+        #endregion
 
         #region รายชื่อนักศึกษาที่สมัครงาน
         public async Task<IActionResult> ListStudent() 
@@ -234,7 +235,7 @@ namespace SeniorProject.Controllers
         }
         #endregion
 
-        #region เวลาการทำงานนักศึกษา
+        #region เวลาการทำงานนักศึกษา/ออกรายงาน
         public IActionResult CheckTime()
         {
             return View("CheckTime");

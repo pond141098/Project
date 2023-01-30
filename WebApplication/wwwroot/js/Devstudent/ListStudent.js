@@ -6,6 +6,10 @@
             $("#JsonData").html(JsonResult);
             Datatable();
 
+            $("#JsonData").on("click", ".check", function () {
+                window.location.href = "/Devstudent/CheckRegisterFaculty?transaction_register_id=" + $(this).val();
+            });
+
         }, 200);
     });
 

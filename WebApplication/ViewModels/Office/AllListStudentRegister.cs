@@ -4,6 +4,7 @@ namespace SeniorProject.ViewModels.Office
 {
     public class AllListStudentRegister
     {
+        public int id { get; set; }
         public string student_name { get; set; }
         public string job_name { get; set; }
         public string student_id { get; set;}

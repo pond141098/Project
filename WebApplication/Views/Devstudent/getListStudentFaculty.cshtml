@@ -17,19 +17,18 @@
             int Rows = 1;
             foreach (var Get in Model.OrderBy(f => f.register_date))
             {
-                        <tr>
-                            <td class="text-align-center" width="50">@Rows.</td>
-                            <td>@Get.student_name</td>
-                            <td>@Get.job_name</td>
-                            <td>@Get.s_id</td>
-                            <td>@Get.register_date</td>
-                            <td>@Get.status_name</td>
-                            <td class="text-align-center">
-                                <button class="btn btn-info btn-xs edit" value="@Get.s_id"><i class="fa fa-file-pdf-o"></i> เอกสาร</button>
-                                <button class="btn btn-warning btn-xs edit" value="@Get.s_id"><i class="fa fa-pencil"></i> ส่งอนุมัติ</button>
-                                <button class="btn btn-danger  btn-xs delete" value="@Get.s_id"><i class="fa fa-eraser"></i> ไม่อนุมัติ</button>
-                            </td>
-                        </tr>
+                <tr>
+                    <td class="text-align-center" width="50">@Rows.</td>
+                    <td>@Get.student_name</td>
+                    <td>@Get.job_name</td>
+                    <td>@Get.s_id</td>
+                    <td>@Get.register_date</td>
+                    <td>@Get.status_name</td>
+                    <td class="text-align-center">
+                        <button class="btn btn-info btn-xs edit" value="@Get.id"><i class="fa fa-file-pdf-o"></i> เอกสาร</button>
+                        <button class="btn btn-warning btn-xs check" value="@Get.id"><i class="fa fa-pencil"></i> ตรวจสอบ/ส่งอนุมัติ</button>
+                    </td>
+                </tr>
                 Rows++;
             }
         }
