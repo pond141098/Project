@@ -107,13 +107,20 @@ namespace SeniorProject.Controllers
         {
             try
             {
+                var GetStat = await DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefaultAsync();
+
+                //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
+                if (GetStat.status_id == 5 || GetStat.status_id == 6 || GetStat.status_id == 7)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถส่งอนุมัติได้ !!!" });
+                }
                 model.status_id = 9;
                 DB.TRANSACTION_REGISTER.Update(model);
                 await DB.SaveChangesAsync();
             }
             catch (Exception Error)
             {
-                return Json(new { valid = false, message = Error.Message });
+                return Json(new { valid = false, message = Error });
             }
             return Json(new { valid = true, message = "ส่งอนุมัติสำเร็จ" });
         }
@@ -124,6 +131,12 @@ namespace SeniorProject.Controllers
         {
             try
             {
+                var GetStat = await DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefaultAsync();
+                //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ  
+                if(GetStat.status_id == 5 || GetStat.status_id == 6 || GetStat.status_id == 7 )
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถไม่อนุมัติได้ !!!" });
+                }
                 model.status_id = 6;
                 DB.TRANSACTION_REGISTER.Update(model);
                 await DB.SaveChangesAsync();

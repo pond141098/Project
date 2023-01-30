@@ -83,12 +83,13 @@
                                         <input type="hidden" asp-for="transaction_register_id" />
                                         <input type="hidden" asp-for="transaction_job_id" />
                                         <input type="hidden" asp-for="banktype_id" />
+                                        <input type="hidden" asp-for="status_id" />
 
                                         <div class="form-actions">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <button class="btn btn-success" type="submit" id="submit">ส่งอนุมัติ</button>
                                                     <button class="btn btn-danger" type="submit" id="notapprove">ไม่อนุมัติ</button>
+                                                    <button class="btn btn-success" type="submit" id="submit">ส่งอนุมัติ</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -134,7 +135,7 @@
                                     });
                                     setTimeout(function () {
                                         window.location.href = "/Teacher/ListStudent";
-                                    }, 1000)
+                                    }, 2000)
                                 } else {
                                     $.smallBox({
                                         title: response.message,
@@ -143,6 +144,9 @@
                                         iconSmall: "fa fa-thumbs-up bounce animated",
                                         timeout: 2000
                                     });
+                                    setTimeout(function () {
+                                        window.location.href = "/Teacher/ListStudent";
+                                    }, 2000)
 
                                 }
                             }
@@ -174,7 +178,7 @@
                                     });
                                     setTimeout(function () {
                                         window.location.href = "/Teacher/ListStudent";
-                                    }, 1000)
+                                    }, 2000)
                                 } else {
                                     $.smallBox({
                                         title: response.message,
@@ -183,7 +187,9 @@
                                         iconSmall: "fa fa-thumbs-up bounce animated",
                                         timeout: 2000
                                     });
-
+                                    setTimeout(function () {
+                                        window.location.href = "/Teacher/ListStudent";
+                                    }, 2000)
                                 }
                             }
                         }
