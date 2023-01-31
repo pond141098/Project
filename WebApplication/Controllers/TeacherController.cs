@@ -166,6 +166,7 @@ namespace SeniorProject.Controllers
         {
             return View("FormAddJob");
         }
+
         [HttpPost]
         public async Task<IActionResult> FormAddJob(TRANSACTION_JOB Model)
         {
@@ -199,6 +200,7 @@ namespace SeniorProject.Controllers
             var Get = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).FirstOrDefault();
             return View("FormEditJob", Get);
         }
+
         [HttpPost]
         public async Task<IActionResult> FormEditJob(TRANSACTION_JOB Model)
         {

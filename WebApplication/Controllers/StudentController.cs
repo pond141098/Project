@@ -135,6 +135,7 @@ namespace SeniorProject.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model, IFormFile[] fileUpload)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));

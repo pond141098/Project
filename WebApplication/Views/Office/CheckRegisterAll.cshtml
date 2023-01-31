@@ -35,7 +35,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">ชื่อนักศึกษา</label>
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="fullname" />
+                                                    <input type="text" class="form-control" asp-for="fullname" disabled readonly/>
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -43,7 +43,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">รหัสนักศึกษา</label>
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="s_id" />
+                                                    <input type="text" class="form-control" asp-for="s_id" disabled readonly/>
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -51,7 +51,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">สาเหตุที่สมัครงาน</label>
                                                 <div class="col-lg-9">
-                                                    <textarea class="form-control" asp-for="because_job"></textarea>
+                                                    <textarea class="form-control" asp-for="because_job" disabled readonly></textarea>
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -59,7 +59,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">เลขที่บัญชี</label>
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="bank_no" />
+                                                    <input type="text" class="form-control" asp-for="bank_no" disabled readonly/>
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -67,7 +67,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">ไฟล์สำเนาสมัดบัญชีธนาคาร</label>
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="bank_file" />
+                                                    <input type="text" class="form-control" asp-for="bank_file" disabled readonly/>
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -75,7 +75,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">วันที่สมัคร</label>
                                                 <div class="col-lg-9">
-                                                    <input type="datetime-local" class="form-control" asp-for="register_date" />
+                                                    <input type="datetime-local" class="form-control" asp-for="register_date" disabled readonly/>
                                                 </div>
                                             </div>
                                         </fieldset>
