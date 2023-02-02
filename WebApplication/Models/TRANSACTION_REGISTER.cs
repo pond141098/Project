@@ -21,5 +21,6 @@ namespace SeniorProject.Models
         public DateTime register_date { get; set; } 
         public string s_id { get; set; } 
         public string fullname { get; set; } 
+        public string bank_store { get; set; } 
     }
 }

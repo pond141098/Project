@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,29 +21,32 @@ using System.Collections.Generic;
 
 namespace SeniorProject.Controllers
 {
-    
+
     public class StudentController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private ApplicationDbContext DB;
-        private Microsoft.AspNetCore.Hosting.IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
         public StudentController(
-             ILogger<HomeController> logger,
+            //ILogger<HomeController> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<ApplicationRole> roleManager,
-            ApplicationDbContext db)
+            ApplicationDbContext db,
+            IWebHostEnvironment environment)
         {
-            _logger = logger;
+            //_logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             DB = db;
+            _environment = environment;
         }
+        #region หน้าหลัก
         public IActionResult Index()
         {
             return View("Index");
@@ -59,6 +63,9 @@ namespace SeniorProject.Controllers
 
             return View("Home");
         }
+        #endregion
+
+        #region ประวัติส่วนตัว
         public async Task<IActionResult> Profile()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
@@ -71,6 +78,9 @@ namespace SeniorProject.Controllers
 
             return View("Profile", Model);
         }
+        #endregion
+
+        #region ประวัติการสมัครงาน
         public async Task<IActionResult> HistoryRegister()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
@@ -81,9 +91,9 @@ namespace SeniorProject.Controllers
 
             foreach (var s in Gets.Where(w => w.s_id == CurrentUser.UserName))
             {
-                foreach(var data in GetJob.Where(w => w.transaction_job_id == s.transaction_job_id))
+                foreach (var data in GetJob.Where(w => w.transaction_job_id == s.transaction_job_id))
                 {
-                    foreach(var item in GetStatus.Where(w => w.status_id == s.status_id))
+                    foreach (var item in GetStatus.Where(w => w.status_id == s.status_id))
                     {
                         var model = new HistoryRegister();
                         model.name = data.job_name;
@@ -97,9 +107,9 @@ namespace SeniorProject.Controllers
 
             ViewBag.regisId = await DB.TRANSACTION_REGISTER.Select(s => s.transaction_register_id).FirstOrDefaultAsync();
 
-            return PartialView("HistoryRegister",Model);
+            return PartialView("HistoryRegister", Model);
         }
-        public async Task<IActionResult>DeleteRegisterJob(int transaction_register_id)
+        public async Task<IActionResult> DeleteRegisterJob(int transaction_register_id)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
@@ -115,13 +125,15 @@ namespace SeniorProject.Controllers
             }
             return Json(new { valid = true, message = "ยกเลิกการสมัครงานสำเร็จ/Delete Success" });
         }
+        #endregion
+
         #region รายละเอียดงานที่รับสมัคร
         public async Task<IActionResult> Job()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var Gets = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id).ToListAsync();
-          
-            return PartialView("Job",Gets);
+
+            return PartialView("Job", Gets);
         }
         public IActionResult FormRegisterJob(int transaction_job_id)
         {
@@ -136,7 +148,7 @@ namespace SeniorProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model, IFormFile[] fileUpload)
+        public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model, IFormFile bank_file)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetOwner = await DB.TRANSACTION_JOB.ToListAsync();
@@ -144,45 +156,33 @@ namespace SeniorProject.Controllers
 
             try
             {
-                //เช็คว่านักศึกษาคนนี้ได้ทำการสมัครงานนี้ไปเเล้วหรือยัง
-                if(GetRegister.Where(w =>w.s_id == CurrentUser.UserName && w.transaction_job_id >= 1).Count() >= 1)
+                //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
+                var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
+                string file = ContentDispositionHeaderValue.Parse(bank_file.ContentDisposition).FileName.Trim('"');
+                string UniqueFileName = string.Format(@"{0}", Guid.NewGuid()) + file.ToString();
+
+                using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
                 {
-                    return Json(new { valid = true, message = "You Rigistered Gone !!!" });
+                    await bank_file.CopyToAsync(fileStream);
                 }
+
+                Model.status_id = 8;
+                Model.bank_file = UniqueFileName;
+                Model.register_date = DateTime.Now;
                 Model.fullname = CurrentUser.FirstName + " " + CurrentUser.LastName;
                 Model.s_id = CurrentUser.UserName;
-                Model.register_date = DateTime.Now;
-                Model.status_id = 8;
                 Model.transaction_job_id = GetOwner.Select(s => s.transaction_job_id).FirstOrDefault();
                 DB.TRANSACTION_REGISTER.Add(Model);
                 await DB.SaveChangesAsync();
 
-                //อัพโหลดไฟล์เอกสารสำเนาบัญชีธนาคารพร้อมเซ็นสำเนา
-                if (fileUpload != null && fileUpload.Length > 0)
-                {
-                    var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads");
-                    foreach (var file in fileUpload)
-                    {
-                        string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                        string UniqueFileName = string.Format(@"{0}", Guid.NewGuid()) + fileName.ToString();
-                        using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
-                        {
-                            await file.CopyToAsync(fileStream);
-                        }
-
-                        // create file 
-                        Model.bank_file = UniqueFileName;
-                        DB.TRANSACTION_REGISTER.Add(Model);
-                        await DB.SaveChangesAsync();
-                    }
-                }
             }
             catch (Exception Error)
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            //return Json(new { valid = true, message = "hello" });
-            return RedirectToAction("HistoryRegister","Student");
+
+            return RedirectToAction("HistoryRegister", "Student");
+
         }
 
         #endregion

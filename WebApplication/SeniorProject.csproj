@@ -31,7 +31,7 @@
     <Folder Include="Helpers\" />
     <Folder Include="wwwroot\img\realestate\thumbs\" />
     <Folder Include="wwwroot\js\Devstudent\" />
-    <Folder Include="wwwroot\uploads\" />
+    <Folder Include="wwwroot\uploads\bookbank\" />
   </ItemGroup>
 
   <ItemGroup>
