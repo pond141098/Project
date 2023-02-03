@@ -39,6 +39,7 @@
                                                 </div>
                                             </div>
                                         </fieldset>
+
                                         <fieldset>
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">รหัสนักศึกษา</label>
@@ -47,6 +48,7 @@
                                                 </div>
                                             </div>
                                         </fieldset>
+
                                         <fieldset>
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">สาเหตุที่สมัครงาน</label>
@@ -55,6 +57,25 @@
                                                 </div>
                                             </div>
                                         </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">ธนาคาร</label>
+                                                <div class="col-lg-9">
+                                                    <p class="form-control " style="background-color:#eeeeee">@ViewBag.bank</p>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">สาขาธนาคารที่เปิดบัญชี</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="bank_store"  readonly />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
                                         <fieldset>
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">เลขที่บัญชี</label>
@@ -63,14 +84,18 @@
                                                 </div>
                                             </div>
                                         </fieldset>
+
                                         <fieldset>
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">ไฟล์สำเนาสมัดบัญชีธนาคาร</label>
                                                 <div class="col-lg-9">
                                                     <input type="text" class="form-control" asp-for="bank_file" disabled readonly/>
+                                                    <br>
+                                                    <button class="btn btn-primary" type="button" style="color:whitesmoke"><i class="fa fa-arrow-circle-down"></i>@Html.ActionLink(" Download", "Download", new { Name = Model.bank_file })</button>
                                                 </div>
                                             </div>
                                         </fieldset>
+
                                         <fieldset>
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">วันที่สมัคร</label>

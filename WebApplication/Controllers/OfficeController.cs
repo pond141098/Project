@@ -10,6 +10,7 @@ using SeniorProject.ViewModels.Office;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApplication.Controllers;
@@ -90,10 +91,21 @@ namespace SeniorProject.Controllers
             return PartialView("getAllListStudent", Models);
         }
 
+        //ดาวน์โหลดไฟล์
+        public FileResult Download(string Name)
+        {
+            string path = Path.Combine(_environment.WebRootPath, "uploads/bookbank/") + Name;
+            byte[] bytes = System.IO.File.ReadAllBytes(path);
+            return File(bytes, "application/octet-stream", Name);
+        }
+
         //ตรวจสอบ
         public IActionResult CheckRegisterAll(int transaction_register_id)
         {
             var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
+            var GetBank = DB.MASTER_BANK.ToList();
+
+            ViewBag.bank = GetBank.Where(w => w.banktype_id == Get.banktype_id).Select(s => s.banktype_name).FirstOrDefault();
             return View("CheckRegisterAll", Get);
         }
 

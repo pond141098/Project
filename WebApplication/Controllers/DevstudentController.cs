@@ -10,6 +10,7 @@ using SeniorProject.ViewModels.Devstudent;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApplication.Controllers;
@@ -70,7 +71,7 @@ namespace SeniorProject.Controllers
                     foreach(var stat in GetStatus.Where(w => w.status_id == item.status_id))
                     {
                         var Model = new ListStudentRegisterFaculty();
-                        if(stat.status_id == 9 || stat.status_id == 7)
+                        if(stat.status_id == 9 || stat.status_id == 7 || stat.status_id == 6)
                         {
                             Model.id = item.transaction_register_id;
                             Model.job_name = data.job_name;
@@ -87,10 +88,21 @@ namespace SeniorProject.Controllers
             return PartialView("getListStudentFaculty",Models);
         }
 
+        //ดาวน์โหลดไฟล์
+        public FileResult Download(string Name)
+        {
+            string path = Path.Combine(_environment.WebRootPath, "uploads/bookbank/") + Name;
+            byte[] bytes = System.IO.File.ReadAllBytes(path);
+            return File(bytes, "application/octet-stream", Name);
+        }
+
         //ตรวจสอบ
         public IActionResult CheckRegisterFaculty(int transaction_register_id)
         {
             var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
+            var GetBank = DB.MASTER_BANK.ToList();
+
+            ViewBag.bank = GetBank.Where(w => w.banktype_id == Get.banktype_id).Select(s => s.banktype_name).FirstOrDefault();
             return View("CheckRegisterFaculty",Get);
         }
 
