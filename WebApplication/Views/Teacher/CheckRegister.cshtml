@@ -35,70 +35,77 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">ชื่อนักศึกษา</label>
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="fullname" disabled readonly/>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <fieldset>
-                                            <div class="form-group">
-                                                <label class="col-lg-3 control-label">รหัสนักศึกษา</label>
-                                                <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="s_id" disabled readonly />
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <fieldset>
-                                            <div class="form-group">
-                                                <label class="col-lg-3 control-label">สาเหตุที่สมัครงาน</label>
-                                                <div class="col-lg-9">
-                                                    <textarea class="form-control" asp-for="because_job" disabled readonly></textarea>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <fieldset>
-                                            <div class="form-group">
-                                                <label class="col-lg-3 control-label">ธนาคาร</label>
-                                                <div class="col-lg-9">
-                                                    @*<input type="text" class="form-control" asp-for="bank_no" disabled readonly />*@
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <fieldset>
-                                            <div class="form-group">
-                                                <label class="col-lg-3 control-label">สาขาธนาคารที่เปิดบัญชี</label>
-                                                <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="bank_store" disabled readonly />
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <fieldset>
-                                            <div class="form-group">
-                                                <label class="col-lg-3 control-label">เลขที่บัญชี</label>
-                                                <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="bank_no" disabled readonly />
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <fieldset>
-                                            <div class="form-group">
-                                                <label class="col-lg-3 control-label">ไฟล์สำเนาสมุดบัญชีธนาคาร</label>
-                                                <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="bank_file"  />
-                                                    <br>
-                                                    <button class="btn btn-info fa fa-arrow-down">@Html.ActionLink("Download", "Download", new { Name = Model.bank_file })</button>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <fieldset>
-                                            <div class="form-group">
-                                                <label class="col-lg-3 control-label">วันที่สมัคร</label>
-                                                <div class="col-lg-9">
-                                                    <input type="datetime-local" class="form-control" asp-for="register_date" disabled readonly />
+                                                    <input type="text" class="form-control" asp-for="fullname"  readonly/>
                                                 </div>
                                             </div>
                                         </fieldset>
 
-                                        <input type="hidden" asp-for="transaction_register_id" />
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">รหัสนักศึกษา</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="s_id"  readonly />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">สาเหตุที่สมัครงาน</label>
+                                                <div class="col-lg-9">
+                                                    <textarea class="form-control" asp-for="because_job"  readonly></textarea>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">ธนาคาร</label>
+                                                <div class="col-lg-9">
+                                                    <p class="form-control " style="background-color:#eeeeee">@ViewBag.bank</p>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">สาขาธนาคารที่เปิดบัญชี</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="bank_store"  readonly />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">เลขที่บัญชี</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="bank_no"  readonly />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">ไฟล์สำเนาสมุดบัญชีธนาคาร</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="bank_file"  readonly />
+                                                    <br>
+                                                    <button class="btn btn-primary" type="button" style="color:whitesmoke"><i class="fa fa-arrow-circle-down"></i>@Html.ActionLink(" Download", "Download", new { Name = Model.bank_file })</button>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">วันที่สมัคร</label>
+                                                <div class="col-lg-9">
+                                                    <input type="datetime-local" class="form-control" asp-for="register_date"  readonly />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <input type="hidden" asp-for="transaction_register_id"/>
                                         <input type="hidden" asp-for="transaction_job_id" />
                                         <input type="hidden" asp-for="banktype_id" />
                                         <input type="hidden" asp-for="status_id" />
@@ -107,7 +114,7 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <button class="btn btn-danger" type="submit" id="notapprove">ไม่อนุมัติ</button>
-                                                    <button class="btn btn-success" type="submit" id="submit">ส่งอนุมัติ</button>
+                                                    <button class="btn btn-success" type="submit" id="approve">ส่งอนุมัติ</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -130,8 +137,7 @@
     <script>
         $(function () {
             $('#FormAdd').bootstrapValidator();
-            //อนุมัติ
-            $("#submit").click(function () {
+            $("#approve").click(function () {
                 $('#FormAdd').data("bootstrapValidator").validate();
                 if ($('#FormAdd').data("bootstrapValidator").isValid() == true) {
                     var Data = new FormData($("#FormAdd")[0]);

@@ -104,7 +104,9 @@ namespace SeniorProject.Controllers
         public IActionResult CheckRegister(int transaction_register_id)
         {
             var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
+            var GetBank = DB.MASTER_BANK.ToList();
 
+            ViewBag.bank = GetBank.Where(w => w.banktype_id == Get.banktype_id).Select(s => s.banktype_name).FirstOrDefault();
 
             return View("CheckRegister",Get);
         }
@@ -121,18 +123,28 @@ namespace SeniorProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Approve(TRANSACTION_REGISTER model)
         {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
             {
-                var GetStat = await DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefaultAsync();
-
+                var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == model.transaction_register_id).FirstOrDefault();
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
-                if (GetStat.status_id == 5 || GetStat.status_id == 6 || GetStat.status_id == 7)
+                if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถส่งอนุมัติได้ !!!" });
                 }
-                model.status_id = 9;
-                DB.TRANSACTION_REGISTER.Update(model);
-                await DB.SaveChangesAsync();
+                else if(Get.status_id == 8)
+                {
+                    Get.fullname= model.fullname;
+                    Get.s_id= model.s_id;
+                    Get.bank_file = model.bank_file;
+                    Get.bank_no = model.bank_no;
+                    Get.bank_store = model.bank_store;  
+                    Get.because_job = model.because_job;
+                    Get.register_date = model.register_date;
+                    Get.status_id = 9;
+                    DB.TRANSACTION_REGISTER.Update(Get);
+                    await DB.SaveChangesAsync();
+                }
             }
             catch (Exception Error)
             {
@@ -147,15 +159,24 @@ namespace SeniorProject.Controllers
         {
             try
             {
-                var GetStat = await DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefaultAsync();
+                var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == model.transaction_register_id).FirstOrDefault();
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ  
-                if(GetStat.status_id == 5 || GetStat.status_id == 6 || GetStat.status_id == 7 )
+                if(Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7 )
                 {
                     return Json(new { valid = false, message = "ไม่สามารถไม่อนุมัติได้ !!!" });
                 }
-                model.status_id = 6;
-                DB.TRANSACTION_REGISTER.Update(model);
+
+                Get.fullname = model.fullname;
+                Get.s_id = model.s_id;
+                Get.bank_file = model.bank_file;
+                Get.bank_no = model.bank_no;
+                Get.bank_store = model.bank_store;
+                Get.because_job = model.because_job;
+                Get.register_date = model.register_date;
+                Get.status_id = 6;
+                DB.TRANSACTION_REGISTER.Update(Get);
                 await DB.SaveChangesAsync();
+
             }
             catch (Exception Error)
             {
@@ -228,6 +249,7 @@ namespace SeniorProject.Controllers
                     Model.update_date = DateTime.Now;
                     Model.faculty_id= CurrentUser.faculty_id;
                     Model.branch_id= CurrentUser.branch_id;
+                    Model.create_by = CurrentUser.Id;
                     DB.TRANSACTION_JOB.Update(Model);
                     await DB.SaveChangesAsync();
                 }

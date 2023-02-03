@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,19 +25,22 @@ namespace SeniorProject.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private ApplicationDbContext DB;
+        private readonly IWebHostEnvironment _environment;
 
         public OfficeController(
              ILogger<HomeController> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<ApplicationRole> roleManager,
-            ApplicationDbContext db)
+            ApplicationDbContext db,
+            IWebHostEnvironment environment)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             DB = db;
+            _environment = environment;
         }
 
         //แดชบอร์ด
@@ -99,14 +103,22 @@ namespace SeniorProject.Controllers
         {
             try
             {
-                var GetStat = await DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefaultAsync();
+                var Get = DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefault();
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
-                if (GetStat.status_id == 5 || GetStat.status_id == 6 || GetStat.status_id == 7)
+                if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถอนุมัติได้ !!!" });
                 }
-                model.status_id = 5;
-                DB.TRANSACTION_REGISTER.Update(model);
+
+                Get.fullname = model.fullname;
+                Get.s_id = model.s_id;
+                Get.bank_file = model.bank_file;
+                Get.bank_no = model.bank_no;
+                Get.bank_store = model.bank_store;
+                Get.because_job = model.because_job;
+                Get.register_date = model.register_date;
+                Get.status_id = 5;
+                DB.TRANSACTION_REGISTER.Update(Get);
                 await DB.SaveChangesAsync();
             }
             catch (Exception Error)
@@ -122,14 +134,22 @@ namespace SeniorProject.Controllers
         {
             try
             {
-                var GetStat = await DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefaultAsync();
+                var Get = DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefault();
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
-                if (GetStat.status_id == 5 || GetStat.status_id == 6 || GetStat.status_id == 7)
+                if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถไม่อนุมัติได้ !!!" });
                 }
-                model.status_id = 6;
-                DB.TRANSACTION_REGISTER.Update(model);
+
+                Get.fullname = model.fullname;
+                Get.s_id = model.s_id;
+                Get.bank_file = model.bank_file;
+                Get.bank_no = model.bank_no;
+                Get.bank_store = model.bank_store;
+                Get.because_job = model.because_job;
+                Get.register_date = model.register_date;
+                Get.status_id = 6;
+                DB.TRANSACTION_REGISTER.Update(Get);
                 await DB.SaveChangesAsync();
             }
             catch (Exception Error)
