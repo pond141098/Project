@@ -1,9 +1,12 @@
 ﻿using iTextSharp.text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Server;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -29,19 +32,22 @@ namespace SeniorProject.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private ApplicationDbContext DB;
+        private readonly IWebHostEnvironment _environment;
 
         public TeacherController(
              ILogger<HomeController> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<ApplicationRole> roleManager,
-            ApplicationDbContext db)
+            ApplicationDbContext db,
+            IWebHostEnvironment environment)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             DB = db;
+            _environment = environment;
         }
         #region Dashboard
         public IActionResult Index()
@@ -98,7 +104,17 @@ namespace SeniorProject.Controllers
         public IActionResult CheckRegister(int transaction_register_id)
         {
             var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
+
+
             return View("CheckRegister",Get);
+        }
+
+        //ดาวน์โหลดไฟล์
+        public FileResult Download(string Name)
+        {
+            string path = Path.Combine(_environment.WebRootPath, "uploads/bookbank/")+ Name;
+            byte[] bytes = System.IO.File.ReadAllBytes(path);
+            return File(bytes, "application/octet-stream", Name);
         }
 
         //ส่งอนุมัติ ส่งฝ่ายพัฒนานักศึกษา

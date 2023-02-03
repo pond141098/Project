@@ -1,6 +1,6 @@
 ﻿@model SeniorProject.Models.TRANSACTION_REGISTER
 @{
-    ViewData["title"] = "ตรวจสอบ/ส่งอนุมัตินักศึกษาที่สมัครงาน";
+    ViewData["title"] = "ตรวจสอบเเละส่งอนุมัตินักศึกษาที่สมัครงาน";
 }
 <div id="ribbon">
     <span class="ribbon-button-alignment">
@@ -57,6 +57,22 @@
                                         </fieldset>
                                         <fieldset>
                                             <div class="form-group">
+                                                <label class="col-lg-3 control-label">ธนาคาร</label>
+                                                <div class="col-lg-9">
+                                                    @*<input type="text" class="form-control" asp-for="bank_no" disabled readonly />*@
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">สาขาธนาคารที่เปิดบัญชี</label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="bank_store" disabled readonly />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="form-group">
                                                 <label class="col-lg-3 control-label">เลขที่บัญชี</label>
                                                 <div class="col-lg-9">
                                                     <input type="text" class="form-control" asp-for="bank_no" disabled readonly />
@@ -65,9 +81,11 @@
                                         </fieldset>
                                         <fieldset>
                                             <div class="form-group">
-                                                <label class="col-lg-3 control-label">ไฟล์สำเนาสมัดบัญชีธนาคาร</label>
+                                                <label class="col-lg-3 control-label">ไฟล์สำเนาสมุดบัญชีธนาคาร</label>
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="bank_file" disabled readonly />
+                                                    <input type="text" class="form-control" asp-for="bank_file"  />
+                                                    <br>
+                                                    <button class="btn btn-info fa fa-arrow-down">@Html.ActionLink("Download", "Download", new { Name = Model.bank_file })</button>
                                                 </div>
                                             </div>
                                         </fieldset>
