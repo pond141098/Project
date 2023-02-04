@@ -32,14 +32,7 @@
                 <div class="form-group">
                     <br>
                     <label for="exampleFormControlSelect1" style="font-size:20px">ประเภทธนาคาร</label>
-                    <select class="form-control" asp-for="banktype_id">
-                        <option value="3">กรุงศรี</option>
-                        <option value="5">ไทยพาณิชย์</option>
-                        <option value="2">กรุงเทพ</option>
-                        <option value="4">กสิกรไทย</option>
-                        <option value="1">กรุงไทย</option>
-                        <option value="6">ทหารไทยธนชาติ</option>
-                    </select>
+                    @Html.DropDownList("banktype_id", (IEnumerable<SelectListItem>)ViewBag.Bank, new { @class = "form-control" })
                 </div>
 
                 <div>
@@ -82,16 +75,3 @@
     </div>
 </section>
 
-
-
-
-@*@section Frontend{
-    <script>
-        JQuery(document).ready(function () {
-            $(".custom-file-input").on("change", function () {
-                var filename = $(this).val.slit("\\").pop();
-                $(this).next(".custom-file-input").html(filename);
-            }
-        });
-    </script>
-}*@

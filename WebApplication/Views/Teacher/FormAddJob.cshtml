@@ -48,6 +48,16 @@
                                                 </div>
                                             </div>
                                         </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">สถานที่ทำงาน<span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    @Html.DropDownList("place_id", (IEnumerable<SelectListItem>)ViewBag.Place, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
                                         <fieldset>
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">รายละเอียดงาน<span style="color:red;">*</span></label>
@@ -58,6 +68,7 @@
                                                 </div>
                                             </div>
                                         </fieldset>
+
                                         <fieldset>
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">จำนวนวันที่ปฎิบัติงาน<span style="color:red;">*</span></label>
@@ -70,6 +81,7 @@
                                                 </div>
                                             </div>
                                         </fieldset>
+
                                         <fieldset>
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">จำนวนนักศึกษาที่ต้องการ<span style="color:red;">*</span></label>
@@ -82,6 +94,7 @@
                                                 </div>
                                             </div>
                                         </fieldset>
+
                                         <fieldset>
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">วันที่ปิดรับสมัคร<span style="color:red;">*</span></label>
@@ -90,6 +103,7 @@
                                                 </div>
                                             </div>
                                         </fieldset>
+
                                         <div class="form-actions">
                                             <div class="row">
                                                 <div class="col-md-12">
@@ -97,6 +111,7 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                     </form>
                                 </div>
                             </div>

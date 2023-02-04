@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SeniorProject.Models.TRANSACTION_JOB>
+﻿@model IEnumerable<SeniorProject.ViewModels.Student.ListJob>
 
 @{
     Layout = "~/Views/Shared/_FrontendLayout.cshtml";
@@ -14,13 +14,13 @@
         <div class="row gx-5 justify-content-center">
             @{
                 int Rows = 1;
-                foreach (var Gets in Model.OrderBy(f => f.transaction_job_id))
+                foreach (var Gets in Model.OrderBy(f => f.id))
                 {
                     <div class="col-lg-6 col-xl-4">
                         <div class="card mb-5 mb-xl-0">
                             <div class="card-body p-5">
                                 <div class="mb-3">
-                                    <span class="display-4 fw-bold">@Gets.job_name</span>
+                                    <span class="display-4 fw-bold">@Gets.jobname</span>
                                 </div>
                                 <ul class="list-unstyled mb-4">
                                     <li class="mb-2">
@@ -33,18 +33,14 @@
                                     </li>
                                     <li class="mb-2">
                                         <i class="text-primary"></i>
-                                        จำนวนวันที่ทำงาน : @Gets.amount_date
+                                        จำนวนวันที่ทำงาน : @Gets.amount_working
                                     </li>
                                     <li class="mb-2">
                                         <i class="text-primary"></i>
-                                        วันที่ปิดรับสมัคร : @Gets.close_register_date
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="text-primary"></i>
-                                        อาจารย์ผู้รับผิดชอบ : @Gets.owner_job
+                                        วันที่ปิดรับสมัคร : @Gets.close_register
                                     </li>
                                     <li>
-                                        <a href="javascript:void(0)" data-id="@Gets.transaction_job_id+@Gets.create_by" class="btn-u btn-u-sea register"> สมัครงาน <span class="glyphicon glyphicon-chevron-right"></span></a>
+                                        <a href="javascript:void(0)" data-id="@Gets.id" class="btn-u btn-u-sea register"> สมัครงาน <span class="glyphicon glyphicon-chevron-right"></span></a>
                                     </li>
                                 </ul>
                             </div>

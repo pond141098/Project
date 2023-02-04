@@ -96,6 +96,7 @@ namespace SeniorProject.Controllers
                     foreach (var item in GetStatus.Where(w => w.status_id == s.status_id))
                     {
                         var model = new HistoryRegister();
+                        model.Id = s.transaction_register_id;
                         model.name = data.job_name;
                         model.detail = data.job_detail;
                         model.status = item.status_name;
@@ -109,18 +110,18 @@ namespace SeniorProject.Controllers
 
             return PartialView("HistoryRegister", Model);
         }
-        public async Task<IActionResult> DeleteRegisterJob(int transaction_register_id)
+
+        public async Task<IActionResult> DeleteRegisterJob(int id)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
             {
-                var Model = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
+                var Model = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == id).FirstOrDefault();
                 DB.TRANSACTION_REGISTER.Remove(Model);
                 await DB.SaveChangesAsync();
             }
             catch (Exception Error)
             {
-
                 return Json(new { valid = false, message = Error.Message });
             }
             return Json(new { valid = true, message = "ยกเลิกการสมัครงานสำเร็จ/Delete Success" });
@@ -128,24 +129,56 @@ namespace SeniorProject.Controllers
         #endregion
 
         #region รายละเอียดงานที่รับสมัคร
+
+        //หน้ารายละเอียดงาน
         public async Task<IActionResult> Job()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Gets = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id).ToListAsync();
+            var GetPlace = await DB.MASTER_PLACE.ToListAsync();//ข้อมูลสถานที่
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();//ข้อมูลงาน
+            var GetOwnerJob = await DB.Users.ToListAsync();//เจ้าของงาน
 
-            return PartialView("Job", Gets);
+            //การ join table โดยนำค่าที่ต้องการมาเเสดง มาใส่ใน ViewsModels เเล้วไปเเสดงในหน้า Views
+            var model = new List<ListJob>();
+
+
+            foreach (var o in GetOwnerJob)
+            {
+                foreach (var j in GetJob.Where(w => w.create_by == o.UserName))
+                {
+                    foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
+                    {
+                        if(CurrentUser.faculty_id == o.faculty_id && CurrentUser.branch_id == o.branch_id)
+                        {
+                            var Model = new ListJob();
+                            Model.id = j.transaction_job_id;
+                            Model.jobname = j.job_name;
+                            Model.jobplace = p.place_name;
+                            Model.job_detail = j.job_detail;
+                            Model.amount_person = j.amount_person;
+                            Model.amount_working = j.amount_date;
+                            Model.close_register = j.close_register_date;
+                            model.Add(Model);
+                        }
+                    }
+                }
+            }
+
+            return PartialView("Job", model);
         }
+
+        //หน้าฟอร์มการสมัครงาน
         public IActionResult FormRegisterJob(int transaction_job_id)
         {
             var GetJobName = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).Select(s => s.job_name).FirstOrDefault();
-            var GetBank = DB.MASTER_BANK.Select(s => s.banktype_name).ToList();
 
-            ViewBag.Bank = GetBank;
+            ViewBag.Bank = new SelectList(DB.MASTER_BANK.ToList(), "banktype_id", "banktype_name");
             ViewBag.jobname = GetJobName;
 
             return View("FormRegisterJob");
         }
 
+        //นำข้อมูลใส่ดาต้าเบส
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model, IFormFile bank_file)

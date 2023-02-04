@@ -9,5 +9,6 @@ namespace SeniorProject.Models
         public int faculty_id { get; set; }   
         public int branch_id { get; set; }   
         public int role_id { get; set; }   
+        public int prefix_id { get; set; }   
     }
 }
