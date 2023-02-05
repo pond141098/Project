@@ -18,5 +18,6 @@ namespace SeniorProject.Models
         public DateTime start_work { get; set; }
         public DateTime end_work { get; set;}
         public string img_work { get; set; }
+        public string file_work { get; set; }
     }
 }

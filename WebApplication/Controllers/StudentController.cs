@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using SeniorProject.ViewModels.Student;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Hosting.Server;
 
 namespace SeniorProject.Controllers
 {
@@ -54,12 +55,14 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> Home()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Model = DB.TRANSACTION_JOB.ToList();
-            var GetName = DB.Users.Where(w => w.Id == CurrentUser.Id).Select(s => s.FirstName).FirstOrDefault();
-            var GetLastName = DB.Users.Where(w => w.Id == CurrentUser.Id).Select(s => s.LastName).FirstOrDefault();
+            var Model = DB.TRANSACTION_JOB.ToList();//ข้อมูลงาน
+            var GetName = DB.Users.Where(w => w.Id == CurrentUser.Id).Select(s => s.FirstName).FirstOrDefault();//ข้อมูลชื่อจริงผู้ใช้
+            var GetLastName = DB.Users.Where(w => w.Id == CurrentUser.Id).Select(s => s.LastName).FirstOrDefault();//ข้อมุลนามสกุลผู้ใช้
+            var GetPrefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == CurrentUser.prefix_id).Select(s => s.prefix_name).FirstOrDefault();//ข้อมูลคำนำหน้าชื่อผู้ใช้
 
             ViewBag.Name = GetName;
             ViewBag.LastName = GetLastName;
+            ViewBag.Prefix = GetPrefix;
 
             return View("Home");
         }
@@ -69,9 +72,9 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> Profile()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Model = DB.Users.Where(w => w.Id == CurrentUser.Id).FirstOrDefault();
-            var GetFaculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.faculty_name).FirstOrDefault();
-            var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == CurrentUser.branch_id).Select(s => s.branch_name).FirstOrDefault();
+            var Model = DB.Users.Where(w => w.Id == CurrentUser.Id).FirstOrDefault();//ข้อมูลผู้ใช้
+            var GetFaculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.faculty_name).FirstOrDefault();//ข้อมูลคณะ
+            var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == CurrentUser.branch_id).Select(s => s.branch_name).FirstOrDefault();//ข้อมูลสาขา
 
             ViewBag.Faculty = GetFaculty;
             ViewBag.Branch = GetBranch;
@@ -84,38 +87,50 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> HistoryRegister()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Gets = await DB.TRANSACTION_REGISTER.ToListAsync();
-            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
-            var GetStatus = await DB.MASTER_STATUS.ToListAsync();
-            var Model = new List<HistoryRegister>();
+            var Gets = await DB.TRANSACTION_REGISTER.ToListAsync();//ข้อมูลการสมัครงาน
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();//ข้อมูลงาน
+            var GetStatus = await DB.MASTER_STATUS.ToListAsync();//ข้อมูลสถานะ
+            var GetPlace = await DB.MASTER_PLACE.ToListAsync();//ข้อมูลสถานที่
+            var Model = new List<HistoryRegister>();//ตาราง Viesmodel ที่ใช้นำข้อมูลมาเเสดง
 
+            //การ join table โดยนำค่าที่ต้องการมาเเสดง มาใส่ใน ViewsModels เเล้วไปเเสดงในหน้า Views
             foreach (var s in Gets.Where(w => w.s_id == CurrentUser.UserName))
             {
                 foreach (var data in GetJob.Where(w => w.transaction_job_id == s.transaction_job_id))
                 {
-                    foreach (var item in GetStatus.Where(w => w.status_id == s.status_id))
+                    foreach(var p in GetPlace.Where(w => w.place_id == data.place_id))
                     {
-                        var model = new HistoryRegister();
-                        model.Id = s.transaction_register_id;
-                        model.name = data.job_name;
-                        model.detail = data.job_detail;
-                        model.status = item.status_name;
-                        model.register_date = s.register_date;
-                        Model.Add(model);
+                        foreach (var item in GetStatus.Where(w => w.status_id == s.status_id))
+                        {
+                            var model = new HistoryRegister();
+                            model.Id = s.transaction_register_id;
+                            model.name = data.job_name;
+                            model.place = p.place_name;
+                            model.detail = data.job_detail;
+                            model.status = item.status_name;
+                            model.file = s.bank_file;
+                            model.register_date = s.register_date;
+                            Model.Add(model);
+                        }
                     }
                 }
             }
-
-            ViewBag.regisId = await DB.TRANSACTION_REGISTER.Select(s => s.transaction_register_id).FirstOrDefaultAsync();
-
             return PartialView("HistoryRegister", Model);
         }
 
-        public async Task<IActionResult> DeleteRegisterJob(int id)
+        //ลบการสมัครงาน
+        public async Task<IActionResult> DeleteRegisterJob(int id, string bankfile)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
             {
+                //ลบไฟล์สำเนาสมุดบัญชีธนาคาร
+                string fullPath = Path.Combine(_environment.WebRootPath.ToString(),("uploads/bookbank"), bankfile);
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+
                 var Model = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == id).FirstOrDefault();
                 DB.TRANSACTION_REGISTER.Remove(Model);
                 await DB.SaveChangesAsync();
@@ -124,7 +139,7 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            return Json(new { valid = true, message = "ยกเลิกการสมัครงานสำเร็จ/Delete Success" });
+            return Json(new { valid = true, message = "Delete Success" });
         }
         #endregion
 
@@ -136,43 +151,36 @@ namespace SeniorProject.Controllers
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetPlace = await DB.MASTER_PLACE.ToListAsync();//ข้อมูลสถานที่
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();//ข้อมูลงาน
-            var GetOwnerJob = await DB.Users.ToListAsync();//เจ้าของงาน
 
             //การ join table โดยนำค่าที่ต้องการมาเเสดง มาใส่ใน ViewsModels เเล้วไปเเสดงในหน้า Views
             var model = new List<ListJob>();
 
-
-            foreach (var o in GetOwnerJob)
+            foreach (var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id))
             {
-                foreach (var j in GetJob.Where(w => w.create_by == o.UserName))
+                foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                 {
-                    foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
-                    {
-                        if(CurrentUser.faculty_id == o.faculty_id && CurrentUser.branch_id == o.branch_id)
-                        {
-                            var Model = new ListJob();
-                            Model.id = j.transaction_job_id;
-                            Model.jobname = j.job_name;
-                            Model.jobplace = p.place_name;
-                            Model.job_detail = j.job_detail;
-                            Model.amount_person = j.amount_person;
-                            Model.amount_working = j.amount_date;
-                            Model.close_register = j.close_register_date;
-                            model.Add(Model);
-                        }
-                    }
+
+                    var Model = new ListJob();
+                    Model.id = j.transaction_job_id;
+                    Model.jobname = j.job_name;
+                    Model.jobplace = p.place_name;
+                    Model.job_detail = j.job_detail;
+                    Model.amount_person = j.amount_person;
+                    Model.amount_working = j.amount_date;
+                    Model.close_register = j.close_register_date;
+                    model.Add(Model);
+
                 }
             }
-
             return PartialView("Job", model);
         }
 
         //หน้าฟอร์มการสมัครงาน
         public IActionResult FormRegisterJob(int transaction_job_id)
         {
-            var GetJobName = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).Select(s => s.job_name).FirstOrDefault();
+            var GetJobName = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).Select(s => s.job_name).FirstOrDefault();//ข้อมูลชื่องาน
 
-            ViewBag.Bank = new SelectList(DB.MASTER_BANK.ToList(), "banktype_id", "banktype_name");
+            ViewBag.Bank = new SelectList(DB.MASTER_BANK.ToList(), "banktype_id", "banktype_name");//ข้อมูลธนาคาร
             ViewBag.jobname = GetJobName;
 
             return View("FormRegisterJob");
@@ -184,8 +192,8 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model, IFormFile bank_file)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var GetOwner = await DB.TRANSACTION_JOB.ToListAsync();
-            var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
+            var GetOwner = await DB.TRANSACTION_JOB.ToListAsync();//ข้อมูลงาน
+            var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();//ข้อมูลการสมัครงาน
 
             try
             {
@@ -213,9 +221,7 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-
             return RedirectToAction("HistoryRegister", "Student");
-
         }
 
         #endregion
