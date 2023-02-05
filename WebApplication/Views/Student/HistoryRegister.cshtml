@@ -27,7 +27,7 @@
                                         <br>
                                         <span class="small text-muted"><i class="fa fa-clock me-1"></i>สถานะ : @Gets.status</span>
                                         <br>
-                                        <a class="btn btn-xs btn-danger delete" a href="@Url.Action("DeleteRegisterJob","Student",new { id = @Gets.Id })">ยกเลิกการสมัคร</a>
+                                        <a class="btn btn-xs btn-danger delete" a href="@Url.Action("DeleteRegisterJob","Student",new { id = @Gets.Id , bankfile = Gets.file})">ยกเลิกการสมัคร</a>
                                     </div>
                                 </div>
                             }
