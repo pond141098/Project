@@ -124,7 +124,7 @@ namespace SeniorProject.Controllers
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
             {
-                //ลบไฟล์สำเนาสมุดบัญชีธนาคาร
+                //ลบไฟล์สำเนาสมุดบัญชีธนาคารใน wwwroot
                 string fullPath = Path.Combine(_environment.WebRootPath.ToString(),("uploads/bookbank"), bankfile);
                 if (System.IO.File.Exists(fullPath))
                 {
@@ -223,6 +223,17 @@ namespace SeniorProject.Controllers
             }
             return RedirectToAction("HistoryRegister", "Student");
         }
+
+        #endregion
+
+        #region งานที่ได้รับอนุมัติ
+
+
+
+        #endregion
+
+        #region ลงเวลาการทำงาน
+
 
         #endregion
     }

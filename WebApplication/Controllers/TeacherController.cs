@@ -49,6 +49,7 @@ namespace SeniorProject.Controllers
             DB = db;
             _environment = environment;
         }
+
         #region Dashboard
         public IActionResult Index()
         {
@@ -72,26 +73,24 @@ namespace SeniorProject.Controllers
             var GetBank = await DB.MASTER_BANK.ToListAsync();
             var Models = new List<ListStudentRegister>();
 
-            ViewBag.transaction_register_id = GetPerson.Select(s => s.transaction_register_id).FirstOrDefault();
-
-            foreach (var data in GetJob.Where(w => w.create_by == CurrentUser.Id))
+            foreach (var j in GetJob.Where(w => w.create_by == CurrentUser.UserName))
             {
-                foreach (var regis in GetPerson.Where(w => w.transaction_job_id == data.transaction_job_id))
+                foreach (var r in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
                 {
-                    foreach (var stat in GetStatus.Where(w => w.status_id == regis.status_id))
+                    foreach (var s in GetStatus.Where(w => w.status_id == r.status_id))
                     {
-                        foreach (var b in GetBank.Where(w => w.banktype_id == regis.banktype_id))
+                        foreach (var b in GetBank.Where(w => w.banktype_id == r.banktype_id))
                         {
                             var model = new ListStudentRegister();
-                            model.id = regis.transaction_register_id;
-                            model.student_name = regis.fullname;
-                            model.job_name = data.job_name;
-                            model.s_id = regis.s_id;
-                            model.register_date = regis.register_date;
-                            model.status_name = stat.status_name;
-                            model.because_working = regis.because_job;
-                            model.file = regis.bank_file;
-                            model.bank = regis.bank_no + "(" + b.banktype_name + ")";
+                            model.id = r.transaction_register_id;
+                            model.student_name = r.fullname;
+                            model.job_name = j.job_name;
+                            model.s_id = r.s_id;
+                            model.register_date = r.register_date;
+                            model.status_name = s.status_name;
+                            model.because_working = r.because_job;
+                            model.file = r.bank_file;
+                            model.bank = r.bank_no + "(" + b.banktype_name + ")";
                             Models.Add(model);
                         }
                     }

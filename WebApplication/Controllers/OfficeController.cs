@@ -55,41 +55,41 @@ namespace SeniorProject.Controllers
         {
             return View("AllListStudent");
         }
-        //public async Task<IActionResult> getAllListStudent()
-        //{
-        //    var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-        //    var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
-        //    var GetPerson = await DB.TRANSACTION_REGISTER.ToListAsync();
-        //    var GetStatus = await DB.MASTER_STATUS.ToListAsync();
-        //    var GetFaculty = await DB.MASTER_FACULTY.ToListAsync();
-        //    var Gets = await DB.Users.ToListAsync();
-        //    var Models = new List<AllListStudentRegister>();
+        public async Task<IActionResult> getAllListStudent()
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetPerson = await DB.TRANSACTION_REGISTER.ToListAsync();
+            var GetStatus = await DB.MASTER_STATUS.ToListAsync();
+            var GetFaculty = await DB.MASTER_FACULTY.ToListAsync();
+            var Gets = await DB.Users.ToListAsync();
+            var Models = new List<AllListStudentRegister>();
 
-        //    foreach (var j in GetJob)
-        //    {
-        //        foreach (var f in GetFaculty.Where(w => w.faculty_id == j.faculty_id))
-        //        {
-        //            foreach (var data in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
-        //            {
-        //                foreach (var item in GetStatus.Where(w => w.status_id == data.status_id))
-        //                {
-        //                    if (item.status_id == 7 || item.status_id == 6 || item.status_id == 5)
-        //                    {
-        //                        var Model = new AllListStudentRegister();
-        //                        Model.id = data.transaction_register_id;
-        //                        Model.student_name = data.fullname;
-        //                        Model.student_id = data.s_id;
-        //                        Model.faculty_name = f.faculty_name;
-        //                        Model.status_name = item.status_name;
-        //                        Model.job_name = j.job_name;
-        //                        Models.Add(Model);
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return PartialView("getAllListStudent", Models);
-        //}
+            foreach (var j in GetJob)
+            {
+                foreach (var f in GetFaculty.Where(w => w.faculty_id == j.faculty_id))
+                {
+                    foreach (var data in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
+                    {
+                        foreach (var item in GetStatus.Where(w => w.status_id == data.status_id))
+                        {
+                            if (item.status_id == 7 || item.status_id == 6 || item.status_id == 5)
+                            {
+                                var Model = new AllListStudentRegister();
+                                Model.id = data.transaction_register_id;
+                                Model.student_name = data.fullname;
+                                Model.student_id = data.s_id;
+                                Model.faculty_name = f.faculty_name;
+                                Model.status_name = item.status_name;
+                                Model.job_name = j.job_name;
+                                Models.Add(Model);
+                            }
+                        }
+                    }
+                }
+            }
+            return PartialView("getAllListStudent", Models);
+        }
 
         //ดาวน์โหลดไฟล์
         public FileResult Download(string Name)
