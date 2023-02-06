@@ -61,27 +61,32 @@ namespace SeniorProject.Controllers
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetPerson = await DB.TRANSACTION_REGISTER.ToListAsync();
             var GetStatus = await DB.MASTER_STATUS.ToListAsync();
-            var GetFaculty = await DB.MASTER_FACULTY.ToListAsync();
+            var GetBranch = await DB.MASTER_BRANCH.ToListAsync();
+            var GetPrefix = await DB.MASTER_PREFIX.ToListAsync();
             var Models = new List<ListStudentRegisterFaculty>();
 
             foreach (var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
             {
-                foreach (var p in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
+                foreach(var b in GetBranch.Where(w => w.branch_id == j.branch_id))
                 {
-                    foreach (var s in GetStatus.Where(w => w.status_id == p.status_id))
+                    foreach (var p in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
                     {
-                        var Model = new ListStudentRegisterFaculty();
-                        if (s.status_id == 9 || s.status_id == 7 || s.status_id == 6)
+                        foreach (var s in GetStatus.Where(w => w.status_id == p.status_id))
                         {
-                            Model.id = p.transaction_register_id;
-                            Model.job_name = j.job_name;
-                            Model.student_name = p.fullname;
-                            Model.s_id = p.s_id;
-                            Model.register_date = p.register_date;
-                            Model.status_name = s.status_name;
-                            Models.Add(Model);
-                        }
+                            var Model = new ListStudentRegisterFaculty();
+                            if (s.status_id == 9 || s.status_id == 7 || s.status_id == 6)
+                            {
+                                Model.id = p.transaction_register_id;
+                                Model.job_name = j.job_name;
+                                Model.branch_name = b.branch_name;
+                                Model.student_name = p.fullname;
+                                Model.s_id = p.s_id;
+                                Model.register_date = p.register_date;
+                                Model.status_name = s.status_name;
+                                Models.Add(Model);
+                            }
 
+                        }
                     }
                 }
             }

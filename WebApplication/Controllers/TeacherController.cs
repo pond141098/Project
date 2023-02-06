@@ -58,12 +58,16 @@ namespace SeniorProject.Controllers
         #endregion
 
         #region รายชื่อนักศึกษาที่สมัครงาน
+
+        //หน้ารายการนักศึกษาที่มาสมัครงาน
         public async Task<IActionResult> ListStudent()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
 
             return View("ListStudent");
         }
+
+        //ข้อมูลนักศึกษาที่มาสมัครงาน
         public async Task<IActionResult> getListStudent()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
@@ -71,6 +75,7 @@ namespace SeniorProject.Controllers
             var GetPerson = await DB.TRANSACTION_REGISTER.ToListAsync();
             var GetStatus = await DB.MASTER_STATUS.ToListAsync();
             var GetBank = await DB.MASTER_BANK.ToListAsync();
+
             var Models = new List<ListStudentRegister>();
 
             foreach (var j in GetJob.Where(w => w.create_by == CurrentUser.UserName))
@@ -99,7 +104,7 @@ namespace SeniorProject.Controllers
             return PartialView("getListStudent", Models);
         }
 
-        //ตรวจสอบ
+        //หน้าฟอร์มการตรวจสอบ
         public IActionResult CheckRegister(int transaction_register_id)
         {
             var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
@@ -126,6 +131,7 @@ namespace SeniorProject.Controllers
             try
             {
                 var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == model.transaction_register_id).FirstOrDefault();
+
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
                 if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
                 {
@@ -159,6 +165,7 @@ namespace SeniorProject.Controllers
             try
             {
                 var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == model.transaction_register_id).FirstOrDefault();
+
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ  
                 if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
                 {
@@ -187,17 +194,18 @@ namespace SeniorProject.Controllers
 
         #region ขอรับนักศึกษามาปฎิบัติงาน
 
-        //หน้าเเสดงข้อมูล
+        //หน้าเเสดงข้อมูลงาน
         public IActionResult Job()
         {
             return View("Job");
         }
 
-        //ดึงข้อมูลมาเเสดง
+        //ดึงข้อมูลงานที่สร้างมาเเสดง
         public async Task<IActionResult> getJob()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var Gets = DB.TRANSACTION_JOB.Where(w => w.create_by == CurrentUser.UserName).ToList();
+
             return PartialView("getJob", Gets);
         }
 
@@ -205,16 +213,18 @@ namespace SeniorProject.Controllers
         public IActionResult FormAddJob()
         {
             ViewBag.Place = new SelectList(DB.MASTER_PLACE.ToList(), "place_id", "place_name");
+
             return View("FormAddJob");
         }
 
-        //นำข้อมูลลงดาต้าเบส
+        //นำข้อมูลงานลงดาต้าเบส
         [HttpPost]
         public async Task<IActionResult> FormAddJob(TRANSACTION_JOB Model)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
             {
+                //ถ้ามีชื่อซ้ำกันในดาต้าเบส ก็จะไม่สมารถบันทึกได้
                 if (DB.TRANSACTION_JOB.Where(w => w.job_name == Model.job_name).Count() > 0)
                 {
                     return Json(new { valid = false, message = "กรุณาตรวจสอบข้อมูล" });
@@ -235,11 +245,12 @@ namespace SeniorProject.Controllers
             return Json(new { valid = true, message = "บันทึกข้อมูลสำเร็จ" });
         }
 
-        //เเก้ไขงาน
+        //ฟอร์มเเก้ไขงาน
         public IActionResult FormEditJob(int transaction_job_id)
         {
             var Get = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).FirstOrDefault();
             ViewBag.Place = new SelectList(DB.MASTER_PLACE.ToList(), "place_id", "place_name");
+
             return View("FormEditJob", Get);
         }
 
@@ -252,6 +263,7 @@ namespace SeniorProject.Controllers
             {
                 var Get = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == Model.transaction_job_id).FirstOrDefault();
 
+                //ถ้าชื่อซ้ำกันจะไม่สามารถบันทึกได้
                 if (Get.job_name == Model.job_name)
                 {
                     return Json(new { valid = false, message = "ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบดีๆ" });
@@ -280,7 +292,7 @@ namespace SeniorProject.Controllers
         //ลบงาน
         public async Task<IActionResult> DeleteJob(int transaction_job_id)
         {
-            //var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
             {
                 var Get = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).FirstOrDefault();

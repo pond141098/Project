@@ -7,6 +7,7 @@ namespace SeniorProject.ViewModels.Devstudent
         public int id { get; set; }
         public string student_name { get; set; }
         public string s_id { get; set; }
+        public string branch_name { get; set; }
         public string job_name { get; set; }
         public DateTime register_date { get; set; }
         public string status_name { get; set; }

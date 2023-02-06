@@ -116,8 +116,9 @@ namespace SeniorProject.Controllers
             try
             {
                 var Get = DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefault();
+
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
-                if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
+                if (Get.status_id == 5 || Get.status_id == 6)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถอนุมัติได้ !!!" });
                 }
@@ -147,6 +148,7 @@ namespace SeniorProject.Controllers
             try
             {
                 var Get = DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefault();
+
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
                 if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
                 {

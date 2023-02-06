@@ -8,42 +8,41 @@
 <section class="bg-light py-5 border-bottom">
     <div class="container px-5 ">
         <div class="text-center mb-5">
-            <h2 class="fw-bolder">สวัสดี!!! @ViewBag.Prefix @ViewBag.Name  @ViewBag.LastName</h2>
         </div>
         <div class="row gx-5">
             <div class="col-lg-4 mb-5 mb-lg-5">
                 <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-person-circle"></i></div>
                 <h2 class="h4 fw-bolder">ประวัติส่วนตัว</h2>
-                <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+                <p>ข้อมูลของส่วนตัวของนักศึกษา โดยจะมีชื่อ - นามสกุล รหัสนักศึกษา คณะเเละสาขาที่เรียน</p>
                 <a class="text-decoration-none" href="@Url.Action("Profile","Student")">
-                    SELECT
+                    VIEW
                     <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
             <div class="col-lg-4 mb-5 mb-lg-0">
                 <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-clipboard-plus"></i></div>
                 <h2 class="h4 fw-bolder">สมัครงาน</h2>
-                <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+                <p>รายการงานต่าง ๆ ที่เปิดให้นักศึกษาสมัคร โดยงานนั้นจะเป็นของอาจารย์ในสาขาของนักศึกษาเท่านั้น</p>
                 <a class="text-decoration-none" href="@Url.Action("Job","Student")">
-                    SELECT
+                    VIEW
                     <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
             <div class="col-lg-4">
                 <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-calendar-check"></i></div>
                 <h2 class="h4 fw-bolder">ประวัติการสมัครงาน</h2>
-                <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+                <p>เป็นรายการสมัครงานที่นักศึกษาได้ทำการสมัคร <br>โดยสามารถตรวจสอบสถานะของการสมัครงานจากที่นี้ได้</p>
                 <a class="text-decoration-none" href="@Url.Action("HistoryRegister","Student")">
-                    SELECT
+                    VIEW
                     <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
             <div class="col-lg-4">
                 <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
-                <h2 class="h4 fw-bolder">ประวัติการทำงาน</h2>
-                <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+                <h2 class="h4 fw-bolder">เริ่มทำงาน</h2>
+                <p>รายการงานที่นักศึกษาสมัครไปเเล้วได้รับการอนุมัติจาก ผอ.กองพัฒนานักศึกษาเรียบร้อยเเล้ว นักศึกษาสามารถเริ่มทำงานจากที่นี้ได้</p>
                 <a class="text-decoration-none" href="@Url.Action("","")">
-                    SELECT
+                    START
                     <i class="bi bi-arrow-right"></i>
                 </a>
             </div>

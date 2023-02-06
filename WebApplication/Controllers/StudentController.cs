@@ -55,10 +55,10 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> Home()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Model = DB.TRANSACTION_JOB.ToList();//ข้อมูลงาน
-            var GetName = DB.Users.Where(w => w.Id == CurrentUser.Id).Select(s => s.FirstName).FirstOrDefault();//ข้อมูลชื่อจริงผู้ใช้
-            var GetLastName = DB.Users.Where(w => w.Id == CurrentUser.Id).Select(s => s.LastName).FirstOrDefault();//ข้อมุลนามสกุลผู้ใช้
-            var GetPrefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == CurrentUser.prefix_id).Select(s => s.prefix_name).FirstOrDefault();//ข้อมูลคำนำหน้าชื่อผู้ใช้
+            var Model = DB.TRANSACTION_JOB.ToList();
+            var GetName = DB.Users.Where(w => w.Id == CurrentUser.Id).Select(s => s.FirstName).FirstOrDefault();
+            var GetLastName = DB.Users.Where(w => w.Id == CurrentUser.Id).Select(s => s.LastName).FirstOrDefault();
+            var GetPrefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == CurrentUser.prefix_id).Select(s => s.prefix_name).FirstOrDefault();
 
             ViewBag.Name = GetName;
             ViewBag.LastName = GetLastName;
@@ -72,9 +72,9 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> Profile()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Model = DB.Users.Where(w => w.Id == CurrentUser.Id).FirstOrDefault();//ข้อมูลผู้ใช้
-            var GetFaculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.faculty_name).FirstOrDefault();//ข้อมูลคณะ
-            var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == CurrentUser.branch_id).Select(s => s.branch_name).FirstOrDefault();//ข้อมูลสาขา
+            var Model = DB.Users.Where(w => w.Id == CurrentUser.Id).FirstOrDefault();
+            var GetFaculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.faculty_name).FirstOrDefault();
+            var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == CurrentUser.branch_id).Select(s => s.branch_name).FirstOrDefault();
 
             ViewBag.Faculty = GetFaculty;
             ViewBag.Branch = GetBranch;
@@ -87,13 +87,12 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> HistoryRegister()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Gets = await DB.TRANSACTION_REGISTER.ToListAsync();//ข้อมูลการสมัครงาน
-            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();//ข้อมูลงาน
-            var GetStatus = await DB.MASTER_STATUS.ToListAsync();//ข้อมูลสถานะ
-            var GetPlace = await DB.MASTER_PLACE.ToListAsync();//ข้อมูลสถานที่
-            var Model = new List<HistoryRegister>();//ตาราง Viesmodel ที่ใช้นำข้อมูลมาเเสดง
+            var Gets = await DB.TRANSACTION_REGISTER.ToListAsync();
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetStatus = await DB.MASTER_STATUS.ToListAsync();
+            var GetPlace = await DB.MASTER_PLACE.ToListAsync();
+            var Model = new List<HistoryRegister>();
 
-            //การ join table โดยนำค่าที่ต้องการมาเเสดง มาใส่ใน ViewsModels เเล้วไปเเสดงในหน้า Views
             foreach (var s in Gets.Where(w => w.s_id == CurrentUser.UserName))
             {
                 foreach (var data in GetJob.Where(w => w.transaction_job_id == s.transaction_job_id))
@@ -149,8 +148,8 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> Job()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var GetPlace = await DB.MASTER_PLACE.ToListAsync();//ข้อมูลสถานที่
-            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();//ข้อมูลงาน
+            var GetPlace = await DB.MASTER_PLACE.ToListAsync();
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
 
             //การ join table โดยนำค่าที่ต้องการมาเเสดง มาใส่ใน ViewsModels เเล้วไปเเสดงในหน้า Views
             var model = new List<ListJob>();
@@ -178,9 +177,9 @@ namespace SeniorProject.Controllers
         //หน้าฟอร์มการสมัครงาน
         public IActionResult FormRegisterJob(int transaction_job_id)
         {
-            var GetJobName = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).Select(s => s.job_name).FirstOrDefault();//ข้อมูลชื่องาน
+            var GetJobName = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).Select(s => s.job_name).FirstOrDefault();
 
-            ViewBag.Bank = new SelectList(DB.MASTER_BANK.ToList(), "banktype_id", "banktype_name");//ข้อมูลธนาคาร
+            ViewBag.Bank = new SelectList(DB.MASTER_BANK.ToList(), "banktype_id", "banktype_name");
             ViewBag.jobname = GetJobName;
 
             return View("FormRegisterJob");
@@ -192,8 +191,8 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model, IFormFile bank_file)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var GetOwner = await DB.TRANSACTION_JOB.ToListAsync();//ข้อมูลงาน
-            var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();//ข้อมูลการสมัครงาน
+            var GetOwner = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
 
             try
             {
