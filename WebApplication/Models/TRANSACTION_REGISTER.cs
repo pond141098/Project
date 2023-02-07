@@ -22,5 +22,9 @@ namespace SeniorProject.Models
         public string s_id { get; set; } 
         public string fullname { get; set; } 
         public string bank_store { get; set; } 
+        public DateTime approve_date { get; set; }
+        public DateTime approve_teacher_date { get; set; }
+        public DateTime approve_devstudent_date { get; set; }
+        public DateTime notapprove_date { get; set; }
     }
 }

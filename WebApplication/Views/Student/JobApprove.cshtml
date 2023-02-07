@@ -1,5 +1,44 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<SeniorProject.ViewModels.Student.ListJobApprove>
+
 @{
+    Layout = "~/Views/Shared/_FrontendLayout.cshtml";
+    ViewData["Title"] = "'งานที่ได้รับการอนุมัติเเล้ว";
+}
+
+<section class="bg-light py-5 border-bottom">
+    <div class="container px-5 my-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bolder">งานที่ได้รับการอนุมัติ</h2>
+            <p class="lead mb-0">JobsApprove</p>
+        </div>
+        <div class="row gx-5 justify-content-center">
+            @{
+                int Rows = 1;
+                foreach (var Gets in Model.OrderBy(f => f.id))
+                {
+                    <div class="card text-center" style="width:25rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">@Gets.job_name</h5>
+                            <p class="card-text">@Gets.job_detail</p>
+                            <p class="card-text">@Gets.job_status</p>
+                            <a class="btn btn-primary register" data-id="@Gets.id">Button</a>
+                        </div>
+                    </div>
+                    Rows++;
+                }
+            }
+        </div>
+    </div>
+    <div class="text-center mb-5">
+        <a class="btn btn-sm" type="button" style="font-size:25px;background-color:#312E81" a href="@Url.Action("Home","Student")"><font color="#F8FAFC">ย้อนกลับ</font></a>
+    </div>
+</section>
+
+@section Frontend{
+    <script type="text/javascript">
+        $(function () {
+            // go to working
+            
+        });
+    </script>
 }

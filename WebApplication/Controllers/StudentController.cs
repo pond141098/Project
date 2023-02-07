@@ -167,6 +167,7 @@ namespace SeniorProject.Controllers
                     Model.amount_person = j.amount_person;
                     Model.amount_working = j.amount_date;
                     Model.close_register = j.close_register_date;
+                    Model.create_job = j.update_date;
                     model.Add(Model);
 
                 }
@@ -227,8 +228,33 @@ namespace SeniorProject.Controllers
 
         #region งานที่ได้รับอนุมัติ
 
+        //งานที่ได้รับการอนุมัติ
+        public async Task<IActionResult> JobApprove()
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
+            var GetStatus = await DB.MASTER_STATUS.ToListAsync();
 
+            var models = new List<ListJobApprove>();
 
+            foreach (var j in GetJob) 
+            {
+                foreach(var r in GetRegister.Where(w => w.transaction_job_id == j.transaction_job_id))
+                {
+                    foreach(var s in GetStatus.Where(w => w.status_id == r.status_id))
+                    {
+                        var data = new ListJobApprove();
+                        data.id = r.transaction_register_id;
+                        data.job_name = j.job_name;
+                        data.job_detail = j.job_detail;
+                        data.job_status = s.status_name;
+                        models.Add(data);
+                    }
+                }
+            }
+            return PartialView("JobApprove");
+        }
         #endregion
 
         #region ลงเวลาการทำงาน

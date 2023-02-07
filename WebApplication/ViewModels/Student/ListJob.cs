@@ -12,5 +12,6 @@ namespace SeniorProject.ViewModels.Student
         public DateTime close_register { get; set; }
         public int amount_person { get; set;}
         public int amount_working { get; set;}
+        public DateTime create_job { get; set; }
     }
 }

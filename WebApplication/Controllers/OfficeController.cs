@@ -131,6 +131,7 @@ namespace SeniorProject.Controllers
                 Get.because_job = model.because_job;
                 Get.register_date = model.register_date;
                 Get.status_id = 5;
+                Get.approve_date = DateTime.Now;
                 DB.TRANSACTION_REGISTER.Update(Get);
                 await DB.SaveChangesAsync();
             }
@@ -163,6 +164,7 @@ namespace SeniorProject.Controllers
                 Get.because_job = model.because_job;
                 Get.register_date = model.register_date;
                 Get.status_id = 6;
+                Get.notapprove_date = DateTime.Now;
                 DB.TRANSACTION_REGISTER.Update(Get);
                 await DB.SaveChangesAsync();
             }
