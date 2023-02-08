@@ -27,7 +27,8 @@
                             <th scope="row">@Rows</th>
                             <td>@Gets.job_name</td>
                             <td>
-                                <button type="submit" class="btn btn-success btn-sm">ลงเวลาเข้า/ออกงาน</button>
+                                <button class="btn btn-success btn-sm check-in" id="@Gets.Id">ลงเวลาเข้างาน</button>
+                                <button class="btn btn-danger btn-sm check-out" id="@Gets.Id">ลงเวลาออกงาน</button>
                             </td>
                         </tr>
                         Rows++;
@@ -45,8 +46,14 @@
 @section Frontend{
     <script type="text/javascript">
         $(function () {
-            // go to FormWorking
-
+            // go to FormStartWorking
+            $(".check-in").click(function () {
+                window.location.href = "/Student/FormStartWorking?transaction_register_id=" + $(this).attr("id");
+            });
+            // go to FormEndWorking
+            $(".check-out").click(function () {
+                window.location.href = "/Student/FormEndWorking?transaction_register_id=" + $(this).attr("id");
+            });
         });
     </script>
 }

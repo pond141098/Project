@@ -43,7 +43,7 @@ namespace WebApplication.Controllers
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             if (CurrentUser.role_id == 2)
             {
-                return RedirectToAction("Index", "Teacher");
+                return RedirectToAction("Job", "Teacher");
             }
             else if (CurrentUser.role_id == 3)
             {

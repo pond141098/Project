@@ -1,0 +1,49 @@
+﻿@model SeniorProject.Models.TRANSACTION_WORKING
+
+@{
+    Layout = "~/Views/Shared/_FrontendLayout.cshtml";
+    ViewData["Title"] = "บันทึกเวลาเข้า/ออกงาน";
+}
+
+<section class="bg-light py-5 border-bottom">
+    <div class="container px-5 my-5">
+        <div class="text-center mb-5">
+            @*<h2 class="fw-bolder">@ViewBag.jobname</h2>*@
+        </div>
+        <fieldset>
+            <form asp-action="FormStartWorking"
+                  method="post"
+                  enctype="multipart/form-data"
+                  asp-antiforgery="true"
+                  data-sb-form-api-token="API_TOKEN"
+                  data-bv-message="This value is not valid"
+                  data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
+                  data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
+                  data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+
+                <div class="form-group">
+                    <br>
+                    <label for="exampleFormControlSelect1" style="font-size:20px">ไฟล์งานที่นักศึกษาได้ปฎิบัติ หรือ ภาพถ่าย ณ ตอนที่กำลังจะปฎิบัติงาน</label>
+                    <div class="custom-file">
+                        <input asp-for="file_work_start" class="form-control custom-file-input" type="file" name="bank_file" />
+                    </div>
+                    <div class="small text-muted mt-2">อัปโหลดไฟล์ขนาดไฟล์ไม่เกิน 50 MB</div>
+                </div>
+
+                <div class="col-md-12" style="text-align:left">
+                    <br>
+                    <button class="btn btn-success" type="submit" id="submit"> บันทึก</button>
+                </div>
+
+                <input type="hidden" asp-for="transaction_job_id">
+                <input type="hidden" asp-for="transaction_register_id">
+
+            </form>
+        </fieldset>
+    </div>
+    <div class="text-center mb-5">
+        <a class="btn" type="button" style="font-size:25px;background-color:#312E81" a href="@Url.Action("Job","Student")"><font color="#F8FAFC">ย้อนกลับ</font></a>
+    </div>
+</section>
+
+

@@ -19,8 +19,8 @@ namespace SeniorProject.Models
         public string detail_working { get; set; }
         public DateTime start_work { get; set; }
         public DateTime end_work { get; set;}
-        public string img_work { get; set; }
-        public string file_work { get; set; }
+        public string file_work_end { get; set; }
+        public string file_work_start { get; set; }
         public int status_working_id { get; set; }
     }
 }

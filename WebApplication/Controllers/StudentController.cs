@@ -123,6 +123,13 @@ namespace SeniorProject.Controllers
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
             {
+                var Model = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == id).FirstOrDefault();
+                //ถ้าสถานะเท่ากับอนุมัติ
+                if (Model.status_id == 5)
+                {
+                    return Json(new { valid = true, message = "Cannot Delete" });
+                }
+
                 //ลบไฟล์สำเนาสมุดบัญชีธนาคารใน wwwroot
                 string fullPath = Path.Combine(_environment.WebRootPath.ToString(),("uploads/bookbank"), bankfile);
                 if (System.IO.File.Exists(fullPath))
@@ -130,7 +137,6 @@ namespace SeniorProject.Controllers
                     System.IO.File.Delete(fullPath);
                 }
 
-                var Model = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == id).FirstOrDefault();
                 DB.TRANSACTION_REGISTER.Remove(Model);
                 await DB.SaveChangesAsync();
             }
@@ -302,29 +308,68 @@ namespace SeniorProject.Controllers
         }
 
         //ฟอร์มลงเวลาการทำงาน-ออกงาน
-        public IActionResult FormWorking(int transaction_register_id)
-        {
-            var Gets = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
-            
-            return View("FormWorking");
+        public IActionResult FormStartWorking()
+        {   
+            return View("FormStartWorking");
         }
 
         //บันทึกข้อมูลลงดาต้าเบส
-        public async Task<IActionResult> FormWorking()
+        [HttpPost]
+        public async Task<IActionResult> FormStartWorking(TRANSACTION_WORKING Model,IFormFile file_start)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
 
             try
             {
+                //อัพโหลดไฟล์ในการเริ่มทำงาน
+                var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_start_working/");
+                string file = ContentDispositionHeaderValue.Parse(file_start.ContentDisposition).FileName.Trim('"');
+                string UniqueFileName = string.Format(@"{0}", Guid.NewGuid()) + file.ToString();
+
+                using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
+                {
+                    await file_start.CopyToAsync(fileStream);
+                }
 
             }
             catch (Exception Error)
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            return PartialView("FormWorking");
+            return PartialView("FormStartWorking");
         }
 
+        public IActionResult FormEndWorking(int transaction_register_id)
+        {
+            var Gets = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
+
+            return View("FormEndWorking", Gets);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult>FormEndWorking(TRANSACTION_WORKING Model,IFormFile file_end)
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+
+            try
+            {
+                //อัพโหลดไฟล์สิ้นสุดงาน
+                var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_end_working/");
+                string file = ContentDispositionHeaderValue.Parse(file_end.ContentDisposition).FileName.Trim('"');
+                string UniqueFileName = string.Format(@"{0}", Guid.NewGuid()) + file.ToString();
+
+                using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
+                {
+                    await file_end.CopyToAsync(fileStream);
+                }
+
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error.Message });
+            }
+            return RedirectToAction("Index");
+        }
         #endregion
 
         #region ประวัติการทำงาน
