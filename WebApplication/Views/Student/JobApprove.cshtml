@@ -14,14 +14,14 @@
         <div class="row gx-5 justify-content-center">
             @{
                 int Rows = 1;
-                foreach (var Gets in Model.OrderBy(f => f.id))
+                foreach (var Gets in Model.OrderBy(f => f.confirm_approve))
                 {
-                    <div class="card text-center" style="width:25rem;">
+                    <div class="card text-center my-3 mx-3" style="width:25rem;">
                         <div class="card-body">
                             <h5 class="card-title">@Gets.job_name</h5>
                             <p class="card-text">@Gets.job_detail</p>
                             <p class="card-text">@Gets.job_status</p>
-                            <a class="btn btn-primary register" data-id="@Gets.id">Button</a>
+                            <a class="btn btn-success start" a href="@Url.Action("ListWorking","Student",new { id = @Gets.id , j_id = Gets.j_id})">เริ่มทำงาน</a>
                         </div>
                     </div>
                     Rows++;
@@ -34,11 +34,13 @@
     </div>
 </section>
 
-@section Frontend{
+@*@section Frontend{
     <script type="text/javascript">
         $(function () {
             // go to working
-            
+            $(".start").click(function () {
+                window.location.href = "/Student/ListWorking?transaction_job_id=" + $(this).attr("data-id");data-id="@Gets.id/@Gets.j_id"
+            });
         });
     </script>
-}
+}*@

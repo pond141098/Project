@@ -1,0 +1,52 @@
+﻿@model IEnumerable<SeniorProject.ViewModels.Student.ListWorking>
+
+@{
+    Layout = "~/Views/Shared/_FrontendLayout.cshtml";
+    ViewData["Title"] = "'งานที่ได้รับการอนุมัติเเล้ว";
+}
+
+<section class="bg-light py-5 border-bottom">
+    <div class="container px-5 my-5">
+        <div class="text-center mb-5">
+            @*<h2 class="fw-bolder">งานที่ได้รับการอนุมัติ</h2>*@
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ลำดับที่ทำงาน</th>
+                    <th scope="col">สถานะ</th>
+                    <th scope="col">ตัวดำเนินการ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int Rows = 1;
+                    foreach (var Gets in Model.OrderBy(f => f.amount_date))
+                    {
+                        <tr>
+                            <th scope="row">@Rows</th>
+                            <td>@Gets.job_name</td>
+                            <td>
+                                <button type="submit" class="btn btn-success btn-sm">ลงเวลาเข้า/ออกงาน</button>
+                            </td>
+                        </tr>
+                        Rows++;
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center mb-5">
+        <a class="btn btn-sm" type="button" style="font-size:25px;background-color:#312E81" a href="@Url.Action("Home","Student")"><font color="#F8FAFC">ย้อนกลับ</font></a>
+    </div>
+</section>
+
+@section Frontend{
+    <script type="text/javascript">
+        $(function () {
+            // go to FormWorking
+
+        });
+    </script>
+}

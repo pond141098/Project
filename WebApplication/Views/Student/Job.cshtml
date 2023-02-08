@@ -16,13 +16,13 @@
                 int Rows = 1;
                 foreach (var Gets in Model.OrderBy(f => f.id))
                 {
-                    <div class="card text-center" style="width:25rem;">
+                    <div class="card text-center my-3 mx-3" style="width:25rem;">
                         <div class="card-body">
                             <h5 class="card-title">@Gets.jobname</h5>
                             <p class="card-text">@Gets.job_detail</p>
                             <p class="card-text">@Gets.amount_person</p>
                             <p class="card-text">@Gets.close_register</p>
-                            <a class="btn btn-primary register" data-id="@Gets.id">Button</a>
+                            <a class="btn btn-primary register" data-id="@Gets.id">สมัครงาน</a>
                         </div>
                     </div>
                     Rows++;

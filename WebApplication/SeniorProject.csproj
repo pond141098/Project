@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Student\ListWorking.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="iTextSharp" Version="5.5.13.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.29" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.32" />
@@ -37,6 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\Student\ListWorking.cshtml" />
     <None Include="wwwroot\fonts\font-awesome\fontawesome-webfont.svg" />
     <None Include="wwwroot\fonts\font-awesome\fontawesome-webfont.woff2" />
     <None Include="wwwroot\fonts\fontawesome-webfont.svg" />
@@ -413,6 +418,14 @@
     <None Include="wwwroot\lib\jquery\dist\jquery.js" />
     <None Include="wwwroot\lib\jquery\dist\jquery.min.js" />
     <None Include="wwwroot\lib\jquery\dist\jquery.min.map" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Student\ListWorking.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Student\ListWorking.cshtml" />
   </ItemGroup>
 
 </Project>

@@ -238,26 +238,96 @@ namespace SeniorProject.Controllers
 
             var models = new List<ListJobApprove>();
 
-            foreach (var j in GetJob) 
+            foreach (var r in GetRegister.Where(w => w.s_id == CurrentUser.UserName)) 
             {
-                foreach(var r in GetRegister.Where(w => w.transaction_job_id == j.transaction_job_id))
+                foreach(var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id))
                 {
                     foreach(var s in GetStatus.Where(w => w.status_id == r.status_id))
                     {
                         var data = new ListJobApprove();
-                        data.id = r.transaction_register_id;
-                        data.job_name = j.job_name;
-                        data.job_detail = j.job_detail;
-                        data.job_status = s.status_name;
-                        models.Add(data);
+                        
+                        //ถ้าสถานะการสมัครงานเท่ากับอนุมัติ
+                        if(r.status_id == 5)
+                        {
+                            data.id = r.transaction_register_id;
+                            data.j_id = r.transaction_job_id;
+                            data.job_name = j.job_name;
+                            data.job_detail = j.job_detail;
+                            data.job_status = s.status_name;
+                            data.confirm_approve = r.approve_date;
+                            models.Add(data);
+                        }
                     }
                 }
             }
-            return PartialView("JobApprove");
+            return PartialView("JobApprove",models);
         }
+
         #endregion
 
         #region ลงเวลาการทำงาน
+        
+        //รายการวันที่ทำงาน
+        public async Task<IActionResult>ListWorking(int j_id,int id)
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
+            var GetStatus = await DB.MASTER_STATUS.ToListAsync();
+
+            var models = new List<ListWorking>();
+            
+            foreach(var r in GetRegister.Where(w => w.s_id == CurrentUser.UserName && w.transaction_register_id == id))
+            {
+                foreach(var j in GetJob.Where(w => w.transaction_job_id == j_id))
+                {
+                    foreach(var s in GetStatus.Where(w => w.status_id == r.status_id))
+                    {
+                        var data = new ListWorking();
+
+                        //ถ้าสถานะการสมัครงานเท่ากับอนุมัติ
+                        if (s.status_id == 5 )
+                        {
+                            data.Id = r.transaction_register_id;
+                            data.amount_date = j.amount_date;
+                            data.job_name = j.job_name;
+                            data.status = "";
+                            models.Add(data);
+                        }
+                    }
+                }
+            }
+
+            return PartialView("ListWorking",models);
+        }
+
+        //ฟอร์มลงเวลาการทำงาน-ออกงาน
+        public IActionResult FormWorking(int transaction_register_id)
+        {
+            var Gets = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
+            
+            return View("FormWorking");
+        }
+
+        //บันทึกข้อมูลลงดาต้าเบส
+        public async Task<IActionResult> FormWorking()
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+
+            try
+            {
+
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error.Message });
+            }
+            return PartialView("FormWorking");
+        }
+
+        #endregion
+
+        #region ประวัติการทำงาน
 
 
         #endregion
