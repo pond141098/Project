@@ -36,21 +36,28 @@
         </div>
     </nav>
     <!-- Header-->
-    <header class="py-5" style="background-color:#164E63">
-        <div class="container px-5">
-            <div class="row gx-5 justify-content-center">
-                <div class="col-lg-6">
-                    <div class="text-center my-5">
-                        <h1 class="display-5 fw-bolder text-white mb-2">Present your SeniorProject <br> In Computer Science</h1>
-                        <p class="lead text-white-50 mb-4">Job management prototype system earn extra income for students<br>Case Study in Rajamangala University of Technology Thanyaburi</p>
-                        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
-                            @*<a class="btn btn-primary btn-lg px-4 me-sm-3" a href="@Url.Action("Home", "Student")">เข้าสู่ระบบ</a>*@
-                        </div>
-                    </div>
-                </div>
+    <!--Carousel-->
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="/img/rmutt1.jpg" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="/img/rmutt2.jpg" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="/img/rmutt3.jpg" class="d-block w-100" alt="...">
             </div>
         </div>
-    </header>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
 
 
 
@@ -58,8 +65,149 @@
 
         @RenderBody()
 
+        <!--Faculty section-->
+        <section class="py-5 border-bottom" id="faculty">
+            <div class="container px-4 px-lg-5 mt-5">
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="/img/science.jpg" alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">Science of Technology</h5>
+                                    <!-- Product price-->
+                                    คณะวิทยาศาสตร์
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn mt-auto btn-success" href="#">Website</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="/img/mass.jpg" alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">Mass Communication Technology</h5>
+                                    <!-- Product price-->
+                                    คณะเทคโนโลยีสื่อสารมวลชน
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn mt-auto btn-success" href="#">Website</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="/img/engineer.jpg" alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">Engineer</h5>
+                                    <!-- Product price-->
+                                    คณะวิศวกรรมศาสตร์
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn mt-auto btn-success" href="#">Website</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="/img/business.jpg" alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">Business Administration</h5>
+                                    <!-- Product price-->
+                                    คณะบริหารธุรกิจ
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn mt-auto btn-success" href="#">Website</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="/img/liberal.jpg" alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">Liberal Arts</h5>
+                                    <!-- Product price-->
+                                    คณะศิลปศาสตร์
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn mt-auto btn-success" href="#">Website</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="/img/ARCH.jpg" alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">Architecture</h5>
+                                    <!-- Product price-->
+                                    คณะสถาปัตยกรรมศาสตร์
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn mt-auto btn-success" href="#">Website</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="/img/teched.jpg" alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">Technical Education</h5>
+                                    <!-- Product price-->
+                                    คณะครุศาสตร์อุตสาหกรรม
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn mt-auto btn-success" href="#">Website</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- About section-->
-        <section class="py-5 border-bottom" id="about">
+        <section class="bg-light py-5 border-bottom" id="about">
             <div class="container px-5 my-5 px-5">
                 <div class="text-center mb-5">
                     <h2 class="fw-bolder">About</h2>
@@ -67,8 +215,9 @@
                 </div>
             </div>
         </section>
+
         <!-- Contact section-->
-        <section class="bg-light py-5" id="contact">
+        <section class="py-5" id="contact">
             <div class="container px-5 my-5 px-5">
                 <div class="text-center mb-5">
                     <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-envelope"></i></div>
