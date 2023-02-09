@@ -131,14 +131,22 @@ namespace SeniorProject.Controllers
             try
             {
                 var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == model.transaction_register_id).FirstOrDefault();
+                var CGet = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == model.transaction_job_id).Select(s => s.transaction_register_id).Count();
+                var CJob = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == model.transaction_job_id).Select(s => s.amount_person).FirstOrDefault();
+
+                //เช็คว่ามีอนุมัติครบตามจำนวนนักศึกษาที่ต้องการหรือยัง ถ้าเกินจะไม่สามารถบันทึกได้
+                if (CGet >= CJob)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถส่งอนุมัติได้ !!!" });
+                }
 
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
-                if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
+                if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7 )
                 {
                     return Json(new { valid = false, message = "ไม่สามารถส่งอนุมัติได้ !!!" });
                 }
                 else if (Get.status_id == 8)
-                {
+                { 
                     Get.fullname = model.fullname;
                     Get.s_id = model.s_id;
                     Get.bank_file = model.bank_file;
