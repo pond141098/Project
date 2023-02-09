@@ -26,7 +26,8 @@
                     <label for="exampleFormControlInput1" style="font-size:20px">สาเหตุในการสมัครงาน</label>
                     <textarea class="form-control" placeholder="อธิบาย..." asp-for="because_job"
                               data-bv-notempty-message="กรุณากรอกข้อมูล"
-                              data-bv-notempty="true"></textarea>
+                              data-bv-notempty="true"
+                              required></textarea>
                 </div>
 
                 <div class="form-group">
@@ -41,8 +42,9 @@
                     <input type="text" class="form-control" asp-for="bank_no"
                            data-bv-notempty="true"
                            data-bv-notempty-message="กรุณากรอกข้อมูล"
-                           pattern="^[123456789]+$"
-                           data-bv-message="กรุณากรอกตัวเลขเท่านั้น" />
+                           pattern="^[1234567890]+$"
+                           data-bv-message="กรุณากรอกตัวเลขเท่านั้น" 
+                           required/>
                 </div>
 
                 <div>
@@ -50,23 +52,30 @@
                     <label for="exampleFormControlInput1" style="font-size:20px">สาขาธนาคาร</label>
                     <input type="text" class="form-control" asp-for="bank_store"
                            data-bv-notempty="true"
-                           data-bv-notempty-message="กรุณากรอกข้อมูล" />
+                           data-bv-notempty-message="กรุณากรอกข้อมูล" 
+                           required/>
                 </div>
 
                 <div class="form-group">
                     <br>
                     <label for="exampleFormControlSelect1" style="font-size:20px">สำเนาสมุดบัญชีธนาคาร (พร้อมเซ็นรับรอง)</label>
                     <div class="custom-file">
-                        <input asp-for="bank_file" class="form-control custom-file-input" type="file" name="bank_file" />
+                        <input asp-for="bank_file" class="form-control custom-file-input" type="file" name="bank_file"
+                               data-bv-notempty="true"
+                               data-bv-notempty-message="กรุณาเลือกรูปป่านันทนาการ "
+                               pattern="([a-zA-Z0-9\s_\\.\-\(\):])+(.pdf)$" 
+                               required/>
                     </div>
-                    <div class="small text-muted mt-2">อัปโหลดไฟล์ สำเนาสมุดบัญชีธนาคาร พร้อมเซ็นรับรอง. ขนาดไฟล์ไม่เกิน 50 MB</div>
+                    <div class="small text-muted mt-2">อัปโหลดไฟล์ PDF เท่านั้น </div>
                 </div>
 
                 <div class="col-md-12" style="text-align:left">
                     <br>
                     <button class="btn btn-success" type="submit" id="submit"> บันทึก</button>
                 </div>
+
                 <input type="hidden" asp-for="transaction_job_id">
+
             </form>
         </fieldset>
     </div>

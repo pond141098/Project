@@ -97,7 +97,7 @@ namespace SeniorProject.Controllers
             {
                 foreach (var data in GetJob.Where(w => w.transaction_job_id == s.transaction_job_id))
                 {
-                    foreach(var p in GetPlace.Where(w => w.place_id == data.place_id))
+                    foreach (var p in GetPlace.Where(w => w.place_id == data.place_id))
                     {
                         foreach (var item in GetStatus.Where(w => w.status_id == s.status_id))
                         {
@@ -131,7 +131,7 @@ namespace SeniorProject.Controllers
                 }
 
                 //ลบไฟล์สำเนาสมุดบัญชีธนาคารใน wwwroot
-                string fullPath = Path.Combine(_environment.WebRootPath.ToString(),("uploads/bookbank"), bankfile);
+                string fullPath = Path.Combine(_environment.WebRootPath.ToString(), ("uploads/bookbank"), bankfile);
                 if (System.IO.File.Exists(fullPath))
                 {
                     System.IO.File.Delete(fullPath);
@@ -156,6 +156,7 @@ namespace SeniorProject.Controllers
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetPlace = await DB.MASTER_PLACE.ToListAsync();
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            //var GetRegis = await DB.TRANSACTION_REGISTER.ToListAsync();
 
             //การ join table โดยนำค่าที่ต้องการมาเเสดง มาใส่ใน ViewsModels เเล้วไปเเสดงในหน้า Views
             var model = new List<ListJob>();
@@ -164,19 +165,24 @@ namespace SeniorProject.Controllers
             {
                 foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                 {
-
                     var Model = new ListJob();
-                    Model.id = j.transaction_job_id;
-                    Model.jobname = j.job_name;
-                    Model.jobplace = p.place_name;
-                    Model.job_detail = j.job_detail;
-                    Model.amount_person = j.amount_person;
-                    Model.amount_working = j.amount_date;
-                    Model.close_register = j.close_register_date;
-                    Model.create_job = j.update_date;
-                    model.Add(Model);
+                    var Check = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id && CurrentUser.UserName == w.s_id).Count() < 1 ;
 
+                    //ถ้าวันที่ปิดรับสมัครเท่ากับหรือมากกว่าวันที่ปัจจุบัน เเละ ถ้าในตารางการสมัครงานมี ไอดีงาน เเละ ไอดีผู้สมัครอยู่เเล้วเป็นจริง ให้ทำกรบันทึกข้อมูลลง Viewmodel
+                    if (j.close_register_date >= DateTime.Now && Check == true)
+                    {
+                        Model.id = j.transaction_job_id;
+                        Model.jobname = j.job_name;
+                        Model.jobplace = p.place_name;
+                        Model.job_detail = j.job_detail;
+                        Model.amount_person = j.amount_person;
+                        Model.amount_working = j.amount_date;
+                        Model.close_register = j.close_register_date;
+                        Model.create_job = j.update_date;
+                        model.Add(Model);
+                    }
                 }
+
             }
             return PartialView("Job", model);
         }
@@ -244,16 +250,16 @@ namespace SeniorProject.Controllers
 
             var models = new List<ListJobApprove>();
 
-            foreach (var r in GetRegister.Where(w => w.s_id == CurrentUser.UserName)) 
+            foreach (var r in GetRegister.Where(w => w.s_id == CurrentUser.UserName))
             {
-                foreach(var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id))
+                foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id))
                 {
-                    foreach(var s in GetStatus.Where(w => w.status_id == r.status_id))
+                    foreach (var s in GetStatus.Where(w => w.status_id == r.status_id))
                     {
                         var data = new ListJobApprove();
-                        
+
                         //ถ้าสถานะการสมัครงานเท่ากับอนุมัติ
-                        if(r.status_id == 5)
+                        if (r.status_id == 5)
                         {
                             data.id = r.transaction_register_id;
                             data.j_id = r.transaction_job_id;
@@ -266,15 +272,15 @@ namespace SeniorProject.Controllers
                     }
                 }
             }
-            return PartialView("JobApprove",models);
+            return PartialView("JobApprove", models);
         }
 
         #endregion
 
         #region ลงเวลาการทำงาน
-        
+
         //รายการวันที่ทำงาน
-        public async Task<IActionResult>ListWorking(int j_id,int id)
+        public async Task<IActionResult> ListWorking(int j_id, int id)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
@@ -282,17 +288,17 @@ namespace SeniorProject.Controllers
             var GetStatus = await DB.MASTER_STATUS.ToListAsync();
 
             var models = new List<ListWorking>();
-            
-            foreach(var r in GetRegister.Where(w => w.s_id == CurrentUser.UserName && w.transaction_register_id == id))
+
+            foreach (var r in GetRegister.Where(w => w.s_id == CurrentUser.UserName && w.transaction_register_id == id))
             {
-                foreach(var j in GetJob.Where(w => w.transaction_job_id == j_id))
+                foreach (var j in GetJob.Where(w => w.transaction_job_id == j_id))
                 {
-                    foreach(var s in GetStatus.Where(w => w.status_id == r.status_id))
+                    foreach (var s in GetStatus.Where(w => w.status_id == r.status_id))
                     {
                         var data = new ListWorking();
 
                         //ถ้าสถานะการสมัครงานเท่ากับอนุมัติ
-                        if (s.status_id == 5 )
+                        if (s.status_id == 5)
                         {
                             data.Id = r.transaction_register_id;
                             data.amount_date = j.amount_date;
@@ -304,18 +310,18 @@ namespace SeniorProject.Controllers
                 }
             }
 
-            return PartialView("ListWorking",models);
+            return PartialView("ListWorking", models);
         }
 
         //ฟอร์มลงเวลาการทำงาน-ออกงาน
         public IActionResult FormStartWorking()
-        {   
+        {
             return View("FormStartWorking");
         }
 
         //บันทึกข้อมูลลงดาต้าเบส
         [HttpPost]
-        public async Task<IActionResult> FormStartWorking(TRANSACTION_WORKING Model,IFormFile file_start)
+        public async Task<IActionResult> FormStartWorking(TRANSACTION_WORKING Model, IFormFile file_start)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
 
@@ -347,7 +353,7 @@ namespace SeniorProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult>FormEndWorking(TRANSACTION_WORKING Model,IFormFile file_end)
+        public async Task<IActionResult> FormEndWorking(TRANSACTION_WORKING Model, IFormFile file_end)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
 

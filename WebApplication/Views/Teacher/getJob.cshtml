@@ -14,7 +14,7 @@
     <tbody>
         @{
             int Rows = 1;
-            foreach (var Get in Model.OrderBy(f => f.transaction_job_id))
+            foreach (var Get in Model.OrderBy(f => f.close_register_date))
             {
                 <tr>
                     <td class="text-align-center" width="50">@Rows.</td>
