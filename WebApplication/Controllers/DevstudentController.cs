@@ -176,5 +176,20 @@ namespace SeniorProject.Controllers
             }
             return Json(new { valid = true, message = "ไม่อนุมัติสำเร็จ" });
         }
+
+        //อนุมัติทั้งหมด
+        public async Task<IActionResult> AllApprove()
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            try
+            {
+                
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error });
+            }
+            return Json(new { valid = true, message = "อนุมัติเรียบร้อย" });
+        }
     }
 }

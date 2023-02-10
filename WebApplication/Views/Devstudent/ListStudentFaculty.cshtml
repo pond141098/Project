@@ -1,4 +1,6 @@
-﻿@{
+﻿@*@model IEnumerable<SeniorProject.Models.TRANSACTION_REGISTER>*@
+
+@{
     Layout = "~/Views/Shared/_Layout2.cshtml";
     ViewData["Title"] = "";
 }
@@ -14,6 +16,13 @@
     </ol>
 </div>
 <div id="content">
+    <section id="widget-grid">
+        <div class="row">
+            <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margin-bottom-5">
+                <button class="btn btn-success" id="AllApprove"><i class="fa fa-check-circle"></i>  อนุมัติทั้งหมด</button>
+            </article>
+        </div>
+    </section>
     <section id="widget-grid">
         <div class="row">
             <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

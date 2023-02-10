@@ -7,25 +7,30 @@
 
 <section class="bg-light py-5 border-bottom">
     <div class="container px-5 my-5">
-        <div class="text-center mb-5">
-            @*<h2 class="fw-bolder">งานที่ได้รับการอนุมัติ</h2>*@
+        <div class="text-center pt-3 pb-2">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp"
+                 alt="Check" width="60">
+            <h2 class="my-4">รายการเข้า/ออกงาน</h2>
         </div>
         <table class="table">
             <thead>
                 <tr>
                     <th scope="col">ลำดับที่ทำงาน</th>
+                    <th scope="col">งาน</th>
                     <th scope="col">สถานะ</th>
-                    <th scope="col">ตัวดำเนินการ</th>
+                    <th scope="col" class="col-3">ตัวดำเนินการ</th>
                 </tr>
             </thead>
             <tbody>
                 @{
+
                     int Rows = 1;
-                    foreach (var Gets in Model.OrderBy(f => f.amount_date))
+                    foreach (var Gets in Model)
                     {
                         <tr>
                             <th scope="row">@Rows</th>
                             <td>@Gets.job_name</td>
+                            <td>@Gets.status</td>
                             <td>
                                 <button class="btn btn-success btn-sm check-in" id="@Gets.Id">ลงเวลาเข้างาน</button>
                                 <button class="btn btn-danger btn-sm check-out" id="@Gets.Id">ลงเวลาออกงาน</button>
@@ -34,12 +39,11 @@
                         Rows++;
                     }
                 }
-
             </tbody>
         </table>
     </div>
     <div class="text-center mb-5">
-        <a class="btn btn-sm" type="button" style="font-size:25px;background-color:#312E81" a href="@Url.Action("Home","Student")"><font color="#F8FAFC">ย้อนกลับ</font></a>
+        <a class="btn btn-sm" type="button" style="font-size:18px;background-color:#312E81" a href="@Url.Action("JobApprove","Student")"><font color="#F8FAFC">ย้อนกลับ</font></a>
     </div>
 </section>
 

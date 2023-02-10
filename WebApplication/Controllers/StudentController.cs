@@ -156,7 +156,6 @@ namespace SeniorProject.Controllers
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetPlace = await DB.MASTER_PLACE.ToListAsync();
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
-            //var GetRegis = await DB.TRANSACTION_REGISTER.ToListAsync();
 
             //การ join table โดยนำค่าที่ต้องการมาเเสดง มาใส่ใน ViewsModels เเล้วไปเเสดงในหน้า Views
             var model = new List<ListJob>();
@@ -286,6 +285,7 @@ namespace SeniorProject.Controllers
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
             var GetStatus = await DB.MASTER_STATUS.ToListAsync();
+            var GetWorking = await DB.TRANSACTION_WORKING.ToListAsync();
 
             var models = new List<ListWorking>();
 
@@ -300,16 +300,19 @@ namespace SeniorProject.Controllers
                         //ถ้าสถานะการสมัครงานเท่ากับอนุมัติ
                         if (s.status_id == 5)
                         {
-                            data.Id = r.transaction_register_id;
-                            data.amount_date = j.amount_date;
-                            data.job_name = j.job_name;
-                            data.status = "";
-                            models.Add(data);
+                            for(var i = 1; i <= j.amount_date;i++)
+                            {
+                                data.Id = r.transaction_register_id;
+                                data.amount_date = j.amount_date;
+                                data.rows = i;
+                                data.job_name = j.job_name;
+                                data.status = "";
+                                models.Add(data);
+                            }
                         }
                     }
                 }
             }
-
             return PartialView("ListWorking", models);
         }
 
