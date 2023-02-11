@@ -8,7 +8,6 @@
 <section class="bg-light py-5 border-bottom">
     <div class="container px-5 my-5">
         <div class="text-center mb-5">
-            @*<h2 class="fw-bolder">@ViewBag.jobname</h2>*@
         </div>
         <fieldset>
             <form asp-action="FormStartWorking"
@@ -25,7 +24,7 @@
                     <br>
                     <label for="exampleFormControlSelect1" style="font-size:20px">ไฟล์งานที่นักศึกษาได้ปฎิบัติ หรือ ภาพถ่าย ณ ตอนที่กำลังจะปฎิบัติงาน</label>
                     <div class="custom-file">
-                        <input asp-for="file_work_start" class="form-control custom-file-input" type="file" name="bank_file" />
+                        <input asp-for="file_work_start" class="form-control custom-file-input" type="file" name="file_start" />
                     </div>
                     <div class="small text-muted mt-2">อัปโหลดไฟล์ขนาดไฟล์ไม่เกิน 50 MB</div>
                 </div>
@@ -35,15 +34,13 @@
                     <button class="btn btn-success" type="submit" id="submit"> บันทึก</button>
                 </div>
 
-                <input type="hidden" asp-for="transaction_job_id">
                 <input type="hidden" asp-for="transaction_register_id">
 
             </form>
         </fieldset>
     </div>
     <div class="text-center mb-5">
-        <a class="btn" type="button" style="font-size:25px;background-color:#312E81" a href="@Url.Action("ListWorking","Student")"><font color="#F8FAFC">ย้อนกลับ</font></a>
+        <a class="btn " type="button" id="" style="font-size:25px;background-color:#312E81" a href="@Url.Action("JobApprove","Student")"><font color="#F8FAFC">ย้อนกลับ</font></a>
     </div>
 </section>
-
 

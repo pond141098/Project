@@ -1,0 +1,47 @@
+﻿@model IEnumerable<SeniorProject.ViewModels.Student.HistoryWorking>
+
+@{
+    Layout = "~/Views/Shared/_FrontendLayout.cshtml";
+    ViewData["Title"] = "ประวัติการทำงาน";
+}
+
+<section class="bg-light py-5 border-bottom">
+    <div class="container px-5 my-5">
+        @*<div class="text-center pt-3 pb-2">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp"
+                 alt="Check" width="60">
+            <h2 class="my-4">รายการเข้า/ออกงาน</h2>
+        </div>*@
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ลำดับ</th>
+                    <th scope="col">งาน</th>
+                    <th scope="col">เข้างาน</th>
+                    <th scope="col">ออกงาน</th>
+                    <th scope="col">สถานะ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+
+                    int Rows = 1;
+                    foreach (var Gets in Model)
+                    {
+                        <tr>
+                            <th scope="row">@Rows</th>
+                            <td>@Gets.job_name</td>
+                            <td>@Gets.check_in</td>
+                            <td>@Gets.check_out</td>
+                            <td>@Gets.status_name</td>
+                        </tr>
+                        Rows++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center mb-5">
+        <a class="btn btn-sm" type="button" style="font-size:18px;background-color:#312E81" a href="@Url.Action("JobApprove","Student")"><font color="#F8FAFC">ย้อนกลับ</font></a>
+    </div>
+</section>

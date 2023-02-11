@@ -327,6 +327,7 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> FormStartWorking(TRANSACTION_WORKING Model, IFormFile file_start)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var GetRegis = await DB.TRANSACTION_REGISTER.ToListAsync();
 
             try
             {
@@ -340,12 +341,21 @@ namespace SeniorProject.Controllers
                     await file_start.CopyToAsync(fileStream);
                 }
 
+                Model.start_work = DateTime.Now;
+                //Model.end_work = DateTime.Now;
+                Model.file_work_start = UniqueFileName;
+                Model.status_working_id = 2;
+                Model.transaction_register_id = GetRegis.Select(s => s.transaction_register_id).FirstOrDefault();
+                //Model.detail_working = "ไม่มี";
+                DB.TRANSACTION_WORKING.Add(Model);
+                await DB.SaveChangesAsync();
+
             }
             catch (Exception Error)
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            return PartialView("FormStartWorking");
+            return RedirectToAction("HistoryWorking","Student");
         }
 
         public IActionResult FormEndWorking(int transaction_register_id)
@@ -362,6 +372,8 @@ namespace SeniorProject.Controllers
 
             try
             {
+                var Get = await DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == Model.transaction_working_id).FirstOrDefaultAsync();
+
                 //อัพโหลดไฟล์สิ้นสุดงาน
                 var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_end_working/");
                 string file = ContentDispositionHeaderValue.Parse(file_end.ContentDisposition).FileName.Trim('"');
@@ -372,17 +384,57 @@ namespace SeniorProject.Controllers
                     await file_end.CopyToAsync(fileStream);
                 }
 
+                Get.start_work = Model.start_work;
+                Get.end_work = DateTime.Now;
+                Get.file_work_start = Model.file_work_start;
+                Get.file_work_end = UniqueFileName;
+                Get.status_working_id = 3;
+                Get.transaction_register_id = Model.transaction_register_id;
+                DB.TRANSACTION_WORKING.Update(Get);
+                await DB.SaveChangesAsync();
+
             }
             catch (Exception Error)
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("HistoryWorking","Student");
         }
         #endregion
 
         #region ประวัติการทำงาน
+        public async Task<IActionResult>HistoryWorking()
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var GetWorking = await DB.TRANSACTION_WORKING.ToListAsync();
+            var GetRegis = await DB.TRANSACTION_REGISTER.ToListAsync();
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetStatus = await DB.MASTER_STATUS_WORKING.ToListAsync();
 
+            var Models = new List<HistoryWorking>();
+
+            foreach (var wk in GetWorking)
+            {
+                foreach(var r in GetRegis.Where(w => w.transaction_register_id == wk.transaction_register_id && w.s_id == CurrentUser.UserName))
+                {
+                    foreach(var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id))
+                    {
+                        foreach(var s in GetStatus.Where(w => w.status_working_id == wk.status_working_id))
+                        {
+                            var model = new HistoryWorking();
+                            model.Id = wk.transaction_working_id;
+                            model.job_name = j.job_name;
+                            model.status_name = s.status_working_name;
+                            model.check_in = wk.start_work;
+                            model.check_out = wk.end_work;
+                            Models.Add(model);
+                        }
+                    }
+                }
+            }    
+
+            return PartialView("HistoryWorking",Models);
+        }
 
         #endregion
     }

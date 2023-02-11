@@ -11,7 +11,7 @@
             @*<h2 class="fw-bolder">@ViewBag.jobname</h2>*@
         </div>
         <fieldset>
-            <form asp-action="FormStartWorking"
+            <form asp-action="FormEndWorking"
                   method="post"
                   enctype="multipart/form-data"
                   asp-antiforgery="true"
@@ -32,7 +32,7 @@
                     <br>
                     <label for="exampleFormControlSelect1" style="font-size:20px">ไฟล์งานที่นักศึกษาได้ปฎิบัติ หรือ ภาพถ่าย ณ ตอนที่กำลังจะปฎิบัติงาน</label>
                     <div class="custom-file">
-                        <input asp-for="file_work_end" class="form-control custom-file-input" type="file" name="bank_file" />
+                        <input asp-for="file_work_end" class="form-control custom-file-input" type="file" name="file_end" />
                     </div>
                     <div class="small text-muted mt-2">อัปโหลดไฟล์ขนาดไฟล์ไม่เกิน 50 MB</div>
                 </div>
@@ -42,8 +42,10 @@
                     <button class="btn btn-success" type="submit" id="submit"> บันทึก</button>
                 </div>
 
-                <input type="hidden" asp-for="transaction_job_id">
                 <input type="hidden" asp-for="transaction_register_id">
+                <input type="hidden" asp-for="transaction_working_id">
+                <input type="hidden" asp-for="start_work">
+                <input type="hidden" asp-for="file_work_start">
 
             </form>
         </fieldset>
