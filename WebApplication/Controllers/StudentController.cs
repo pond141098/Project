@@ -370,7 +370,27 @@ namespace SeniorProject.Controllers
 
             try
             {
+                Model.start_work = DateTime.Now;
+                Model.end_work = DateTime.Now;
+                Model.status_working_id = 2;
+                Model.transaction_job_id = GetRegis.Select(s => s.transaction_job_id).FirstOrDefault();
+                Model.transaction_register_id = GetRegis.Select(s => s.transaction_register_id).FirstOrDefault();
+
+                var check = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id).Select(s => s.start_work).FirstOrDefault();
                 var amount = GetJob.Where(w => w.transaction_job_id == Model.transaction_job_id).Select(s => s.amount_date).FirstOrDefault();
+                var check2 = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id).Select(s => s.transaction_working_id).Count();
+
+                //ถ้าเวลาที่บันทึกเข้ามาใหม่มากกว่าที่มีอยู่เเล้ว ต้องไม่สามารถบันทึกได้
+                if (Model.start_work >= check)
+                {
+                    return Json(new { valid = true, message = "Check-in Gone!!!" });
+                }
+
+                //ถ้ามีรายการงานเท่ากับจำนวนวันที่ต้องทำงาน ต้องไม่สามารถบันทึกได้
+                if(check2 == amount)
+                {
+                    return Json(new { valid = true, message = "Cannot Start-Working!!!" });
+                }
 
                 //อัพโหลดไฟล์ในการเริ่มทำงาน
                 var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_start_working/");
@@ -382,13 +402,7 @@ namespace SeniorProject.Controllers
                     await file_start.CopyToAsync(fileStream);
                 }
 
-
-                Model.start_work = DateTime.Now;
-                Model.end_work = DateTime.Now;
                 Model.file_work_start = UniqueFileName;
-                Model.status_working_id = 1;
-                Model.transaction_job_id = GetRegis.Select(s => s.transaction_job_id).FirstOrDefault();
-                Model.transaction_register_id = GetRegis.Select(s => s.transaction_register_id).FirstOrDefault();
                 DB.TRANSACTION_WORKING.Add(Model);
                 await DB.SaveChangesAsync();
 

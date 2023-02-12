@@ -46,25 +46,6 @@
                         Rows++;
                     }
                 }
-
-                @*
-                @{
-
-                int Rows = 1;
-                foreach (var Gets in Model)
-                {
-                <tr>
-                <th scope="row">@Rows</th>
-                <td>@Gets.job_name</td>
-                <td>@Gets.status</td>
-                <td>
-                <button class="btn btn-success btn-sm check-in" id="@Gets.Id">ลงเวลาเข้างาน</button>
-                <button class="btn btn-danger btn-sm check-out" id="@Gets.Id">ลงเวลาออกงาน</button>
-                </td>
-                </tr>
-                Rows++;
-                }
-                }*@
             </tbody>
         </table>
     </div>
@@ -76,18 +57,15 @@
 @section Frontend{
     <script type="text/javascript">
         $(function () {
-            // go to FormStartWorking
-            $(".check-in").click(function () {
-                window.location.href = "/Student/FormStartWorking?transaction_register_id=" + $(this).attr("id");
-            });
-
+            // go to formstartworking
             $(".start").click(function () {
                 window.location.href = "/Student/FormStartWorking?transaction_register_id=" + $(this).attr("id");
             });
 
-            //$(".start").click(function () {
-            //    window.location.href = "/Student/FormStartWorking?";
-            //});
+            // go to formendworking
+            $(".check-out").click(function () {
+                window.location.href = "/Student/FormEndWorking?transaction_register_id=" + $(this).attr("id");
+            });
         });
     </script>
 }
