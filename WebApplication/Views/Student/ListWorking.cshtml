@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SeniorProject.ViewModels.Student.ListWorking>
+﻿@model IEnumerable<SeniorProject.ViewModels.Student.HistoryWorking>
 
 @{
     Layout = "~/Views/Shared/_FrontendLayout.cshtml";
@@ -12,33 +12,59 @@
                  alt="Check" width="60">
             <h2 class="my-4">รายการเข้า/ออกงาน</h2>
         </div>
+        <div class="row row-cols-lg-auto g-3 justify-content-left align-items-center mb-4 pb-2">
+            <div class="col-12">
+                <button type="submit" class="btn btn-danger start" id="">Start-Working</button>
+            </div>
+        </div>
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">ลำดับที่ทำงาน</th>
+                    <th scope="col">ลำดับ</th>
                     <th scope="col">งาน</th>
+                    <th scope="col">เข้างาน</th>
+                    <th scope="col">ออกงาน</th>
                     <th scope="col">สถานะ</th>
-                    <th scope="col" class="col-3">ตัวดำเนินการ</th>
+                    <th scope="col">ตัวดำเนินการ</th>
                 </tr>
             </thead>
             <tbody>
                 @{
-
                     int Rows = 1;
                     foreach (var Gets in Model)
                     {
                         <tr>
                             <th scope="row">@Rows</th>
                             <td>@Gets.job_name</td>
-                            <td>@Gets.status</td>
+                            <td>@Gets.check_in</td>
+                            <td>@Gets.check_out</td>
+                            <td>@Gets.status_name</td>
                             <td>
-                                <button class="btn btn-success btn-sm check-in" id="@Gets.Id">ลงเวลาเข้างาน</button>
-                                <button class="btn btn-danger btn-sm check-out" id="@Gets.Id">ลงเวลาออกงาน</button>
+                                <button class="btn btn-success btn-sm check-out" id="@Gets.Id">ลงเวลาออกงาน</button>
                             </td>
                         </tr>
                         Rows++;
                     }
                 }
+
+                @*
+                @{
+
+                int Rows = 1;
+                foreach (var Gets in Model)
+                {
+                <tr>
+                <th scope="row">@Rows</th>
+                <td>@Gets.job_name</td>
+                <td>@Gets.status</td>
+                <td>
+                <button class="btn btn-success btn-sm check-in" id="@Gets.Id">ลงเวลาเข้างาน</button>
+                <button class="btn btn-danger btn-sm check-out" id="@Gets.Id">ลงเวลาออกงาน</button>
+                </td>
+                </tr>
+                Rows++;
+                }
+                }*@
             </tbody>
         </table>
     </div>
@@ -54,10 +80,14 @@
             $(".check-in").click(function () {
                 window.location.href = "/Student/FormStartWorking?transaction_register_id=" + $(this).attr("id");
             });
-            // go to FormEndWorking
-            $(".check-out").click(function () {
-                window.location.href = "/Student/FormEndWorking?transaction_register_id=" + $(this).attr("id");
+
+            $(".start").click(function () {
+                window.location.href = "/Student/FormStartWorking?transaction_register_id=" + $(this).attr("id");
             });
+
+            //$(".start").click(function () {
+            //    window.location.href = "/Student/FormStartWorking?";
+            //});
         });
     </script>
 }
