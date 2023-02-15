@@ -205,7 +205,7 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> FormRegisterJob(TRANSACTION_REGISTER Model, IFormFile bank_file)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var GetOwner = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
 
             try
@@ -225,7 +225,6 @@ namespace SeniorProject.Controllers
                 Model.register_date = DateTime.Now;
                 Model.fullname = CurrentUser.FirstName + " " + CurrentUser.LastName;
                 Model.s_id = CurrentUser.UserName;
-                Model.transaction_job_id = GetOwner.Select(s => s.transaction_job_id).FirstOrDefault();
                 DB.TRANSACTION_REGISTER.Add(Model);
                 await DB.SaveChangesAsync();
 
@@ -295,6 +294,10 @@ namespace SeniorProject.Controllers
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetStatus = await DB.MASTER_STATUS_WORKING.ToListAsync();
 
+            DateTime dateTime = DateTime.Now;
+
+            //string datetimeString = dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+
             var Models = new List<HistoryWorking>();
 
             foreach (var wk in GetWorking)
@@ -306,12 +309,28 @@ namespace SeniorProject.Controllers
                         foreach (var s in GetStatus.Where(w => w.status_working_id == wk.status_working_id))
                         {
                             var model = new HistoryWorking();
-                            model.Id = wk.transaction_working_id;
-                            model.job_name = j.job_name;
-                            model.status_name = s.status_working_name;
-                            model.check_in = wk.start_work;
-                            model.check_out = wk.end_work;
-                            Models.Add(model);
+                            string check_out = wk.end_work.ToString("0000-00-00 00:00:00");
+                            string check_in = wk.start_work.ToString("yyyy-MM-dd HH:MM:ss");
+                            string check_out2 = wk.end_work.ToString("yyyy-MM-dd HH:MM:ss");
+
+                            if(s.status_working_id == 2)
+                            {
+                                model.Id = wk.transaction_working_id;
+                                model.job_name = j.job_name;
+                                model.status_name = s.status_working_name;
+                                model.check_in = check_in;
+                                model.check_out = check_out;
+                                Models.Add(model);
+                            }
+                            else if(s.status_working_id == 3)
+                            {
+                                model.Id = wk.transaction_working_id;
+                                model.job_name = j.job_name;
+                                model.status_name = s.status_working_name;
+                                model.check_in = check_in;
+                                model.check_out = check_out2;
+                                Models.Add(model);
+                            }
                         }
                     }
                 }
@@ -456,12 +475,28 @@ namespace SeniorProject.Controllers
                         foreach (var s in GetStatus.Where(w => w.status_working_id == wk.status_working_id))
                         {
                             var model = new HistoryWorking();
-                            model.Id = wk.transaction_working_id;
-                            model.job_name = j.job_name;
-                            model.status_name = s.status_working_name;
-                            model.check_in = wk.start_work;
-                            model.check_out = wk.end_work;
-                            Models.Add(model);
+                            string check_out = wk.end_work.ToString("0000-00-00 00:00:00");
+                            string check_in = wk.start_work.ToString("yyyy-MM-dd HH:MM:ss");
+                            string check_out2 = wk.end_work.ToString("yyyy-MM-dd HH:MM:ss");
+
+                            if(s.status_working_id == 2)
+                            {
+                                model.Id = wk.transaction_working_id;
+                                model.job_name = j.job_name;
+                                model.status_name = s.status_working_name;
+                                model.check_in = check_in;
+                                model.check_out = check_out;
+                                Models.Add(model);
+                            }
+                            else if(s.status_working_id == 3)
+                            {
+                                model.Id = wk.transaction_working_id;
+                                model.job_name = j.job_name;
+                                model.status_name = s.status_working_name;
+                                model.check_in = check_in;
+                                model.check_out = check_out2;
+                                Models.Add(model);
+                            }
                         }
                     }
                 }

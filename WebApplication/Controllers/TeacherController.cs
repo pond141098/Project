@@ -246,12 +246,6 @@ namespace SeniorProject.Controllers
                     return Json(new { valid = false, message = "วันที่ปิดรับสมัครไม่ถูกต้อง" });
                 }
 
-                //ถ้าจำนวนวันที่ให้นักศึกษาทำงาน หรือ จำนวนนักศึกษาที่ต้องการ เท่ากับ 0 จะไม่สามารถบันทึกข้อมูลได้
-                if(Model.amount_date == 0 || Model.amount_person == 0)
-                {
-                    return Json(new { valid = false, message = "จำนวนวันที่ให้นักศึกษาทำงาน หรือ จำนวนนักศึกษาที่ต้องการ เท่ากับ 0" });
-                }
-
                 Model.faculty_id = CurrentUser.faculty_id;
                 Model.branch_id = CurrentUser.branch_id;
                 Model.create_by = CurrentUser.UserName;

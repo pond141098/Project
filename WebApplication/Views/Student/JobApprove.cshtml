@@ -19,8 +19,9 @@
                     <div class="card text-center my-3 mx-3" style="width:25rem;">
                         <div class="card-body">
                             <h5 class="card-title">@Gets.job_name</h5>
-                            <p class="card-text">@Gets.job_detail</p>
-                            <p class="card-text">@Gets.job_status</p>
+                            <p>-----------------------------------</p>
+                            <p class="card-text">รายละเอียดงาน : @Gets.job_detail</p>
+                            <p class="card-text">สถานะ : @Gets.job_status</p>
                             <a class="btn btn-success start" a href="@Url.Action("ListWorking","Student",new { id = @Gets.id , j_id = Gets.j_id})">เริ่มทำงาน</a>
                         </div>
                     </div>

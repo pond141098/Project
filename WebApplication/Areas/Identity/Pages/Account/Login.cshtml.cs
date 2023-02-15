@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SeniorProject.Models;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace SeniorProject.Areas.Identity.Pages.Account
 {
@@ -43,12 +44,12 @@ namespace SeniorProject.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "กรุณากรอกไอดีผู้ใช้")]
             
             public string Username { get; set; }
 
-            [Required]
-            [DataType(DataType.Password)]
+            [Required(ErrorMessage = "กรุณากรอกรหัสผ่าน")]
+            [DataType(DataType.Password,ErrorMessage = "รหัสผ่านไม่ถูกต้อง")]
             public string Password { get; set; }
 
             [Display(Name = "Remember me?")]
@@ -58,6 +59,7 @@ namespace SeniorProject.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             //string sss = Guid.NewGuid().ToString();
+
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
