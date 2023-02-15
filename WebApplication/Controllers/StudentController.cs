@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using SeniorProject.ViewModels.Student;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 
 namespace SeniorProject.Controllers
 {
@@ -316,42 +317,6 @@ namespace SeniorProject.Controllers
             }
 
             return PartialView("ListWorking", Models);
-            //var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            //var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
-            //var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
-            //var GetStatus = await DB.MASTER_STATUS.ToListAsync();
-            //var GetWorking = await DB.TRANSACTION_WORKING.ToListAsync();
-
-            //var models = new List<ListWorking>();
-
-            //foreach (var r in GetRegister.Where(w => w.s_id == CurrentUser.UserName && w.transaction_register_id == id))
-            //{
-            //    foreach (var j in GetJob.Where(w => w.transaction_job_id == j_id))
-            //    {
-            //        foreach (var s in GetStatus.Where(w => w.status_id == r.status_id))
-            //        {
-
-            //            var data = new ListWorking();
-
-            //            //ถ้าสถานะการสมัครงานเท่ากับอนุมัติ
-            //            if (s.status_id == 5)
-            //            {
-            //                for (var i = 1; i <= j.amount_date; i++)
-            //                {
-            //                    data.Id = r.transaction_register_id;
-            //                    data.amount_date = j.amount_date;
-            //                    data.rows = i;
-            //                    data.job_name = j.job_name;
-            //                    data.status = "";
-            //                    models.Add(data);
-            //                }
-            //            }
-
-
-            //        }
-            //    }
-            //}
-            //return PartialView("ListWorking", models);
         }
 
         //ฟอร์มลงเวลาการเริ่มทำงาน
@@ -365,33 +330,14 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> FormStartWorking(TRANSACTION_WORKING Model, IFormFile file_start)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var GetRegis = await DB.TRANSACTION_REGISTER.ToListAsync();
-            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetRegis = await DB.TRANSACTION_REGISTER.FirstOrDefaultAsync();
+            var GetJob = await DB.TRANSACTION_JOB.FirstOrDefaultAsync();
+            var GetWork = await DB.TRANSACTION_WORKING.FirstOrDefaultAsync();
+
+            DateTime CurrentDate = DateTime.Now.Date;
 
             try
             {
-                Model.start_work = DateTime.Now;
-                Model.end_work = DateTime.Now;
-                Model.status_working_id = 2;
-                Model.transaction_job_id = GetRegis.Select(s => s.transaction_job_id).FirstOrDefault();
-                Model.transaction_register_id = GetRegis.Select(s => s.transaction_register_id).FirstOrDefault();
-
-                var check = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id).Select(s => s.start_work).FirstOrDefault();
-                var amount = GetJob.Where(w => w.transaction_job_id == Model.transaction_job_id).Select(s => s.amount_date).FirstOrDefault();
-                var check2 = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id).Select(s => s.transaction_working_id).Count();
-
-                //ถ้าเวลาที่บันทึกเข้ามาใหม่มากกว่าที่มีอยู่เเล้ว ต้องไม่สามารถบันทึกได้
-                if (Model.start_work >= check)
-                {
-                    return Json(new { valid = true, message = "Check-in Gone!!!" });
-                }
-
-                //ถ้ามีรายการงานเท่ากับจำนวนวันที่ต้องทำงาน ต้องไม่สามารถบันทึกได้
-                if(check2 == amount)
-                {
-                    return Json(new { valid = true, message = "Cannot Start-Working!!!" });
-                }
-
                 //อัพโหลดไฟล์ในการเริ่มทำงาน
                 var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_start_working/");
                 string file = ContentDispositionHeaderValue.Parse(file_start.ContentDisposition).FileName.Trim('"');
@@ -400,6 +346,29 @@ namespace SeniorProject.Controllers
                 using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
                 {
                     await file_start.CopyToAsync(fileStream);
+                }
+
+                Model.start_work = DateTime.Now;
+                Model.end_work = DateTime.Now;
+                Model.status_working_id = 2;
+                Model.transaction_job_id = GetRegis.transaction_job_id;
+                Model.transaction_register_id = GetRegis.transaction_register_id;
+
+                //ถ้ามีรายการงานเท่ากับจำนวนวันที่ต้องทำงาน ต้องไม่สามารถบันทึกได้
+                var amount = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == Model.transaction_job_id).Select(s => s.amount_date).FirstOrDefault();
+                var check2 = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id && w.transaction_job_id == Model.transaction_job_id ).Select(s => s.transaction_working_id).Count();
+
+                if (check2 >= amount)
+                {
+                    return Json(new { valid = false, message = "Cannot Start-Working" });
+                }
+
+                //ถ้าผู้ใช้ระบบได้ทำการลงเวลาเข้างานไปเเล้วในวันนี้ จะไม่สามารถลงเวลาในงานอื่นๆ ได้อีก  = ให้ทำการลงเวลาทำงานได้เเค่วันละ1ครั้ง
+                var check = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id && w.transaction_job_id == Model.transaction_job_id && w.start_work.Date == CurrentDate).Select(s => s.transaction_working_id).Count() > 0;
+              
+                if(check == true)
+                {
+                    return Json(new { valid = false, message = "Can't Start-Working" });
                 }
 
                 Model.file_work_start = UniqueFileName;
@@ -415,9 +384,9 @@ namespace SeniorProject.Controllers
         }
 
         //ฟอร์มออกการทำงาน
-        public IActionResult FormEndWorking(int transaction_register_id)
+        public IActionResult FormEndWorking(int transaction_working_id)
         {
-            var Gets = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
+            var Gets = DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == transaction_working_id).FirstOrDefault();
 
             return View("FormEndWorking", Gets);
         }
@@ -431,6 +400,12 @@ namespace SeniorProject.Controllers
             try
             {
                 var Get = await DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == Model.transaction_working_id).FirstOrDefaultAsync();
+
+                //เช็คว่าลงเวลางานไปหรือยัง
+                if(Get.end_work != null)
+                {
+                    return Json(new { valid = false, message = "ลงเวลางานไปเเล้ว" });
+                }
 
                 //อัพโหลดไฟล์สิ้นสุดงาน
                 var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_end_working/");

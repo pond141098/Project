@@ -14,7 +14,7 @@
         </div>
         <div class="row row-cols-lg-auto g-3 justify-content-left align-items-center mb-4 pb-2">
             <div class="col-12">
-                <button type="submit" class="btn btn-danger start" id="">Start-Working</button>
+                <button type="submit" class="btn btn-danger start" id="">ลงเวลาเข้างาน</button>
             </div>
         </div>
         <table class="table">
@@ -64,7 +64,7 @@
 
             // go to formendworking
             $(".check-out").click(function () {
-                window.location.href = "/Student/FormEndWorking?transaction_register_id=" + $(this).attr("id");
+                window.location.href = "/Student/FormEndWorking?transaction_working_id=" + $(this).attr("id");
             });
         });
     </script>
