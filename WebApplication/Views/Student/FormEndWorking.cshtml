@@ -22,17 +22,18 @@
                   data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
 
                 <div class="form-group">
-                    <label for="exampleFormControlInput1" style="font-size:20px">สาเหตุในการสมัครงาน</label>
+                    <label for="exampleFormControlInput1" style="font-size:20px">รายละเอียดการทำปฎิบัติงาน</label>
                     <textarea class="form-control" placeholder="อธิบาย..." asp-for="detail_working"
                               data-bv-notempty-message="กรุณากรอกข้อมูล"
-                              data-bv-notempty="true"></textarea>
+                              data-bv-notempty="true"
+                              required></textarea>
                 </div>
 
                 <div class="form-group">
                     <br>
                     <label for="exampleFormControlSelect1" style="font-size:20px">ไฟล์งานที่นักศึกษาได้ปฎิบัติ หรือ ภาพถ่าย ณ ตอนที่กำลังจะปฎิบัติงาน</label>
                     <div class="custom-file">
-                        <input asp-for="file_work_end" class="form-control custom-file-input" type="file" name="file_end" />
+                        <input asp-for="file_work_end" class="form-control custom-file-input" type="file" name="file_end" required/>
                     </div>
                     <div class="small text-muted mt-2">อัปโหลดไฟล์ขนาดไฟล์ไม่เกิน 50 MB</div>
                 </div>

@@ -48,6 +48,7 @@ namespace SeniorProject.Controllers
             DB = db;
             _environment = environment;
         }
+
         #region หน้าหลัก
         public IActionResult Index()
         {
@@ -259,7 +260,7 @@ namespace SeniorProject.Controllers
                     {
                         var data = new ListJobApprove();
 
-                        //เช็คว่าในตารางการทำงาน โดยการนับไอดีว่าเท่ากับจำนวนวันที่ต้องทำงาน
+                        //เช็คว่าในตารางการทำงาน โดยการนับไอดีว่าเท่ากับจำนวนวันที่ต้องทำงานเเละสถานะของงานต้องเป็นทำงานเสร็จเเล้ว
                         var check = DB.TRANSACTION_WORKING.Where(w => w.transaction_job_id == j.transaction_job_id && w.status_working_id == 3).Select(s => s.transaction_working_id).Count() == j.amount_date;
 
                         //ถ้าสถานะการสมัครงานเท่ากับอนุมัติ
@@ -401,10 +402,9 @@ namespace SeniorProject.Controllers
             {
                 var Get = await DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == Model.transaction_working_id).FirstOrDefaultAsync();
 
-                //เช็คว่าลงเวลางานไปหรือยัง
-                if(Get.end_work != null)
+                if(Get.status_working_id == 3)
                 {
-                    return Json(new { valid = false, message = "ลงเวลางานไปเเล้ว" });
+                    return Json(new { valid = false, message = "error" });
                 }
 
                 //อัพโหลดไฟล์สิ้นสุดงาน
