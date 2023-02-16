@@ -6,7 +6,7 @@
             $("#JsonData").html(JsonResult);
             Datatable();
 
-            $("#JsonData").on("click", ".detail", function () {
+            $("#JsonData").on("click", ".viewdetail", function () {
                 window.location.href = "/Teacher/DetailWorking?transaction_register_id=" + $(this).val();
             });
 

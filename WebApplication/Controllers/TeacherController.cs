@@ -380,15 +380,10 @@ namespace SeniorProject.Controllers
             return PartialView("getListStudentWorking", Models);
         }
 
-        public IActionResult DetailWorking()
+        public IActionResult DetailWorking(int transaction_register_id)
         {
-            return View("DetailWorking");
-        }
-        public async Task<IActionResult> getDetailWorking(int transaction_register_id)
-        {
-            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var GetWorking = await DB.TRANSACTION_WORKING.ToListAsync();
-            var GetStatus = await DB.MASTER_STATUS_WORKING.ToListAsync();
+            var GetWorking =  DB.TRANSACTION_WORKING.ToList();
+            var GetStatus =  DB.MASTER_STATUS_WORKING.ToList();
 
             var Models = new List<DetailWorking>();
 
@@ -397,7 +392,7 @@ namespace SeniorProject.Controllers
                 foreach (var s in GetStatus.Where(w => w.status_working_id == wk.status_working_id))
                 {
                     var data = new DetailWorking();
-                    string d = wk.start_work.ToString("yyyy:MM:dd");
+                    string d = wk.start_work.ToString("yyyy-MM-dd");
                     string time_in = wk.start_work.ToString("HH:mm:ss");
                     string time_out = wk.end_work.ToString("HH:mm:ss");
 

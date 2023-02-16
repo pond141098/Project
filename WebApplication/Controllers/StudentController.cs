@@ -220,7 +220,7 @@ namespace SeniorProject.Controllers
                 //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
                 var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
                 string file = ContentDispositionHeaderValue.Parse(bank_file.ContentDisposition).FileName.Trim('"');
-                string UniqueFileName = string.Format(@"{0}", Guid.NewGuid()) + file.ToString();
+                string UniqueFileName = string.Format(@"{0}") + file.ToString();
 
                 using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
                 {
@@ -303,8 +303,6 @@ namespace SeniorProject.Controllers
 
             DateTime dateTime = DateTime.Now;
 
-            //string datetimeString = dateTime.ToString("yyyy-MM-dd HH:mm:ss");
-
             var Models = new List<HistoryWorking>();
 
             foreach (var wk in GetWorking)
@@ -368,7 +366,7 @@ namespace SeniorProject.Controllers
                 //อัพโหลดไฟล์ในการเริ่มทำงาน
                 var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_start_working/");
                 string file = ContentDispositionHeaderValue.Parse(file_start.ContentDisposition).FileName.Trim('"');
-                string UniqueFileName = string.Format(@"{0}", Guid.NewGuid()) + file.ToString();
+                string UniqueFileName = string.Format(@"{0}") + file.ToString();
 
                 using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
                 {
@@ -436,7 +434,7 @@ namespace SeniorProject.Controllers
                 //อัพโหลดไฟล์สิ้นสุดงาน
                 var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_end_working/");
                 string file = ContentDispositionHeaderValue.Parse(file_end.ContentDisposition).FileName.Trim('"');
-                string UniqueFileName = string.Format(@"{0}", Guid.NewGuid()) + file.ToString();
+                string UniqueFileName = string.Format(@"{0}") + file.ToString();
 
                 using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
                 {
