@@ -6,6 +6,7 @@
 
 @{
     var CurrentUser = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
+    
 }
 
 <!DOCTYPE html>
@@ -73,10 +74,10 @@
     <aside id="left-panel">
         <div class="login-info">
             <span>
-                <a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut" title="@CurrentUser.FirstName @CurrentUser.LastName">
+                <a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut" title="@ViewData["Prefix"] @CurrentUser.FirstName @CurrentUser.LastName">
                     <span style="font-size: 26px;">
                         <img src="~/img/avatars/3.png">
-                        @CurrentUser.FirstName @CurrentUser.LastName
+                        @ViewData["Prefix"] @CurrentUser.FirstName @CurrentUser.LastName
                        
                     </span>
                 </a>
@@ -95,7 +96,7 @@
             </ul>
             <ul>
                 <li>
-                    <a href="@Url.Action("CheckTime", "Teacher")"><i class="fa fa-lg fa-fw fa-clock-o"></i> <span class="menu-item-parent" style="font-size: 14px;">เวลาเข้าออกงาน<br>นักศึกษา</span></a>
+                    <a href="@Url.Action("ListStudentWorking", "Teacher")"><i class="fa fa-lg fa-fw fa-clock-o"></i> <span class="menu-item-parent" style="font-size: 14px;">เวลาเข้าออกงาน<br>นักศึกษา</span></a>
                 </li>
             </ul>
         </nav>

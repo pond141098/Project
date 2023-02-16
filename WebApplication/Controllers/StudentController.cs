@@ -158,6 +158,8 @@ namespace SeniorProject.Controllers
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetPlace = await DB.MASTER_PLACE.ToListAsync();
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetUser = await DB.Users.ToListAsync();
+            var GetPrefix = await DB.MASTER_PREFIX.ToListAsync();
 
             //การ join table โดยนำค่าที่ต้องการมาเเสดง มาใส่ใน ViewsModels เเล้วไปเเสดงในหน้า Views
             var model = new List<ListJob>();
@@ -166,21 +168,26 @@ namespace SeniorProject.Controllers
             {
                 foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                 {
-                    var Model = new ListJob();
-                    var Check = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id && CurrentUser.UserName == w.s_id).Count() < 1;
-
-                    //ถ้าวันที่ปิดรับสมัครเท่ากับหรือมากกว่าวันที่ปัจจุบัน เเละ ถ้าในตารางการสมัครงานมี ไอดีงาน เเละ ไอดีผู้สมัครอยู่เเล้วเป็นจริง ให้ทำกรบันทึกข้อมูลลง Viewmodel
-                    if (j.close_register_date >= DateTime.Now && Check == true)
+                    foreach(var u in GetUser.Where(w => w.UserName == j.create_by))
                     {
-                        Model.id = j.transaction_job_id;
-                        Model.jobname = j.job_name;
-                        Model.jobplace = p.place_name;
-                        Model.job_detail = j.job_detail;
-                        Model.amount_person = j.amount_person;
-                        Model.amount_working = j.amount_date;
-                        Model.close_register = j.close_register_date;
-                        Model.create_job = j.update_date;
-                        model.Add(Model);
+                        foreach(var pr in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
+                        {
+                            var Model = new ListJob();
+                            var Check = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id && CurrentUser.UserName == w.s_id).Count() < 1;
+
+                            //ถ้าวันที่ปิดรับสมัครเท่ากับหรือมากกว่าวันที่ปัจจุบัน เเละ ถ้าในตารางการสมัครงานมี ไอดีงาน เเละ ไอดีผู้สมัครอยู่เเล้วเป็นจริง ให้ทำกรบันทึกข้อมูลลง Viewmodel
+                            if (j.close_register_date >= DateTime.Now && Check == true)
+                            {
+                                Model.id = j.transaction_job_id;
+                                Model.jobname = j.job_name;
+                                Model.job_owner_name = pr.prefix_name+""+u.FirstName+" "+u.LastName;
+                                Model.job_detail = j.job_detail+" ณ "+p.place_name;
+                                Model.amount_person = j.amount_person;
+                                Model.amount_working = j.amount_date;
+                                Model.close_register = j.close_register_date;
+                                model.Add(Model);
+                            }
+                        }
                     }
                 }
 

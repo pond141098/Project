@@ -1,6 +1,6 @@
 ﻿$(function () {
     $("#JsonData").html('<img src="/img/loading.gif" width="50">');
-    $.get("/Teacher/GetCheckTime", function (JsonResult) {
+    $.get("/Teacher/getDetailWorking", function (JsonResult) {
         setTimeout(function () {
 
             $("#JsonData").html(JsonResult);

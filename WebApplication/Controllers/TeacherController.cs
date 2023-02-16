@@ -51,8 +51,13 @@ namespace SeniorProject.Controllers
         }
 
         #region Dashboard
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var GetPrefix = await DB.MASTER_PREFIX.Where(w => w.prefix_id == CurrentUser.prefix_id).Select(s => s.prefix_name).FirstOrDefaultAsync();
+
+            ViewBag.Prefix = GetPrefix;
+
             return View("Index");
         }
         #endregion
@@ -141,12 +146,12 @@ namespace SeniorProject.Controllers
                 }
 
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
-                if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7 )
+                if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถส่งอนุมัติได้ !!!" });
                 }
                 else if (Get.status_id == 8)
-                { 
+                {
                     Get.fullname = model.fullname;
                     Get.s_id = model.s_id;
                     Get.bank_file = model.bank_file;
@@ -241,7 +246,7 @@ namespace SeniorProject.Controllers
                 }
 
                 //ถ้าวันที่ในการปิดรับสมัครเป็นวันที่ผ่านมาเเล้ว จะไม่สามารถบันทึกได้
-                if(Model.close_register_date < DateTime.Now)
+                if (Model.close_register_date < DateTime.Now)
                 {
                     return Json(new { valid = false, message = "วันที่ปิดรับสมัครไม่ถูกต้อง" });
                 }
@@ -336,14 +341,78 @@ namespace SeniorProject.Controllers
         #endregion
 
         #region เวลาการทำงานนักศึกษา/ออกรายงาน
-        public IActionResult CheckTime()
+        public IActionResult ListStudentWorking()
         {
-            return View("CheckTime");
+            return View("ListStudentWorking");
         }
-        public IActionResult getCheckTime()
+        public async Task<IActionResult> getListStudentWorking()
         {
-            var Gets = DB.MASTER_BANK.ToList();
-            return PartialView("GetCheckTime", Gets);
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetRegis = await DB.TRANSACTION_REGISTER.ToListAsync();
+            var GetPrefix = await DB.MASTER_PREFIX.ToListAsync();
+            var GetUser = await DB.Users.ToListAsync();
+
+            var Models = new List<ListWorking>();
+
+            foreach (var j in GetJob.Where(w => w.create_by == CurrentUser.UserName))
+            {
+                foreach (var r in GetRegis.Where(w => w.transaction_job_id == j.transaction_job_id && w.status_id == 5))
+                {
+                    foreach (var u in GetUser.Where(w => w.UserName == r.s_id))
+                    {
+                        foreach (var p in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
+                        {
+                            var data = new ListWorking();
+                            data.Id = r.transaction_register_id;
+                            data.j_Id = r.transaction_job_id;
+                            data.fullname = p.prefix_name + " " + r.fullname;
+                            data.jobname = j.job_name;
+                            data.s_id = r.s_id;
+                            data.status = "-";
+                            data.approve = r.approve_date;
+                            Models.Add(data);
+                        }
+                    }
+                }
+            }
+
+            return PartialView("getListStudentWorking", Models);
+        }
+
+        public IActionResult DetailWorking()
+        {
+            return View("DetailWorking");
+        }
+        public async Task<IActionResult> getDetailWorking(int transaction_register_id)
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var GetWorking = await DB.TRANSACTION_WORKING.ToListAsync();
+            var GetStatus = await DB.MASTER_STATUS_WORKING.ToListAsync();
+
+            var Models = new List<DetailWorking>();
+
+            foreach (var wk in GetWorking.Where(w => w.transaction_register_id == transaction_register_id))
+            {
+                foreach (var s in GetStatus.Where(w => w.status_working_id == wk.status_working_id))
+                {
+                    var data = new DetailWorking();
+                    string d = wk.start_work.ToString("yyyy:MM:dd");
+                    string time_in = wk.start_work.ToString("HH:mm:ss");
+                    string time_out = wk.end_work.ToString("HH:mm:ss");
+
+                    data.Id = wk.transaction_working_id;
+                    data.date = d;
+                    data.check_in = time_in;
+                    data.check_out = time_out;
+                    data.file_in = wk.file_work_start;
+                    data.file_out = wk.file_work_end;
+                    data.status = s.status_working_name;
+                    Models.Add(data);
+                }
+            }
+
+            return PartialView("DetailWorking", Models);
         }
 
         #endregion
