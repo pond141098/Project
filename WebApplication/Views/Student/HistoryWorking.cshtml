@@ -7,11 +7,11 @@
 
 <section class="bg-light py-5 border-bottom">
     <div class="container px-5 my-5">
-        @*<div class="text-center pt-3 pb-2">
+        <div class="text-center pt-3 pb-2">
             <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-todo-list/check1.webp"
                  alt="Check" width="60">
-            <h2 class="my-4">รายการเข้า/ออกงาน</h2>
-        </div>*@
+            <h2 class="my-4">@ViewData["Title"]</h2>
+        </div>
         <table class="table">
             <thead>
                 <tr>
@@ -42,6 +42,6 @@
         </table>
     </div>
     <div class="text-center mb-5">
-        <a class="btn btn-sm" type="button" style="font-size:18px;background-color:#312E81" a href="@Url.Action("Home","Student")"><font color="#F8FAFC">ย้อนกลับ</font></a>
+        <a class="btn btn-sm" type="button" style="font-size:20px;background-color:#312E81" a href="@Url.Action("Home","Student")"><font color="#F8FAFC">BACK</font></a>
     </div>
 </section>

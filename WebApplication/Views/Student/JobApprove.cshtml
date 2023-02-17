@@ -16,12 +16,13 @@
                 int Rows = 1;
                 foreach (var Gets in Model.OrderBy(f => f.confirm_approve))
                 {
-                    <div class="card text-center my-3 mx-3" style="width:25rem;">
+                    <div class="card text-center my-3 mx-3" style="width:30rem;">
                         <div class="card-body">
                             <h5 class="card-title">@Gets.job_name</h5>
                             <p>-----------------------------------</p>
                             <p class="card-text">รายละเอียดงาน : @Gets.job_detail</p>
-                            <p class="card-text">สถานะ : @Gets.job_status</p>
+                            <p class="card-text">อาจารย์ผู้รับผิดชอบงาน : @Gets.job_owner</p>
+                            <p>-----------------------------------</p>
                             <a class="btn btn-success start" a href="@Url.Action("ListWorking","Student",new { id = @Gets.id , j_id = Gets.j_id})">เริ่มทำงาน</a>
                         </div>
                     </div>
@@ -31,7 +32,7 @@
         </div>
     </div>
     <div class="text-center mb-5">
-        <a class="btn btn-sm" type="button" style="font-size:25px;background-color:#312E81" a href="@Url.Action("Home","Student")"><font color="#F8FAFC">ย้อนกลับ</font></a>
+        <a class="btn btn-sm" type="button" style="font-size:20px;background-color:#312E81" a href="@Url.Action("Home","Student")"><font color="#F8FAFC">BACK</font></a>
     </div>
 </section>
 

@@ -146,7 +146,7 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            return Json(new { valid = true, message = "Delete Success" });
+            return RedirectToAction("HistoryRegister","Student");
         }
         #endregion
 
@@ -217,29 +217,34 @@ namespace SeniorProject.Controllers
 
             try
             {
-                //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
-                var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
-                string file = ContentDispositionHeaderValue.Parse(bank_file.ContentDisposition).FileName.Trim('"');
-                string UniqueFileName = string.Format(@"{0}") + file.ToString();
-
-                using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
+                if(ModelState.IsValid)
                 {
-                    await bank_file.CopyToAsync(fileStream);
+                    //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
+                    var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
+                    string file = ContentDispositionHeaderValue.Parse(bank_file.ContentDisposition).FileName.Trim('"');
+                    string UniqueFileName = file.ToString();
+
+                    using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
+                    {
+                        await bank_file.CopyToAsync(fileStream);
+                    }
+
+                    Model.status_id = 8;
+                    Model.bank_file = UniqueFileName;
+                    Model.register_date = DateTime.Now;
+                    Model.fullname = CurrentUser.FirstName + " " + CurrentUser.LastName;
+                    Model.s_id = CurrentUser.UserName;
+                    DB.TRANSACTION_REGISTER.Add(Model);
+                    await DB.SaveChangesAsync();
                 }
-
-                Model.status_id = 8;
-                Model.bank_file = UniqueFileName;
-                Model.register_date = DateTime.Now;
-                Model.fullname = CurrentUser.FirstName + " " + CurrentUser.LastName;
-                Model.s_id = CurrentUser.UserName;
-                DB.TRANSACTION_REGISTER.Add(Model);
-                await DB.SaveChangesAsync();
-
             }
             catch (Exception Error)
             {
                 return Json(new { valid = false, message = Error.Message });
             }
+
+            //await Response.WriteAsync("<script>alert('successfully');</script>");
+
             return RedirectToAction("HistoryRegister", "Student");
         }
 
@@ -254,6 +259,9 @@ namespace SeniorProject.Controllers
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
             var GetStatus = await DB.MASTER_STATUS.ToListAsync();
+            var GetPlace = await DB.MASTER_PLACE.ToListAsync();
+            var GetUser = await DB.Users.ToListAsync();
+            var GetPrefix = await DB.MASTER_PREFIX.ToListAsync();
 
             var models = new List<ListJobApprove>();
 
@@ -264,21 +272,32 @@ namespace SeniorProject.Controllers
                 {
                     foreach (var s in GetStatus.Where(w => w.status_id == r.status_id))
                     {
-                        var data = new ListJobApprove();
-
-                        //เช็คว่าในตารางการทำงาน โดยการนับไอดีว่าเท่ากับจำนวนวันที่ต้องทำงานเเละสถานะของงานต้องเป็นทำงานเสร็จเเล้ว
-                        var check = DB.TRANSACTION_WORKING.Where(w => w.transaction_job_id == j.transaction_job_id && w.status_working_id == 3).Select(s => s.transaction_working_id).Count() == j.amount_date;
-
-                        //ถ้าสถานะการสมัครงานเท่ากับอนุมัติ
-                        if (r.status_id == 5 && check != true)
+                        foreach(var p in GetPlace.Where(w => w.place_id == j.place_id))
                         {
-                            data.id = r.transaction_register_id;
-                            data.j_id = r.transaction_job_id;
-                            data.job_name = j.job_name;
-                            data.job_detail = j.job_detail;
-                            data.job_status = s.status_name;
-                            data.confirm_approve = r.approve_date;
-                            models.Add(data);
+                            foreach(var u in GetUser.Where(w => w.UserName == j.create_by))
+                            {
+                                foreach(var pre in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
+                                {
+                                    var data = new ListJobApprove();
+
+                                    //เช็คว่าในตารางการทำงาน โดยการนับไอดีว่าเท่ากับจำนวนวันที่ต้องทำงานเเละสถานะของงานต้องเป็นทำงานเสร็จเเล้ว
+                                    var check = DB.TRANSACTION_WORKING.Where(w => w.transaction_job_id == j.transaction_job_id && w.status_working_id == 3).Select(s => s.transaction_working_id).Count() == j.amount_date;
+
+                                    //ถ้าสถานะการสมัครงานเท่ากับอนุมัติ
+                                    if (r.status_id == 5 && check != true)
+                                    {
+                                        data.id = r.transaction_register_id;
+                                        data.j_id = r.transaction_job_id;
+                                        data.job_name = j.job_name;
+                                        data.job_owner = pre.prefix_name+""+u.FirstName + " " + u.LastName;
+                                        data.job_detail = j.job_detail + " ณ " + p.place_name;
+                                        data.job_status = s.status_name;
+                                        data.confirm_approve = r.approve_date;
+                                        models.Add(data);
+                                    }
+                                }
+                            }
+                            
                         }
                     }
                 }
