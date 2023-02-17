@@ -109,6 +109,7 @@ namespace SeniorProject.Controllers
                             model.place = p.place_name;
                             model.detail = data.job_detail;
                             model.status = item.status_name;
+                            model.status_id = s.status_id;
                             model.file = s.bank_file;
                             model.register_date = s.register_date;
                             Model.Add(model);
@@ -119,17 +120,92 @@ namespace SeniorProject.Controllers
             return PartialView("HistoryRegister", Model);
         }
 
+        //ฟอร์มเเก้ไขการสมัครงาน
+        public IActionResult FormEditRegister(int id)
+        {
+            var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == id).FirstOrDefault();
+
+            ViewBag.Bank = new SelectList(DB.MASTER_BANK.ToList(), "banktype_id", "banktype_name");
+
+            return View("FormEditRegister",Get);
+        }
+
+        //นำข้อมูลลงดาต้าเบส
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> FormEditRegister(TRANSACTION_REGISTER model,IFormFile bank_file)
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            try
+            {
+                var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == model.transaction_register_id).FirstOrDefault();
+
+                //ถ้าสถานะเป็นอนุมัติไม่สามารถเเก้ไขได้
+                if(model.status_id == 5)
+                {
+                    //return Json(new { valid = true, message = "Cannot Delete" });
+                }
+
+                //เป็นการลบไฟล์เก่าที่มีอยู่ เเล้วนำไฟล์ใหม่ไปบันทึกเเทน
+                if (bank_file != null)
+                {
+                    var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank");
+                    var GetOldFile = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == model.transaction_register_id).Select(s => s.bank_file).FirstOrDefault();
+                    if(GetOldFile != null)
+                    {
+                        string Oldfilepath = Path.Combine(Uploads,GetOldFile);
+                        if(System.IO.File.Exists(Oldfilepath))
+                        {
+                            System.IO.File.Delete(Oldfilepath);
+                        }
+                    }
+                    string newfile = ContentDispositionHeaderValue.Parse(bank_file.ContentDisposition).FileName.Trim('"');
+                    string UniqueFileName = newfile.ToString();
+                    using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
+                    {
+                        await bank_file.CopyToAsync(fileStream);
+                    }
+
+                    Get.bank_file = UniqueFileName;
+                }
+
+                Get.because_job = model.because_job;
+                Get.banktype_id = model.banktype_id;
+                Get.bank_no = model.bank_no;
+                Get.bank_store = model.bank_store;
+                Get.fullname = model.fullname;
+                Get.register_date = model.register_date;
+                Get.status_id = model.status_id;
+                Get.s_id = model.s_id;
+                Get.transaction_job_id = model.transaction_job_id;
+                Get.notapprove_date = model.notapprove_date;
+                Get.approve_date = model.approve_date;
+                Get.approve_devstudent_date = model.approve_devstudent_date;
+                Get.approve_teacher_date = model.approve_teacher_date;
+
+                DB.TRANSACTION_REGISTER.Update(Get);
+                await DB.SaveChangesAsync();
+
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error.Message });
+            }
+            return RedirectToAction("HistoryRegister","Student");
+        }
+
         //ลบการสมัครงาน
-        public async Task<IActionResult> DeleteRegisterJob(int id, string bankfile)
+        public async Task<IActionResult> DeleteRegisterJob(int id, string bankfile , int status)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
             {
                 var Model = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == id).FirstOrDefault();
-                //ถ้าสถานะเท่ากับอนุมัติ
-                if (Model.status_id == 5)
+
+                //ถ้าสถานะเท่ากับอนุมัติไม่สามารถลบได้
+                if (status == 5)
                 {
-                    return Json(new { valid = true, message = "Cannot Delete" });
+                    //return Json(new { valid = true, message = "Cannot Delete" });
                 }
 
                 //ลบไฟล์สำเนาสมุดบัญชีธนาคารใน wwwroot

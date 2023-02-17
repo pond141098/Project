@@ -12,7 +12,7 @@
             <h2 class="fw-bolder">@ViewBag.jobname</h2>
         </div>
         <fieldset>
-            <form asp-action="FormRegisterJob"
+            <form asp-action="FormEditRegister"
                   method="post"
                   enctype="multipart/form-data">
 
@@ -55,15 +55,24 @@
 
                 <div class="col-md-12" style="text-align:left">
                     <br>
-                    <button class="btn btn-success" type="submit" id="submit"> สมัครงาน</button>
+                    <button class="btn btn-success" type="submit" id="submit"> บันทึก</button>
                 </div>
 
                 <input type="hidden" asp-for="transaction_job_id">
+                <input type="hidden" asp-for="transaction_register_id">
+                <input type="hidden" asp-for="status_id">
+                <input type="hidden" asp-for="s_id">
+                <input type="hidden" asp-for="fullname">
+                <input type="hidden" asp-for="approve_date">
+                <input type="hidden" asp-for="approve_devstudent_date">
+                <input type="hidden" asp-for="approve_teacher_date">
+                <input type="hidden" asp-for="notapprove_date">
+                <input type="hidden" asp-for="register_date">
 
             </form>
         </fieldset>
     </div>
     <div class="text-center mb-5">
-        <a class="btn" type="button" style="font-size:20px;background-color:#312E81" a href="@Url.Action("Job","Student")"><font color="#F8FAFC">BACK</font></a>
+        <a class="btn" type="button" style="font-size:20px;background-color:#312E81" a href="@Url.Action("HistoryRegister","Student")"><font color="#F8FAFC">BACK</font></a>
     </div>
 </section>
