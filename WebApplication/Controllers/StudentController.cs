@@ -127,13 +127,13 @@ namespace SeniorProject.Controllers
 
             ViewBag.Bank = new SelectList(DB.MASTER_BANK.ToList(), "banktype_id", "banktype_name");
 
-            return View("FormEditRegister",Get);
+            return View("FormEditRegister", Get);
         }
 
         //นำข้อมูลลงดาต้าเบส
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> FormEditRegister(TRANSACTION_REGISTER model,IFormFile bank_file)
+        public async Task<IActionResult> FormEditRegister(TRANSACTION_REGISTER model, IFormFile bank_file)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
@@ -141,7 +141,7 @@ namespace SeniorProject.Controllers
                 var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == model.transaction_register_id).FirstOrDefault();
 
                 //ถ้าสถานะเป็นอนุมัติไม่สามารถเเก้ไขได้
-                if(model.status_id == 5)
+                if (model.status_id == 5)
                 {
                     //return Json(new { valid = true, message = "Cannot Delete" });
                 }
@@ -151,10 +151,10 @@ namespace SeniorProject.Controllers
                 {
                     var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank");
                     var GetOldFile = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == model.transaction_register_id).Select(s => s.bank_file).FirstOrDefault();
-                    if(GetOldFile != null)
+                    if (GetOldFile != null)
                     {
-                        string Oldfilepath = Path.Combine(Uploads,GetOldFile);
-                        if(System.IO.File.Exists(Oldfilepath))
+                        string Oldfilepath = Path.Combine(Uploads, GetOldFile);
+                        if (System.IO.File.Exists(Oldfilepath))
                         {
                             System.IO.File.Delete(Oldfilepath);
                         }
@@ -191,11 +191,11 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            return RedirectToAction("HistoryRegister","Student");
+            return RedirectToAction("HistoryRegister", "Student");
         }
 
         //ลบการสมัครงาน
-        public async Task<IActionResult> DeleteRegisterJob(int id, string bankfile , int status)
+        public async Task<IActionResult> DeleteRegisterJob(int id)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
@@ -203,13 +203,13 @@ namespace SeniorProject.Controllers
                 var Model = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == id).FirstOrDefault();
 
                 //ถ้าสถานะเท่ากับอนุมัติไม่สามารถลบได้
-                if (status == 5)
+                if (Model.status_id == 5)
                 {
-                    //return Json(new { valid = true, message = "Cannot Delete" });
+                    return Json(new { valid = true, message = "Cannot Delete" });
                 }
 
                 //ลบไฟล์สำเนาสมุดบัญชีธนาคารใน wwwroot
-                string fullPath = Path.Combine(_environment.WebRootPath.ToString(), ("uploads/bookbank"), bankfile);
+                string fullPath = Path.Combine(_environment.WebRootPath.ToString(), ("uploads/bookbank"), Model.bank_file);
                 if (System.IO.File.Exists(fullPath))
                 {
                     System.IO.File.Delete(fullPath);
@@ -222,7 +222,8 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            return RedirectToAction("HistoryRegister","Student");
+
+            return RedirectToAction("HistoryRegister", "Student");
         }
         #endregion
 
@@ -244,9 +245,9 @@ namespace SeniorProject.Controllers
             {
                 foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                 {
-                    foreach(var u in GetUser.Where(w => w.UserName == j.create_by))
+                    foreach (var u in GetUser.Where(w => w.UserName == j.create_by))
                     {
-                        foreach(var pr in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
+                        foreach (var pr in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
                         {
                             var Model = new ListJob();
                             var Check = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id && CurrentUser.UserName == w.s_id).Count() < 1;
@@ -256,8 +257,8 @@ namespace SeniorProject.Controllers
                             {
                                 Model.id = j.transaction_job_id;
                                 Model.jobname = j.job_name;
-                                Model.job_owner_name = pr.prefix_name+""+u.FirstName+" "+u.LastName;
-                                Model.job_detail = j.job_detail+" ณ "+p.place_name;
+                                Model.job_owner_name = pr.prefix_name + "" + u.FirstName + " " + u.LastName;
+                                Model.job_detail = j.job_detail + " ณ " + p.place_name;
                                 Model.amount_person = j.amount_person;
                                 Model.amount_working = j.amount_date;
                                 Model.close_register = j.close_register_date;
@@ -293,7 +294,7 @@ namespace SeniorProject.Controllers
 
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
                     var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
@@ -319,9 +320,7 @@ namespace SeniorProject.Controllers
                 return Json(new { valid = false, message = Error.Message });
             }
 
-            //await Response.WriteAsync("<script>alert('successfully');</script>");
-
-            return RedirectToAction("HistoryRegister", "Student");
+            return RedirectToAction("HistoryRegister","Student");
         }
 
         #endregion
@@ -348,11 +347,11 @@ namespace SeniorProject.Controllers
                 {
                     foreach (var s in GetStatus.Where(w => w.status_id == r.status_id))
                     {
-                        foreach(var p in GetPlace.Where(w => w.place_id == j.place_id))
+                        foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                         {
-                            foreach(var u in GetUser.Where(w => w.UserName == j.create_by))
+                            foreach (var u in GetUser.Where(w => w.UserName == j.create_by))
                             {
-                                foreach(var pre in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
+                                foreach (var pre in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
                                 {
                                     var data = new ListJobApprove();
 
@@ -365,7 +364,7 @@ namespace SeniorProject.Controllers
                                         data.id = r.transaction_register_id;
                                         data.j_id = r.transaction_job_id;
                                         data.job_name = j.job_name;
-                                        data.job_owner = pre.prefix_name+""+u.FirstName + " " + u.LastName;
+                                        data.job_owner = pre.prefix_name + "" + u.FirstName + " " + u.LastName;
                                         data.job_detail = j.job_detail + " ณ " + p.place_name;
                                         data.job_status = s.status_name;
                                         data.confirm_approve = r.approve_date;
@@ -373,7 +372,7 @@ namespace SeniorProject.Controllers
                                     }
                                 }
                             }
-                            
+
                         }
                     }
                 }
@@ -413,7 +412,7 @@ namespace SeniorProject.Controllers
                             string check_in = wk.start_work.ToString("yyyy-MM-dd HH:MM:ss");
                             string check_out2 = wk.end_work.ToString("yyyy-MM-dd HH:MM:ss");
 
-                            if(s.status_working_id == 2)
+                            if (s.status_working_id == 2)
                             {
                                 model.Id = wk.transaction_working_id;
                                 model.job_name = j.job_name;
@@ -422,7 +421,7 @@ namespace SeniorProject.Controllers
                                 model.check_out = check_out;
                                 Models.Add(model);
                             }
-                            else if(s.status_working_id == 3)
+                            else if (s.status_working_id == 3)
                             {
                                 model.Id = wk.transaction_working_id;
                                 model.job_name = j.job_name;
@@ -476,7 +475,7 @@ namespace SeniorProject.Controllers
 
                 //ถ้ามีรายการงานเท่ากับจำนวนวันที่ต้องทำงาน ต้องไม่สามารถบันทึกได้
                 var amount = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == Model.transaction_job_id).Select(s => s.amount_date).FirstOrDefault();
-                var check2 = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id && w.transaction_job_id == Model.transaction_job_id ).Select(s => s.transaction_working_id).Count();
+                var check2 = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id && w.transaction_job_id == Model.transaction_job_id).Select(s => s.transaction_working_id).Count();
 
                 if (check2 >= amount)
                 {
@@ -485,8 +484,8 @@ namespace SeniorProject.Controllers
 
                 //ถ้าผู้ใช้ระบบได้ทำการลงเวลาเข้างานไปเเล้วในวันนี้ จะไม่สามารถลงเวลาในงานอื่นๆ ได้อีก  = ให้ทำการลงเวลาทำงานได้เเค่วันละ1ครั้ง
                 var check = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id && w.transaction_job_id == Model.transaction_job_id && w.start_work.Date == CurrentDate).Select(s => s.transaction_working_id).Count() > 0;
-              
-                if(check == true)
+
+                if (check == true)
                 {
                     return Json(new { valid = false, message = "Can't Start-Working" });
                 }
@@ -521,7 +520,7 @@ namespace SeniorProject.Controllers
             {
                 var Get = await DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == Model.transaction_working_id).FirstOrDefaultAsync();
 
-                if(Get.status_working_id == 3)
+                if (Get.status_working_id == 3)
                 {
                     return Json(new { valid = false, message = "error" });
                 }
@@ -579,7 +578,7 @@ namespace SeniorProject.Controllers
                             string check_in = wk.start_work.ToString("yyyy-MM-dd HH:MM:ss");
                             string check_out2 = wk.end_work.ToString("yyyy-MM-dd HH:MM:ss");
 
-                            if(s.status_working_id == 2)
+                            if (s.status_working_id == 2)
                             {
                                 model.Id = wk.transaction_working_id;
                                 model.job_name = j.job_name;
@@ -588,7 +587,7 @@ namespace SeniorProject.Controllers
                                 model.check_out = check_out;
                                 Models.Add(model);
                             }
-                            else if(s.status_working_id == 3)
+                            else if (s.status_working_id == 3)
                             {
                                 model.Id = wk.transaction_working_id;
                                 model.job_name = j.job_name;

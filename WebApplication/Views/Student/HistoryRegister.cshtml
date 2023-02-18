@@ -27,7 +27,7 @@
                                         <br>
                                         <span class="small text-muted"><i class="fa fa-clock me-1"></i>สถานะ : @Gets.status</span>
                                         <h6></h6>
-                                        <a class="btn btn-xs btn-danger" href="@Url.Action("DeleteRegisterJob","Student",new { id = @Gets.Id , bankfile = Gets.file , status = Gets.status_id})">ยกเลิกการสมัคร</a>
+                                        <button class="btn btn-danger btn-xs delete" id="@Gets.Id" onclick="deleteOrder('@Gets.Id')" value="Delete">ยกเลิกการสมัครงาน</button>
                                         <a class="btn btn-xs btn-warning" href="@Url.Action("FormEditRegister","Student",new { id = @Gets.Id})">เเก้ไขข้อมูลการสมัคร</a>
                                     </div>
                                 </div>
@@ -43,3 +43,42 @@
         </div>
     </div>
 </section>
+
+@section Frontend{
+    
+    <script type="text/javascript">
+        function deleteOrder(id) {
+            swal({
+                title: "คำเตือน!!!",
+                text: "คุณต้องการยกเลิกการสมัครงานใช่หรือไม่?",
+                type:"warning",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                confirmButtonText:"Yes",
+                confirmButtonColor:"#ec6c62",
+            },
+                function () {
+                    $.ajax({
+                        url: "/Student/DeleteRegisterJob",
+                        data:{"id":id},
+                        type:"POST"
+                    })
+                        .done(function (data){
+                            sweetAlert
+                            ({
+                                title:"ยกเลิกการสมัครงานเรียบร้อย",
+                                text:"Delete Successfully",
+                                type:"success"
+                            },
+                                function(){
+                                    window.location.href = "/Student/HistoryRegister"
+                                });
+                        })
+                        .error(function (data){
+                            swal("Oops","55555");
+                        })
+                }
+            )
+        }
+    </script>
+}
