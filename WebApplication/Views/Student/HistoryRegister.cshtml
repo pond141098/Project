@@ -61,22 +61,24 @@
                     $.ajax({
                         url: "/Student/DeleteRegisterJob",
                         data:{"id":id},
-                        type:"POST"
-                    })
-                        .done(function (data){
-                            sweetAlert
-                            ({
-                                title:"ยกเลิกการสมัครงานเรียบร้อย",
-                                text:"Delete Successfully",
-                                type:"success"
-                            },
-                                function(){
-                                    window.location.href = "/Student/HistoryRegister"
+                        type:"POST",
+                        success: function (response) {
+                            if(response.valid == true){
+                                sweetAlert({
+                                    title: response.message,
+                                    timeout:3000
                                 });
-                        })
-                        .error(function (data){
-                            swal("Oops","55555");
-                        })
+                                setTimeout(function(){
+                                    window.location.href = "/Student/HistoryRegister"
+                                },)
+                            }else{
+                                sweetAlert({
+                                    title:response.message,
+                                    timeout: 3000
+                                });
+                            }
+                        }
+                    });
                 }
             )
         }

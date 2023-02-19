@@ -20,13 +20,13 @@
                         <div class="card-body">
                             <h5 class="card-title">@Gets.jobname</h5>
                             <p>-------------------------------------</p>
-                            <p class="card-text">รายละเอียดงาน : @Gets.job_detail</p>
                             <p class="card-text">จำนวนวันที่ปฎิบัติงาน : @Gets.amount_working วัน</p>
                             <p class="card-text">จำนวนนักศึกษาที่รับ : @Gets.amount_person คน</p>
                             <p class="card-text">วัน/เวลาที่ปิดรับสมัคร : @Gets.close_register</p>
                             <p class="card-text">อาจารย์ผู้รับผิดชอบ : @Gets.job_owner_name</p>
                             <p>-------------------------------------</p>
-                            <a class="btn btn-primary register" data-id="@Gets.id">สมัครงาน</a>
+                            <a class="btn btn-success register" data-id="@Gets.id">สมัครงาน</a>
+                            <a class="btn btn-primary viewDetail" data-id="@Gets.id">รายละเอียดงาน</a>
                         </div>
                     </div>
                     Rows++;
@@ -39,6 +39,12 @@
     </div>
 </section>
 
+<div class="modal fade bs-example-modal-lg" id="Detail" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <p id="JsonResult"></p>
+    </div>
+</div>
+
 
 @section Frontend{
     <script type="text/javascript">
@@ -46,6 +52,19 @@
             // go to register
             $(".register").click(function () {
                 window.location.href = "/Student/FormRegisterJob?transaction_job_id=" + $(this).attr("data-id");
+            });
+
+            //view detailjob
+            $(".viewDetail").click(function () {
+                $("#JsonResult").html('<img src="/img/loading.gif" width="50">');
+                $.get("/Student/DetailJob", { "transaction_job_id": $(this).attr("data-id") }, function (rs) {
+                    setTimeout(function () {
+                        $("#Detail").modal("show");
+                        $("#JsonResult").html(rs);
+
+                        
+                    }, 200)
+                });
             });
         });
     </script>

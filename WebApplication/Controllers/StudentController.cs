@@ -201,15 +201,17 @@ namespace SeniorProject.Controllers
             try
             {
                 var Model = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == id).FirstOrDefault();
+                var check = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == id).Select(s => s.status_id).FirstOrDefault();
+                var check2 = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == id).Select(s => s.bank_file).FirstOrDefault();
 
                 //ถ้าสถานะเท่ากับอนุมัติไม่สามารถลบได้
-                if (Model.status_id == 5)
+                if (check == 5)
                 {
-                    return Json(new { valid = true, message = "Cannot Delete" });
+                    return Json(new { valid = false, message = "ไม่สามารถยกเลิกการสมัครงานได้เนื่องจากสถานะเป็นอนุมัติ" });
                 }
 
                 //ลบไฟล์สำเนาสมุดบัญชีธนาคารใน wwwroot
-                string fullPath = Path.Combine(_environment.WebRootPath.ToString(), ("uploads/bookbank"), Model.bank_file);
+                string fullPath = Path.Combine(_environment.WebRootPath.ToString(), ("uploads/bookbank"), check2);
                 if (System.IO.File.Exists(fullPath))
                 {
                     System.IO.File.Delete(fullPath);
@@ -223,7 +225,7 @@ namespace SeniorProject.Controllers
                 return Json(new { valid = false, message = Error.Message });
             }
 
-            return RedirectToAction("HistoryRegister", "Student");
+            return Json(new { valid = true, message = "ยกเลิกการสมัครงานสำเร็จ" });
         }
         #endregion
 
@@ -270,6 +272,16 @@ namespace SeniorProject.Controllers
 
             }
             return PartialView("Job", model);
+        }
+
+        public IActionResult DetailJob(int transaction_job_id)
+        {
+            var Get =  DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).FirstOrDefault();
+            var GetPlace = DB.MASTER_PLACE.Where(w => w.place_id == Get.place_id).Select(s => s.place_name).FirstOrDefault();
+
+            ViewBag.Place = GetPlace;
+
+            return PartialView("DetailJob",Get);
         }
 
         //หน้าฟอร์มการสมัครงาน
