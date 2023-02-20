@@ -76,3 +76,39 @@
         <a class="btn" type="button" style="font-size:20px;background-color:#312E81" a href="@Url.Action("HistoryRegister","Student")"><font color="#F8FAFC">BACK</font></a>
     </div>
 </section>
+
+@section Frontend{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                event.preventDefault();
+                var formData = new FormData($(this)[0]);
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.valid == true) {
+                            sweetAlert({
+                                title: response.message
+                            });
+                            setTimeout(function () {
+                                window.location.href = "/Student/HistoryRegister";
+                            }, 2000)
+                        } else {
+                            sweetAlert({
+                                title: response.message,
+                                timeout: 3000
+                            });
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+}

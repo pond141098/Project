@@ -46,8 +46,7 @@
                     <br>
                     <label for="exampleFormControlSelect1" style="font-size:20px">สำเนาสมุดบัญชีธนาคาร (พร้อมเซ็นรับรอง)</label>
                     <div class="custom-file">
-                        <input asp-for="bank_file" class="form-control custom-file-input" type="file" name="bank_file"
-                               pattern="([a-zA-Z0-9\s_\\.\-\(\):])+(.pdf)$"
+                        <input type="file" asp-for="bank_file" class="form-control custom-file-input"
                                required />
                     </div>
                     <div class="small text-muted mt-2">อัปโหลดไฟล์ PDF เท่านั้น </div>
@@ -70,6 +69,36 @@
 
 @section Frontend{
     <script type="text/javascript">
-        
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                event.preventDefault();
+                var formData = new FormData($(this)[0]);
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.valid == true) {
+                            sweetAlert({
+                                title: response.message
+                            });
+                            setTimeout(function () {
+                                window.location.href = "/Student/HistoryRegister";
+                            }, 2000)
+                        } else {
+                            sweetAlert({
+                                title: response.message,
+                                timeout: 3000
+                            });
+                        }
+                    }
+                });
+                return false;
+            });
+        });
     </script>
 }

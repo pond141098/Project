@@ -23,7 +23,6 @@ using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 
 namespace SeniorProject.Controllers
 {
-
     public class StudentController : Controller
     {
         //private readonly ILogger<HomeController> _logger;
@@ -224,7 +223,6 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-
             return Json(new { valid = true, message = "ยกเลิกการสมัครงานสำเร็จ" });
         }
         #endregion
@@ -331,8 +329,7 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-
-            return RedirectToAction("HistoryRegister","Student");
+            return Json(new { valid = true, message = "สมัครงานสำเร็จ" });
         }
 
         #endregion

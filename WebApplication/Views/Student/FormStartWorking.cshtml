@@ -12,13 +12,7 @@
         <fieldset>
             <form asp-action="FormStartWorking"
                   method="post"
-                  enctype="multipart/form-data"
-                  asp-antiforgery="true"
-                  data-sb-form-api-token="API_TOKEN"
-                  data-bv-message="This value is not valid"
-                  data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
-                  data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
-                  data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                  enctype="multipart/form-data">
 
                 <div class="form-group">
                     <br>
@@ -45,3 +39,38 @@
     </div>
 </section>
 
+@section Frontend{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                event.preventDefault();
+                var formData = new FormData($(this)[0]);
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.valid == true) {
+                            sweetAlert({
+                                title: response.message
+                            });
+                            setTimeout(function () {
+                                window.location.href = "/Student/HistoryWorking";
+                            }, 2000)
+                        } else {
+                            sweetAlert({
+                                title: response.message,
+                                timeout: 3000
+                            });
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+}

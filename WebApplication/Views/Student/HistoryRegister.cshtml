@@ -28,7 +28,7 @@
                                         <span class="small text-muted"><i class="fa fa-clock me-1"></i>สถานะ : @Gets.status</span>
                                         <h6></h6>
                                         <button class="btn btn-danger btn-xs delete" id="@Gets.Id" onclick="deleteOrder('@Gets.Id')" value="Delete">ยกเลิกการสมัครงาน</button>
-                                        <a class="btn btn-xs btn-warning" href="@Url.Action("FormEditRegister","Student",new { id = @Gets.Id})">เเก้ไขข้อมูลการสมัคร</a>
+                                        <a class="btn btn-xs btn-warning" href="@Url.Action("FormEditRegister","Student",new { id = Gets.Id})">เเก้ไขข้อมูลการสมัคร</a>
                                     </div>
                                 </div>
                             }
@@ -45,7 +45,6 @@
 </section>
 
 @section Frontend{
-    
     <script type="text/javascript">
         function deleteOrder(id) {
             swal({
@@ -65,12 +64,11 @@
                         success: function (response) {
                             if(response.valid == true){
                                 sweetAlert({
-                                    title: response.message,
-                                    timeout:3000
+                                    title: response.message
                                 });
                                 setTimeout(function(){
-                                    window.location.href = "/Student/HistoryRegister"
-                                },)
+                                    window.location.href = "/Student/HistoryRegister";
+                                },2000)
                             }else{
                                 sweetAlert({
                                     title:response.message,
