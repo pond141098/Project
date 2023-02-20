@@ -142,7 +142,7 @@ namespace SeniorProject.Controllers
                 //ถ้าสถานะเป็นอนุมัติไม่สามารถเเก้ไขได้
                 if (model.status_id == 5)
                 {
-                    //return Json(new { valid = true, message = "Cannot Delete" });
+                    return Json(new { valid = true, message = "ไม่สามารถยกเลิกการสมัครงานเนื่องจากสถานะเป็น อนุมัติ" });
                 }
 
                 //เป็นการลบไฟล์เก่าที่มีอยู่ เเล้วนำไฟล์ใหม่ไปบันทึกเเทน
@@ -206,7 +206,7 @@ namespace SeniorProject.Controllers
                 //ถ้าสถานะเท่ากับอนุมัติไม่สามารถลบได้
                 if (check == 5)
                 {
-                    return Json(new { valid = false, message = "ไม่สามารถยกเลิกการสมัครงานได้เนื่องจากสถานะเป็นอนุมัติ" });
+                    return Json(new { valid = false, message = "ไม่สามารถยกเลิกการสมัครงานได้เนื่องจากสถานะเป็น อนุมัติ" });
                 }
 
                 //ลบไฟล์สำเนาสมุดบัญชีธนาคารใน wwwroot
@@ -455,6 +455,7 @@ namespace SeniorProject.Controllers
 
         //บันทึกข้อมูลลงดาต้าเบส
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> FormStartWorking(TRANSACTION_WORKING Model, IFormFile file_start)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
@@ -488,7 +489,7 @@ namespace SeniorProject.Controllers
 
                 if (check2 >= amount)
                 {
-                    return Json(new { valid = false, message = "Cannot Start-Working" });
+                    return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้ว" });
                 }
 
                 //ถ้าผู้ใช้ระบบได้ทำการลงเวลาเข้างานไปเเล้วในวันนี้ จะไม่สามารถลงเวลาในงานอื่นๆ ได้อีก  = ให้ทำการลงเวลาทำงานได้เเค่วันละ1ครั้ง
@@ -496,7 +497,7 @@ namespace SeniorProject.Controllers
 
                 if (check == true)
                 {
-                    return Json(new { valid = false, message = "Can't Start-Working" });
+                    return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้ว" });
                 }
 
                 Model.file_work_start = UniqueFileName;
@@ -508,7 +509,7 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            return RedirectToAction("HistoryWorking", "Student");
+            return Json(new { valid = true, message = "ลงเวลาเข้างานสำเร็จ" });
         }
 
         //ฟอร์มออกการทำงาน
@@ -521,6 +522,7 @@ namespace SeniorProject.Controllers
 
         //บันทึกข้อมูลลงดาต้าเบส
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> FormEndWorking(TRANSACTION_WORKING Model, IFormFile file_end)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
@@ -531,7 +533,7 @@ namespace SeniorProject.Controllers
 
                 if (Get.status_working_id == 3)
                 {
-                    return Json(new { valid = false, message = "error" });
+                    return Json(new { valid = false, message = "ไม่สามารถลงเวลาออกงานได้เนื่องจากสถานะงานเป็น ทำงานสำเร็จ" });
                 }
 
                 //อัพโหลดไฟล์สิ้นสุดงาน
@@ -559,7 +561,7 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error.Message });
             }
-            return RedirectToAction("HistoryWorking", "Student");
+            return Json(new { valid = true, message = "ลงเวลาออกงานสำเร็จ" });
         }
         #endregion
 
