@@ -306,6 +306,21 @@ namespace SeniorProject.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    if(Model.banktype_id == 7 && Model.bank_no.Length < 12 || Model.bank_no.Length > 15)
+                    {
+                        return Json(new { valid = false, message = "เลขที่บัญชีธนาคารออมสินไม่ถูกต้อง" });
+                    }
+
+                    if(Model.banktype_id == 8 || Model.banktype_id ==  9 && Model.bank_no.Length < 12 )
+                    {
+                        return Json(new { valid = false, message = "เลขที่บัญชีธนาคาร ธอส. หรือ ธกส. ไม่ถูกต้อง" });
+                    }
+
+                    if(Model.banktype_id != 7 || Model.banktype_id != 8 || Model.banktype_id != 9 && Model.bank_no.Length < 10)
+                    {
+                        return Json(new { valid = false, message = "เลขที่บัญชีธนาคารไม่ถูกต้อง" });
+                    }
+
                     //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
                     var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
                     string file = ContentDispositionHeaderValue.Parse(bank_file.ContentDisposition).FileName.Trim('"');
@@ -357,9 +372,9 @@ namespace SeniorProject.Controllers
             var models = new List<ListJobApprove>();
 
 
-            foreach (var r in GetRegister.Where(w => w.s_id == CurrentUser.UserName))
+            foreach (var r in GetRegister.Where(w => w.s_id == CurrentUser.UserName ))
             {
-                foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id))
+                foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id && w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id))
                 {
                     foreach (var s in GetStatus.Where(w => w.status_id == r.status_id))
                     {

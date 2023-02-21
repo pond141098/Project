@@ -46,12 +46,17 @@ namespace SeniorProject.Controllers
         }
 
         //เเดชบอร์ด
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var u = await DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.faculty_id).FirstOrDefaultAsync();
+            var GetU = await DB.Users.FirstOrDefaultAsync();
+            var GetStudentINFaculty = await DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && GetU.role_id == 1).CountAsync();
+            var GetRegister = await DB.TRANSACTION_REGISTER.Where(w => w.s_id == GetU.UserName && GetU.faculty_id == u).Select(s => s.transaction_register_id).CountAsync();
+
             var dataPoints = new[] {
-                new { label = "Apples", value = 10 },
-                new { label = "Oranges", value = 5 },
-                new { label = "Bananas", value = 8 }
+                new { label = "นักศึกษาทั้งหมดในคณะ", value = 2 },
+                new { label = "นักศึกษาที่สมัครงาน", value = 0 }
             };
 
             ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
