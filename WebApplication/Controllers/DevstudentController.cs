@@ -49,11 +49,15 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> Index()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var Role = await DB.MASTER_ROLE.FirstOrDefaultAsync();
+            var All = await DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.role_id == 1).Select(s => s.Id).CountAsync();
             
+            var U = await DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.role_id == 1).FirstOrDefaultAsync();
+            var Regis = await DB.TRANSACTION_REGISTER.Where(w => w.s_id == U.UserName).Select(s => s.transaction_register_id).CountAsync();
 
             var dataPoints = new[] {
-                new { label = "นักศึกษาทั้งหมดในคณะ", value = 2 },
-                new { label = "นักศึกษาที่สมัครงาน", value = 0 }
+                new { label = "นักศึกษาทั้งหมดในคณะ", value = All },
+                new { label = "นักศึกษาที่สมัครงาน", value = Regis }
             };
 
             ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
