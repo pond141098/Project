@@ -22,6 +22,14 @@
                               required></textarea>
                 </div>
 
+                <div>
+                    <br>
+                    <label for="exampleFormControlInput1" style="font-size:20px">เบอร์โทรศัพท์</label>
+                    <input type="text" class="form-control" asp-for="tel_no"
+                           maxlength="10"
+                           required />
+                </div>
+
                 <div class="form-group">
                     <br>
                     <label for="exampleFormControlSelect1" style="font-size:20px">ธนาคาร</label>
@@ -32,6 +40,7 @@
                     <br>
                     <label for="exampleFormControlInput1" style="font-size:20px">เลขที่บัญชี (ไม่ต้องใส่ขีด)</label>
                     <input type="text" class="form-control" asp-for="bank_no"
+                           maxlength="15"
                            required />
                 </div>
 
@@ -47,7 +56,6 @@
                     <label for="exampleFormControlSelect1" style="font-size:20px">สำเนาสมุดบัญชีธนาคาร (พร้อมเซ็นรับรอง)</label>
                     <div class="custom-file">
                         <input asp-for="bank_file" class="form-control custom-file-input" type="file" name="bank_file"
-                               pattern="([a-zA-Z0-9\s_\\.\-\(\):])+(.pdf)$"
                                required />
                     </div>
                     <div class="small text-muted mt-2">อัปโหลดไฟล์ PDF เท่านั้น </div>

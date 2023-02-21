@@ -26,5 +26,6 @@ namespace SeniorProject.Models
         public DateTime approve_teacher_date { get; set; }
         public DateTime approve_devstudent_date { get; set; }
         public DateTime notapprove_date { get; set; }
+        public string tel_no { get; set; }
     }
 }
