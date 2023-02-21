@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SeniorProject.Data;
 using SeniorProject.Models;
 using SeniorProject.ViewModels.Devstudent;
@@ -47,6 +48,14 @@ namespace SeniorProject.Controllers
         //เเดชบอร์ด
         public IActionResult Index()
         {
+            var dataPoints = new[] {
+                new { label = "Apples", value = 10 },
+                new { label = "Oranges", value = 5 },
+                new { label = "Bananas", value = 8 }
+            };
+
+            ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+
             return View("Index");
         }
 
@@ -67,7 +76,7 @@ namespace SeniorProject.Controllers
 
             foreach (var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
             {
-                foreach(var b in GetBranch.Where(w => w.branch_id == j.branch_id))
+                foreach (var b in GetBranch.Where(w => w.branch_id == j.branch_id))
                 {
                     foreach (var p in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
                     {
@@ -108,7 +117,7 @@ namespace SeniorProject.Controllers
             var GetBank = DB.MASTER_BANK.ToList();
 
             ViewBag.bank = GetBank.Where(w => w.banktype_id == Get.banktype_id).Select(s => s.banktype_name).FirstOrDefault();
-            return View("CheckRegisterFaculty",Get);
+            return View("CheckRegisterFaculty", Get);
         }
 
         //อนุมัติ ส่งกองพัฒนานักศึกษา
@@ -120,7 +129,7 @@ namespace SeniorProject.Controllers
                 var Get = DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefault();
 
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
-                if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7) 
+                if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถส่งอนุมัติได้ !!!" });
                 }
@@ -153,7 +162,7 @@ namespace SeniorProject.Controllers
                 var Get = DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefault();
 
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ 
-                if (Get.status_id == 5 || Get.status_id == 6 )
+                if (Get.status_id == 5 || Get.status_id == 6)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถไม่อนุมัติได้ !!!" });
                 }
@@ -183,7 +192,7 @@ namespace SeniorProject.Controllers
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             try
             {
-                
+
             }
             catch (Exception Error)
             {

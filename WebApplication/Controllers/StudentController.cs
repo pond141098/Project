@@ -309,7 +309,14 @@ namespace SeniorProject.Controllers
                     //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
                     var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
                     string file = ContentDispositionHeaderValue.Parse(bank_file.ContentDisposition).FileName.Trim('"');
+                    string fileExtension = Path.GetExtension(file);
                     string UniqueFileName = file.ToString();
+
+                    //เช็คนามสกุลไฟล์
+                    if(fileExtension.ToLower() != ".pdf")
+                    {
+                        return Json(new { valid = false, message = "โปรดอัปโหลดไฟล์ที่เป็น PDF" });
+                    }
 
                     using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
                     {
