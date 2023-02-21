@@ -94,23 +94,23 @@ namespace SeniorProject.Controllers
             var GetPlace = await DB.MASTER_PLACE.ToListAsync();
             var Model = new List<HistoryRegister>();
 
-            foreach (var s in Gets.Where(w => w.s_id == CurrentUser.UserName))
+            foreach (var r in Gets.Where(w => w.s_id == CurrentUser.UserName))
             {
-                foreach (var data in GetJob.Where(w => w.transaction_job_id == s.transaction_job_id && w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id))
+                foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id && w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id))
                 {
-                    foreach (var p in GetPlace.Where(w => w.place_id == data.place_id))
+                    foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                     {
-                        foreach (var item in GetStatus.Where(w => w.status_id == s.status_id))
+                        foreach (var s in GetStatus.Where(w => w.status_id == r.status_id))
                         {
                             var model = new HistoryRegister();
-                            model.Id = s.transaction_register_id;
-                            model.name = data.job_name;
+                            model.Id = r.transaction_register_id;
+                            model.name = j.job_name;
                             model.place = p.place_name;
-                            model.detail = data.job_detail;
-                            model.status = item.status_name;
-                            model.status_id = s.status_id;
-                            model.file = s.bank_file;
-                            model.register_date = s.register_date;
+                            model.detail = j.job_detail;
+                            model.status = s.status_name;
+                            model.status_id = r.status_id;
+                            model.register_date = r.register_date;
+                            model.amount_date_working = j.amount_date;
                             Model.Add(model);
                         }
                     }
@@ -368,6 +368,7 @@ namespace SeniorProject.Controllers
             var GetPlace = await DB.MASTER_PLACE.ToListAsync();
             var GetUser = await DB.Users.ToListAsync();
             var GetPrefix = await DB.MASTER_PREFIX.ToListAsync();
+            var GetWorking = await DB.TRANSACTION_WORKING.ToListAsync();
 
             var models = new List<ListJobApprove>();
 
@@ -387,7 +388,7 @@ namespace SeniorProject.Controllers
                                     var data = new ListJobApprove();
 
                                     //เช็คว่าในตารางการทำงาน โดยการนับไอดีว่าเท่ากับจำนวนวันที่ต้องทำงานเเละสถานะของงานต้องเป็นทำงานเสร็จเเล้ว
-                                    var check = DB.TRANSACTION_WORKING.Where(w => w.transaction_job_id == j.transaction_job_id && w.status_working_id == 3).Select(s => s.transaction_working_id).Count() == j.amount_date;
+                                    var check = DB.TRANSACTION_WORKING.Where(w => w.transaction_job_id == j.transaction_job_id && w.transaction_register_id == r.transaction_register_id && w.status_working_id == 3).Select(s => s.transaction_working_id).Count() == j.amount_date;
 
                                     //ถ้าสถานะการสมัครงานเท่ากับอนุมัติ
                                     if (r.status_id == 5 && check != true)
@@ -408,8 +409,6 @@ namespace SeniorProject.Controllers
                     }
                 }
             }
-
-
             return PartialView("JobApprove", models);
         }
 
@@ -505,7 +504,7 @@ namespace SeniorProject.Controllers
 
                 if (check2 >= amount)
                 {
-                    return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้ว" });
+                    return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้วในวันนี้" });
                 }
 
                 //ถ้าผู้ใช้ระบบได้ทำการลงเวลาเข้างานไปเเล้วในวันนี้ จะไม่สามารถลงเวลาในงานอื่นๆ ได้อีก = ให้ทำการลงเวลาทำงานได้เเค่วันละ1ครั้ง
@@ -513,7 +512,7 @@ namespace SeniorProject.Controllers
 
                 if (check == true)
                 {
-                    return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้ว" });
+                    return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้วในวันนี้" });
                 }
 
                 //อัพโหลดไฟล์ในการเริ่มทำงาน
@@ -605,11 +604,12 @@ namespace SeniorProject.Controllers
 
             var Models = new List<HistoryWorking>();
 
-            foreach (var wk in GetWorking)
+
+            foreach (var r in GetRegis.Where(w => w.s_id == CurrentUser.UserName))
             {
-                foreach (var r in GetRegis.Where(w => w.transaction_register_id == wk.transaction_register_id && w.s_id == CurrentUser.UserName))
+                foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id))
                 {
-                    foreach (var j in GetJob.Where(w => w.transaction_job_id == wk.transaction_job_id))
+                    foreach (var wk in GetWorking.Where(w => w.transaction_register_id == r.transaction_register_id))
                     {
                         foreach (var s in GetStatus.Where(w => w.status_working_id == wk.status_working_id))
                         {
@@ -638,8 +638,10 @@ namespace SeniorProject.Controllers
                             }
                         }
                     }
+
                 }
             }
+
 
             return PartialView("HistoryWorking", Models);
         }

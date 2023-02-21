@@ -10,7 +10,7 @@ namespace SeniorProject.ViewModels.Student
         public string detail { get; set; }
         public string status { get; set; }
         public int status_id { get; set; }
-        public DateTime register_date { get; set; }
-        public string file { get; set; }    
+        public DateTime register_date { get; set; }  
+        public int amount_date_working { get; set; }
     }
 }

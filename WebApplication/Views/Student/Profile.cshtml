@@ -13,16 +13,6 @@
         </div>
         <section style="background-color: #eee;">
             <div class="container py-5">
-                @*<div class="row">
-                    <div class="col">
-                        <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
-                            <ol class="breadcrumb mb-0">
-                                <li class="breadcrumb-item"><a href="@Url.Action("Home","Student")">หน้าหลัก</a></li>
-                                <li class="breadcrumb-item">ประวัติส่วนตัว</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>*@
                 <div class="col-lg-12">
                     <div class="card mb-4">
                         <div class="card-body">
@@ -31,7 +21,7 @@
                                     <p class="mb-0">ชื่อ-นามสกุล :</p>
                                 </div>
                                 <div class="col-sm-9">
-                                    <p class="text-muted mb-0">@Model.FirstName  @Model.LastName</p>
+                                    <p class="mb-0">@ViewBag.Prefix @Model.FirstName  @Model.LastName</p>
                                 </div>
                             </div>
                             <hr>
@@ -40,7 +30,7 @@
                                     <p class="mb-0">รหัสนักศึกษา :</p>
                                 </div>
                                 <div class="col-sm-9">
-                                    <p class="text-muted mb-0">@Model.UserName</p>
+                                    <p class="mb-0">@Model.UserName</p>
                                 </div>
                             </div>
                             <hr>
@@ -49,7 +39,7 @@
                                     <p class="mb-0">คณะ/สาขา :</p>
                                 </div>
                                 <div class="col-sm-9">
-                                    <p class="text-muted mb-0">@ViewBag.Faculty / @ViewBag.Branch</p>
+                                    <p class="mb-0">@ViewBag.Faculty / @ViewBag.Branch</p>
                                 </div>
                             </div>
                         </div>
@@ -59,6 +49,6 @@
         </section>
     </div>
     <div class="text-center mb-5">
-        <a class="btn btn-sm" type="button" style="font-size:20px;background-color:#312E81" a href="@Url.Action("Home","Student")"><font color="#F8FAFC">BACK</font></a>
+        <a class="btn btn-sm btn-danger" type="button" style="font-size:20px;" a href="@Url.Action("Home","Student")"><i class="bi bi-arrow-left-square-fill" ></i><font color="#F8FAFC"> BACK</font></a>
     </div>
 </section>

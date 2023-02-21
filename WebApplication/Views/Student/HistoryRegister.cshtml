@@ -21,14 +21,15 @@
                             {
                                 <div class="card my-3 mx-3">
                                     <div class="card-body p-4">
-                                        <h5>@Gets.name</h5>
+                                        <h3>@Gets.name</h3>
                                         <p class="mt-2 mb-0">รายละเอียดงาน : @Gets.detail</p>
-                                        <span class="small text-muted"><i class="fa fa-clock me-1"></i>วันที่สมัคร : @Gets.register_date</span>
-                                        <br>
-                                        <span class="small text-muted"><i class="fa fa-clock me-1"></i>สถานะ : @Gets.status</span>
-                                        <h6></h6>
-                                        <button class="btn btn-danger btn-xs delete" id="@Gets.Id" onclick="deleteOrder('@Gets.Id')" value="Delete">ยกเลิกการสมัครงาน</button>
-                                        <a class="btn btn-xs btn-warning" href="@Url.Action("FormEditRegister","Student",new { id = Gets.Id})">เเก้ไขข้อมูลการสมัคร</a>
+                                        <p class="mt-2 mb-0">จำนวนวันที่ปฎิบัติงาน : @Gets.amount_date_working วัน</p>
+                                        <p class="mt-2 mb-0">วันที่สมัคร : @Gets.register_date</p>
+                                        <p class="mt-2 mb-0">สถานะ : @Gets.status</p>
+                                        <h5></h5>
+
+                                        <a class="btn btn-danger btn-xs delete" id="@Gets.Id" onclick="deleteOrder('@Gets.Id')" value="Delete"><i class="bi bi-trash3-fill"></i> ยกเลิกการสมัครงาน</a>
+                                        <a class="btn btn-xs btn-warning" href="@Url.Action("FormEditRegister","Student",new { id = Gets.Id})"><i class="bi bi-brush-fill"></i> เเก้ไขข้อมูลการสมัคร</a>
                                     </div>
                                 </div>
                             }
@@ -39,7 +40,7 @@
             </div>
         </section>
         <div class="text-center mb-5">
-            <a class="btn" type="button" style="font-size:20px;background-color:#312E81" a href="@Url.Action("Home","Student")"><font color="#F8FAFC">BACK</font></a>
+            <a class="btn btn-primary" type="button" style="font-size:20px;" a href="@Url.Action("Home","Student")"><i class="bi bi-arrow-left-square-fill"></i><font color="#F8FAFC"> BACK</font></a>
         </div>
     </div>
 </section>

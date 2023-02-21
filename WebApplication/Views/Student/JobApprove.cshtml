@@ -23,7 +23,7 @@
                             <p class="card-text">รายละเอียดงาน : @Gets.job_detail</p>
                             <p class="card-text">อาจารย์ผู้รับผิดชอบงาน : @Gets.job_owner</p>
                             <p>-----------------------------------</p>
-                            <a class="btn btn-success start" a href="@Url.Action("ListWorking","Student",new { id = @Gets.id , j_id = Gets.j_id})">เริ่มทำงาน</a>
+                            <a class="btn btn-success start" style="font-size:17px;" a href="@Url.Action("ListWorking","Student",new { id = @Gets.id , j_id = Gets.j_id})">เริ่มทำงาน <i class="bi bi-arrow-right-square-fill"></i></a>
                         </div>
                     </div>
                     Rows++;
@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="text-center mb-5">
-        <a class="btn btn-sm" type="button" style="font-size:20px;background-color:#312E81" a href="@Url.Action("Home","Student")"><font color="#F8FAFC">BACK</font></a>
+        <a class="btn btn-sm btn-danger" type="button" style="font-size:20px;" a href="@Url.Action("Home","Student")"><i class="bi bi-arrow-left-square-fill"></i><font color="#F8FAFC"> BACK</font></a>
     </div>
 </section>
 

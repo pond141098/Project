@@ -47,11 +47,11 @@ namespace WebApplication.Controllers
             }
             else if (CurrentUser.role_id == 3)
             {
-                return RedirectToAction("ListStudentFaculty", "Devstudent");
+                return RedirectToAction("Index", "Devstudent");
             }
             else if (CurrentUser.role_id == 4)
             {
-                return RedirectToAction("AllListStudent", "Office");
+                return RedirectToAction("Index", "Office");
             }
             else if(CurrentUser.role_id == 1)
             {
