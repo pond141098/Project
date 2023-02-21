@@ -96,7 +96,7 @@ namespace SeniorProject.Controllers
 
             foreach (var s in Gets.Where(w => w.s_id == CurrentUser.UserName))
             {
-                foreach (var data in GetJob.Where(w => w.transaction_job_id == s.transaction_job_id))
+                foreach (var data in GetJob.Where(w => w.transaction_job_id == s.transaction_job_id && w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id))
                 {
                     foreach (var p in GetPlace.Where(w => w.place_id == data.place_id))
                     {
