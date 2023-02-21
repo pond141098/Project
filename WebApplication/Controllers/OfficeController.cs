@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SeniorProject.Data;
 using SeniorProject.Models;
 using SeniorProject.ViewModels.Office;
@@ -47,6 +48,20 @@ namespace SeniorProject.Controllers
         //แดชบอร์ด
         public IActionResult Index()
         {
+            var branch = DB.MASTER_BRANCH.Where(w => w.faculty_id != 13).Select(s => s.branch_id).Count();
+            var faculty = DB.MASTER_FACULTY.Where(w => w.faculty_id != 13).Count();
+            var Regis = DB.TRANSACTION_REGISTER.Count();
+            var All = DB.Users.Where(w => w.role_id == 1).Count();
+
+            var dataPoints = new[] {
+                new { label = "นักศึกษาทั้งหมดในมหาวิทยาลัย", value = All },
+                new { label = "นักศึกษาที่สมัครงาน", value = Regis }
+            };
+
+            ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+            ViewBag.branch = branch;
+            ViewBag.faculty = faculty;
+
             return View();
         }
 

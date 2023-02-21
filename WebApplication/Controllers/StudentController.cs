@@ -274,12 +274,12 @@ namespace SeniorProject.Controllers
 
         public IActionResult DetailJob(int transaction_job_id)
         {
-            var Get =  DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).FirstOrDefault();
+            var Get = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).FirstOrDefault();
             var GetPlace = DB.MASTER_PLACE.Where(w => w.place_id == Get.place_id).Select(s => s.place_name).FirstOrDefault();
 
             ViewBag.Place = GetPlace;
 
-            return PartialView("DetailJob",Get);
+            return PartialView("DetailJob", Get);
         }
 
         //หน้าฟอร์มการสมัครงาน
@@ -306,17 +306,17 @@ namespace SeniorProject.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if(Model.banktype_id == 7 && Model.bank_no.Length < 12 || Model.bank_no.Length > 15)
+                    if (Model.banktype_id == 7 && Model.bank_no.Length < 12 || Model.bank_no.Length > 15)
                     {
                         return Json(new { valid = false, message = "เลขที่บัญชีธนาคารออมสินไม่ถูกต้อง" });
                     }
 
-                    if(Model.banktype_id == 8 || Model.banktype_id ==  9 && Model.bank_no.Length < 12 )
+                    if (Model.banktype_id == 8 || Model.banktype_id == 9 && Model.bank_no.Length < 12)
                     {
                         return Json(new { valid = false, message = "เลขที่บัญชีธนาคาร ธอส. หรือ ธกส. ไม่ถูกต้อง" });
                     }
 
-                    if(Model.banktype_id != 7 && Model.banktype_id != 8 && Model.banktype_id != 9 && Model.bank_no.Length < 10)
+                    if (Model.banktype_id != 7 && Model.banktype_id != 8 && Model.banktype_id != 9 && Model.bank_no.Length < 10)
                     {
                         return Json(new { valid = false, message = "เลขที่บัญชีธนาคารไม่ถูกต้อง" });
                     }
@@ -328,7 +328,7 @@ namespace SeniorProject.Controllers
                     string UniqueFileName = file.ToString();
 
                     //เช็คนามสกุลไฟล์
-                    if(fileExtension.ToLower() != ".pdf")
+                    if (fileExtension.ToLower() != ".pdf")
                     {
                         return Json(new { valid = false, message = "โปรดอัปโหลดไฟล์ที่เป็น PDF" });
                     }
@@ -372,7 +372,7 @@ namespace SeniorProject.Controllers
             var models = new List<ListJobApprove>();
 
 
-            foreach (var r in GetRegister.Where(w => w.s_id == CurrentUser.UserName ))
+            foreach (var r in GetRegister.Where(w => w.s_id == CurrentUser.UserName))
             {
                 foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id && w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id))
                 {
@@ -433,22 +433,24 @@ namespace SeniorProject.Controllers
 
             var Models = new List<HistoryWorking>();
 
-            foreach (var wk in GetWorking)
+
+
+            foreach (var r in GetRegis.Where(w => w.transaction_register_id == id && w.s_id == CurrentUser.UserName))
             {
-                foreach (var r in GetRegis.Where(w => w.transaction_register_id == id && w.s_id == CurrentUser.UserName))
+                foreach (var j in GetJob.Where(w => w.transaction_job_id == j_id))
                 {
-                    foreach (var j in GetJob.Where(w => w.transaction_job_id == j_id))
+                    foreach (var jwk in GetWorking.Where(w => w.transaction_register_id == r.transaction_register_id && w.transaction_job_id == j.transaction_job_id))
                     {
-                        foreach (var s in GetStatus.Where(w => w.status_working_id == wk.status_working_id))
+                        foreach (var s in GetStatus.Where(w => w.status_working_id == jwk.status_working_id))
                         {
                             var model = new HistoryWorking();
-                            string check_out = wk.end_work.ToString("0000-00-00 00:00:00");
-                            string check_in = wk.start_work.ToString("yyyy-MM-dd HH:MM:ss");
-                            string check_out2 = wk.end_work.ToString("yyyy-MM-dd HH:MM:ss");
+                            string check_out = jwk.end_work.ToString("0000-00-00 00:00:00");
+                            string check_in = jwk.start_work.ToString("yyyy-MM-dd HH:mm:ss");
+                            string check_out2 = jwk.end_work.ToString("yyyy-MM-dd HH:mm:ss");
 
                             if (s.status_working_id == 2)
                             {
-                                model.Id = wk.transaction_working_id;
+                                model.Id = jwk.transaction_working_id;
                                 model.job_name = j.job_name;
                                 model.status_name = s.status_working_name;
                                 model.check_in = check_in;
@@ -457,7 +459,7 @@ namespace SeniorProject.Controllers
                             }
                             else if (s.status_working_id == 3)
                             {
-                                model.Id = wk.transaction_working_id;
+                                model.Id = jwk.transaction_working_id;
                                 model.job_name = j.job_name;
                                 model.status_name = s.status_working_name;
                                 model.check_in = check_in;
@@ -466,14 +468,16 @@ namespace SeniorProject.Controllers
                             }
                         }
                     }
+
                 }
             }
+
 
             return PartialView("ListWorking", Models);
         }
 
         //ฟอร์มลงเวลาการเริ่มทำงาน
-        public IActionResult FormStartWorking(int transaction_register_id , int transaction_job_id)
+        public IActionResult FormStartWorking(int transaction_register_id, int transaction_job_id)
         {
             ViewBag.rid = transaction_register_id;
             ViewBag.jid = transaction_job_id;
@@ -605,14 +609,14 @@ namespace SeniorProject.Controllers
             {
                 foreach (var r in GetRegis.Where(w => w.transaction_register_id == wk.transaction_register_id && w.s_id == CurrentUser.UserName))
                 {
-                    foreach (var j in GetJob.Where(w => w.transaction_job_id == wk.transaction_job_id ))
+                    foreach (var j in GetJob.Where(w => w.transaction_job_id == wk.transaction_job_id))
                     {
                         foreach (var s in GetStatus.Where(w => w.status_working_id == wk.status_working_id))
                         {
                             var model = new HistoryWorking();
                             string check_out = wk.end_work.ToString("0000-00-00 00:00:00");
-                            string check_in = wk.start_work.ToString("yyyy-MM-dd HH:MM:ss");
-                            string check_out2 = wk.end_work.ToString("yyyy-MM-dd HH:MM:ss");
+                            string check_in = wk.start_work.ToString("yyyy-MM-dd HH:mm:ss");
+                            string check_out2 = wk.end_work.ToString("yyyy-MM-dd HH:mm:ss");
 
                             if (s.status_working_id == 2)
                             {

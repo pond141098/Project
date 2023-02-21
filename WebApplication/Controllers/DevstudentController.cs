@@ -55,12 +55,15 @@ namespace SeniorProject.Controllers
             var U = await DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.role_id == 1).FirstOrDefaultAsync();
             var Regis = await DB.TRANSACTION_REGISTER.Where(w => w.s_id == U.UserName).Select(s => s.transaction_register_id).CountAsync();
 
+            var branch = await DB.MASTER_BRANCH.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.branch_id).CountAsync();
+
             var dataPoints = new[] {
                 new { label = "นักศึกษาทั้งหมดในคณะ", value = All },
                 new { label = "นักศึกษาที่สมัครงาน", value = Regis }
             };
 
             ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+            ViewBag.Branch = branch;
 
             return View("Index");
         }
