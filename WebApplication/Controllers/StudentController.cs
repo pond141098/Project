@@ -404,6 +404,9 @@ namespace SeniorProject.Controllers
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetStatus = await DB.MASTER_STATUS_WORKING.ToListAsync();
 
+            ViewBag.job = j_id;
+            ViewBag.register = id;
+
             DateTime dateTime = DateTime.Now;
 
             var Models = new List<HistoryWorking>();
@@ -448,8 +451,11 @@ namespace SeniorProject.Controllers
         }
 
         //ฟอร์มลงเวลาการเริ่มทำงาน
-        public IActionResult FormStartWorking()
+        public IActionResult FormStartWorking(int transaction_register_id , int transaction_job_id)
         {
+            ViewBag.rid = transaction_register_id;
+            ViewBag.jid = transaction_job_id;
+
             return View("FormStartWorking");
         }
 
@@ -467,22 +473,6 @@ namespace SeniorProject.Controllers
 
             try
             {
-                //อัพโหลดไฟล์ในการเริ่มทำงาน
-                var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_start_working/");
-                string file = ContentDispositionHeaderValue.Parse(file_start.ContentDisposition).FileName.Trim('"');
-                string UniqueFileName = string.Format(@"{0}") + file.ToString();
-
-                using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
-                {
-                    await file_start.CopyToAsync(fileStream);
-                }
-
-                Model.start_work = DateTime.Now;
-                Model.end_work = DateTime.Now;
-                Model.status_working_id = 2;
-                Model.transaction_job_id = GetRegis.transaction_job_id;
-                Model.transaction_register_id = GetRegis.transaction_register_id;
-
                 //ถ้ามีรายการงานเท่ากับจำนวนวันที่ต้องทำงาน ต้องไม่สามารถบันทึกได้
                 var amount = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == Model.transaction_job_id).Select(s => s.amount_date).FirstOrDefault();
                 var check2 = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id && w.transaction_job_id == Model.transaction_job_id).Select(s => s.transaction_working_id).Count();
@@ -492,7 +482,7 @@ namespace SeniorProject.Controllers
                     return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้ว" });
                 }
 
-                //ถ้าผู้ใช้ระบบได้ทำการลงเวลาเข้างานไปเเล้วในวันนี้ จะไม่สามารถลงเวลาในงานอื่นๆ ได้อีก  = ให้ทำการลงเวลาทำงานได้เเค่วันละ1ครั้ง
+                //ถ้าผู้ใช้ระบบได้ทำการลงเวลาเข้างานไปเเล้วในวันนี้ จะไม่สามารถลงเวลาในงานอื่นๆ ได้อีก = ให้ทำการลงเวลาทำงานได้เเค่วันละ1ครั้ง
                 var check = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id && w.transaction_job_id == Model.transaction_job_id && w.start_work.Date == CurrentDate).Select(s => s.transaction_working_id).Count() > 0;
 
                 if (check == true)
@@ -500,6 +490,19 @@ namespace SeniorProject.Controllers
                     return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้ว" });
                 }
 
+                //อัพโหลดไฟล์ในการเริ่มทำงาน
+                var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_start_working/");
+                string file = ContentDispositionHeaderValue.Parse(file_start.ContentDisposition).FileName.Trim('"');
+                string UniqueFileName = file.ToString();
+
+                using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
+                {
+                    await file_start.CopyToAsync(fileStream);
+                }
+
+                Model.start_work = DateTime.Now;
+                Model.end_work = DateTime.Now;
+                Model.status_working_id = 2;
                 Model.file_work_start = UniqueFileName;
                 DB.TRANSACTION_WORKING.Add(Model);
                 await DB.SaveChangesAsync();
@@ -539,7 +542,7 @@ namespace SeniorProject.Controllers
                 //อัพโหลดไฟล์สิ้นสุดงาน
                 var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_end_working/");
                 string file = ContentDispositionHeaderValue.Parse(file_end.ContentDisposition).FileName.Trim('"');
-                string UniqueFileName = string.Format(@"{0}") + file.ToString();
+                string UniqueFileName = file.ToString();
 
                 using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
                 {

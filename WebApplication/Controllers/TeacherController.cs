@@ -148,7 +148,7 @@ namespace SeniorProject.Controllers
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
                 if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
                 {
-                    return Json(new { valid = false, message = "ไม่สามารถส่งอนุมัติได้ !!!" });
+                    return Json(new { valid = false, message = "ไม่สามารถส่งอนุมัติได้ !!!5" });
                 }
                 else if (Get.status_id == 8)
                 {

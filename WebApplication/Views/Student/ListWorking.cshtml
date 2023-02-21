@@ -14,7 +14,7 @@
         </div>
         <div class="row row-cols-lg-auto g-3 justify-content-left align-items-center mb-4 pb-2">
             <div class="col-12">
-                <button type="submit" class="btn btn-danger start" id="">ลงเวลาเข้างาน</button>
+                <a class="btn btn-danger start" href="@Url.Action("FormStartWorking","Student", new {transaction_register_id = ViewBag.register , transaction_job_id = ViewBag.job} )">ลงเวลาเข้างาน</a>
             </div>
         </div>
         <table class="table">
@@ -58,9 +58,9 @@
     <script type="text/javascript">
         $(function () {
             // go to formstartworking
-            $(".start").click(function () {
-                window.location.href = "/Student/FormStartWorking?transaction_register_id=" + $(this).attr("id");
-            });
+            //$(".start").click(function () {
+            //    window.location.href = "/Student/FormStartWorking?transaction_register_id=" + $(this).attr("data-id");
+            //});
 
             // go to formendworking
             $(".check-out").click(function () {
