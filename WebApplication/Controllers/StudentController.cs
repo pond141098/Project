@@ -316,7 +316,7 @@ namespace SeniorProject.Controllers
                         return Json(new { valid = false, message = "เลขที่บัญชีธนาคาร ธอส. หรือ ธกส. ไม่ถูกต้อง" });
                     }
 
-                    if(Model.banktype_id != 7 || Model.banktype_id != 8 || Model.banktype_id != 9 && Model.bank_no.Length < 10)
+                    if(Model.banktype_id != 7 && Model.banktype_id != 8 && Model.banktype_id != 9 && Model.bank_no.Length < 10)
                     {
                         return Json(new { valid = false, message = "เลขที่บัญชีธนาคารไม่ถูกต้อง" });
                     }
