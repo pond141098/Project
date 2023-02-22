@@ -7,6 +7,7 @@
             <th class="text-align-left">ชื่องาน</th>
             <th class="text-align-left">รายละเอียดงาน</th>
             <th class="text-align-left">จำนวนนักศึกษาที่รับ</th>
+            <th class="text-align-left">จำนวนวันที่ทำงาน</th>
             <th class="text-align-left">วันที่ปิดรับสมัคร</th>
             <th class="text-align-left">ตัวดำเนินการ</th>
         </tr>
@@ -17,10 +18,11 @@
             foreach (var Get in Model.OrderBy(f => f.close_register_date))
             {
                 <tr>
-                    <td class="text-align-center" width="50">@Rows.</td>
+                    <td class="text-align-center" width="20">@Rows.</td>
                     <td>@Get.job_name  </td>
                     <td>@Get.job_detail  </td>
-                    <td>@Get.amount_person  </td>
+                    <td>@Get.amount_person คน </td>
+                    <td>@Get.amount_date วัน </td>
                     <td>@Get.close_register_date  </td>
                     <td class="text-align-center">
                         <button class="btn btn-warning btn-xs edit" value="@Get.transaction_job_id"><i class="fa fa-pencil"></i> แก้ไข</button>
