@@ -46,8 +46,15 @@ namespace SeniorProject.Controllers
         }
 
         //เเดชบอร์ด
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var U = await DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.role_id == 1).CountAsync();
+            var B = await DB.MASTER_BRANCH.Where(w => w.faculty_id == CurrentUser.faculty_id ).Select(s => s.branch_id).CountAsync();
+
+            ViewBag.User = U;
+            ViewBag.Branch = B;
+
             return View("Index");
         }
 

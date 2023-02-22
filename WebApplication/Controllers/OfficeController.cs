@@ -53,16 +53,12 @@ namespace SeniorProject.Controllers
             var Regis = DB.TRANSACTION_REGISTER.Count();
             var All = DB.Users.Where(w => w.role_id == 1).Count();
 
-            var dataPoints = new[] {
-                new { label = "นักศึกษาทั้งหมดในมหาวิทยาลัย", value = All },
-                new { label = "นักศึกษาที่สมัครงาน", value = Regis }
-            };
-
-            ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+            ViewBag.Regis = Regis;
+            ViewBag.All = All;
             ViewBag.branch = branch;
             ViewBag.faculty = faculty;
 
-            return View();
+            return View("Index");
         }
 
         //ข้อมมูลนศ.ที่สมัครงาน
