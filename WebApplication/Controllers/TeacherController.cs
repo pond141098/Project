@@ -364,7 +364,7 @@ namespace SeniorProject.Controllers
                                 data.fullname = p.prefix_name + " " + r.fullname;
                                 data.jobname = j.job_name;
                                 data.s_id = r.s_id;
-                                data.status = "ยังทำงานไม่สำเร็จ";
+                                data.status = "ยังออกเอกสารไม่ได้เนื่องจากยังทำงานไม่ครบ";
                                 data.approve = r.approve_date;
                                 Models.Add(data);
                             }
@@ -375,7 +375,7 @@ namespace SeniorProject.Controllers
                                 data.fullname = p.prefix_name + " " + r.fullname;
                                 data.jobname = j.job_name;
                                 data.s_id = r.s_id;
-                                data.status = "ทำงานสำเร็จ";
+                                data.status = "ออกเอกสารได้";
                                 data.approve = r.approve_date;
                                 Models.Add(data);
                             }
@@ -403,14 +403,28 @@ namespace SeniorProject.Controllers
                     string time_in = wk.start_work.ToString("HH:mm:ss");
                     string time_out = wk.end_work.ToString("HH:mm:ss");
 
-                    data.Id = wk.transaction_working_id;
-                    data.date = d;
-                    data.check_in = time_in;
-                    data.check_out = time_out;
-                    data.file_in = wk.file_work_start;
-                    data.file_out = wk.file_work_end;
-                    data.status = s.status_working_name;
-                    Models.Add(data);
+                    if(s.status_working_id == 2)
+                    {
+                        data.Id = wk.transaction_working_id;
+                        data.date = d;
+                        data.check_in = time_in;
+                        data.check_out = "00:00:00";
+                        data.file_in = wk.file_work_start;
+                        data.file_out = wk.file_work_end;
+                        data.status = s.status_working_name;
+                        Models.Add(data);
+                    }
+                    else if(s.status_working_id == 3)
+                    {
+                        data.Id = wk.transaction_working_id;
+                        data.date = d;
+                        data.check_in = time_in;
+                        data.check_out = time_out;
+                        data.file_in = wk.file_work_start;
+                        data.file_out = wk.file_work_end;
+                        data.status = s.status_working_name;
+                        Models.Add(data);
+                    }
                 }
             }
 
@@ -460,17 +474,20 @@ namespace SeniorProject.Controllers
                         var check = GetWorking.Where(w => w.transaction_job_id == j.transaction_job_id && w.transaction_register_id == r.transaction_register_id && w.status_working_id == 3).Select(s => s.transaction_working_id).Count();
                         var check2 = GetWorking.Where(w => w.transaction_job_id == j.transaction_job_id && w.transaction_register_id == r.transaction_register_id && w.status_working_id == 3).Select(s => s.transaction_register_id).Count();
 
+                        var check3 = j.amount_date * j.amount_person;
+                        var check4 = check * check2;
+
                         var data = new Proofpayment();
 
                         //เช็คจำนวนวันที่ทำงานของนักศึกษาว่าเท่ากับตามวันที่ต้องทำไหม เเละเช็คว่าจำนวนนักศึกษาเท่ากับจำนวนที่รับไหม
-                        if(check != j.amount_date && check2 != j.amount_person)
+                        if(check3 != check4)
                         {
                             data.Id = j.transaction_job_id;
                             data.Job_name = j.job_name;
                             data.status_name = "ยังไม่สามารถออกเอกสารได้";
                             Models.Add(data);
                         }
-                        else if(check == j.amount_date && check2 == j.amount_person)
+                        else if(check3 == check4)
                         {
                             data.Id = j.transaction_job_id;
                             data.Job_name = j.job_name;

@@ -49,9 +49,9 @@
                                                 <td class="text-align-center" width="50">@Rows.</td>
                                                 <td>@Get.date  </td>
                                                 <td>@Get.check_in  </td>
-                                                <td>@Html.ActionLink(Get.file_in,"Download2", new { Name = Get.file_in })</td>
+                                                <td>@Get.file_in <button class="btn">@Html.ActionLink("Download","Download2", new { Name = Get.file_in })</button></td>
                                                 <td>@Get.check_out  </td>
-                                                <td>@Html.ActionLink(Get.file_out,"Download2", new { Name = Get.file_out })</td>
+                                                <td>@Get.file_out <button class="btn">@Html.ActionLink("Download","Download3", new { Name = Get.file_out })</button></td>
                                                 <td>@Get.status  </td>
                                             </tr>
                                             Rows++;
