@@ -574,6 +574,7 @@ namespace SeniorProject.Controllers
                     await file_end.CopyToAsync(fileStream);
                 }
 
+                Get.detail_working = Model.detail_working;
                 Get.start_work = Model.start_work;
                 Get.end_work = DateTime.Now;
                 Get.file_work_start = Model.file_work_start;
