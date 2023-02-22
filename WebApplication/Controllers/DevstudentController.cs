@@ -46,24 +46,14 @@ namespace SeniorProject.Controllers
         }
 
         //เเดชบอร์ด
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Role = await DB.MASTER_ROLE.FirstOrDefaultAsync();
-            var All = await DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.role_id == 1).Select(s => s.Id).CountAsync();
-            
-            var U = await DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.role_id == 1).FirstOrDefaultAsync();
-            var Regis = await DB.TRANSACTION_REGISTER.Where(w => w.s_id == U.UserName).Select(s => s.transaction_register_id).CountAsync();
+            List<dashboard> data = new List<dashboard>();
+            data.Add(new dashboard { XValue = "Label 1", YValue = 10 });
+            data.Add(new dashboard { XValue = "Label 2", YValue = 20 });
+            data.Add(new dashboard { XValue = "Label 3", YValue = 30 });
 
-            var branch = await DB.MASTER_BRANCH.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.branch_id).CountAsync();
-
-            var dataPoints = new[] {
-                new { label = "นักศึกษาทั้งหมดในคณะ", value = All },
-                new { label = "นักศึกษาที่สมัครงาน", value = Regis }
-            };
-
-            ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
-            ViewBag.Branch = branch;
+            ViewBag.dashboard = data;
 
             return View("Index");
         }
@@ -83,27 +73,26 @@ namespace SeniorProject.Controllers
             var GetPrefix = await DB.MASTER_PREFIX.ToListAsync();
             var Models = new List<ListStudentRegisterFaculty>();
 
-            foreach (var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
+            foreach(var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
             {
-                foreach (var b in GetBranch.Where(w => w.branch_id == j.branch_id))
+                foreach(var r in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
                 {
-                    foreach (var p in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
+                    foreach(var b in GetBranch.Where(w => w.branch_id == j.branch_id))
                     {
-                        foreach (var s in GetStatus.Where(w => w.status_id == p.status_id))
+                        foreach(var s in GetStatus.Where(w => w.status_id == r.status_id))
                         {
                             var Model = new ListStudentRegisterFaculty();
-                            if (s.status_id == 9 || s.status_id == 7 || s.status_id == 6)
+                            if (s.status_id == 9 || s.status_id == 7 || s.status_id == 6 || s.status_id == 8 || s.status_id == 5)
                             {
-                                Model.id = p.transaction_register_id;
+                                Model.id = r.transaction_register_id;
                                 Model.job_name = j.job_name;
                                 Model.branch_name = b.branch_name;
-                                Model.student_name = p.fullname;
-                                Model.s_id = p.s_id;
-                                Model.register_date = p.register_date;
+                                Model.student_name = r.fullname;
+                                Model.s_id = r.s_id;
+                                Model.register_date = r.register_date;
                                 Model.status_name = s.status_name;
                                 Models.Add(Model);
                             }
-
                         }
                     }
                 }
