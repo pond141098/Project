@@ -433,5 +433,57 @@ namespace SeniorProject.Controllers
             return File(bytes,"application/octet-stream");
         }
         #endregion
+
+        #region เอกสารเบิกจ่ายค่าตอบเเทน
+
+        public IActionResult ProofPayment()
+        {
+            return View("ProofPayment");
+        }
+
+        public async Task<IActionResult> getProofPayment()
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var Gets = await DB.TRANSACTION_JOB.Where(w => w.create_by == CurrentUser.UserName).ToListAsync();
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
+            var GetWorking = await DB.TRANSACTION_WORKING.ToListAsync();
+
+            var Models = new List<Proofpayment>();
+
+            foreach(var j in GetJob.Where(w => w.create_by == CurrentUser.UserName))
+            {
+                foreach(var r in GetRegister.Where(w => w.transaction_job_id == j.transaction_job_id))
+                {
+                    foreach(var wk in GetWorking.Where(w => w.transaction_register_id == r.transaction_register_id))
+                    {
+                        var check = GetWorking.Where(w => w.transaction_job_id == j.transaction_job_id && w.transaction_register_id == r.transaction_register_id && w.status_working_id == 3).Select(s => s.transaction_working_id).Count();
+                        var check2 = GetWorking.Where(w => w.transaction_job_id == j.transaction_job_id && w.transaction_register_id == r.transaction_register_id && w.status_working_id == 3).Select(s => s.transaction_register_id).Count();
+
+                        var data = new Proofpayment();
+
+                        //เช็คจำนวนวันที่ทำงานของนักศึกษาว่าเท่ากับตามวันที่ต้องทำไหม เเละเช็คว่าจำนวนนักศึกษาเท่ากับจำนวนที่รับไหม
+                        if(check != j.amount_date && check2 != j.amount_person)
+                        {
+                            data.Id = j.transaction_job_id;
+                            data.Job_name = j.job_name;
+                            data.status_name = "ยังไม่สามารถออกเอกสารได้";
+                            Models.Add(data);
+                        }
+                        else if(check == j.amount_date && check2 == j.amount_person)
+                        {
+                            data.Id = j.transaction_job_id;
+                            data.Job_name = j.job_name;
+                            data.status_name = "สามารถออกเอกสารได้";
+                            Models.Add(data);
+                        }
+                    }
+                }
+            }
+
+            return PartialView("getProofPayment", Models);
+        }
+
+        #endregion
     }
 }
