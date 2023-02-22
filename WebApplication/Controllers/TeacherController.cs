@@ -140,9 +140,9 @@ namespace SeniorProject.Controllers
                 var CJob = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == model.transaction_job_id).Select(s => s.amount_person).FirstOrDefault();
 
                 //เช็คว่ามีอนุมัติครบตามจำนวนนักศึกษาที่ต้องการหรือยัง ถ้าเกินจะไม่สามารถบันทึกได้
-                if (CGet >= CJob)
+                if (CGet > CJob)
                 {
-                    return Json(new { valid = false, message = "ไม่สามารถส่งอนุมัติได้ !!!" });
+                    return Json(new { valid = false, message = "ไม่สามารถส่งอนุมัติได้ เนื่องจากส่งรายชื่อครบเเล้ว" });
                 }
 
                 //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ

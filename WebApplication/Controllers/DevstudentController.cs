@@ -48,13 +48,6 @@ namespace SeniorProject.Controllers
         //เเดชบอร์ด
         public IActionResult Index()
         {
-            List<dashboard> data = new List<dashboard>();
-            data.Add(new dashboard { XValue = "Label 1", YValue = 10 });
-            data.Add(new dashboard { XValue = "Label 2", YValue = 20 });
-            data.Add(new dashboard { XValue = "Label 3", YValue = 30 });
-
-            ViewBag.dashboard = data;
-
             return View("Index");
         }
 
