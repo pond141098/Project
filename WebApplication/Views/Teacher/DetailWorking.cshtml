@@ -49,9 +49,9 @@
                                                 <td class="text-align-center" width="50">@Rows.</td>
                                                 <td>@Get.date  </td>
                                                 <td>@Get.check_in  </td>
-                                                <td>@Get.file_in  </td>
+                                                <td>@Html.ActionLink(Get.file_in,"Download2", new { Name = Get.file_in })</td>
                                                 <td>@Get.check_out  </td>
-                                                <td>@Get.file_out  </td>
+                                                <td>@Html.ActionLink(Get.file_out,"Download2", new { Name = Get.file_out })</td>
                                                 <td>@Get.status  </td>
                                             </tr>
                                             Rows++;
@@ -73,5 +73,4 @@
     <script src="~/js/plugin/datatables/dataTables.tableTools.min.js"></script>
     <script src="~/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
     <script src="~/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
-    @*<script type="text/javascript" src="~/js/Teacher/DetailWorking.js"></script>*@
 }

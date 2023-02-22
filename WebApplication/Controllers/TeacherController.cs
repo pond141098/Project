@@ -341,6 +341,7 @@ namespace SeniorProject.Controllers
             var GetRegis = await DB.TRANSACTION_REGISTER.ToListAsync();
             var GetPrefix = await DB.MASTER_PREFIX.ToListAsync();
             var GetUser = await DB.Users.ToListAsync();
+            var GetWorking = await DB.TRANSACTION_WORKING.ToListAsync();
 
             var Models = new List<ListWorking>();
 
@@ -350,17 +351,34 @@ namespace SeniorProject.Controllers
                 {
                     foreach (var u in GetUser.Where(w => w.UserName == r.s_id))
                     {
+                        
                         foreach (var p in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
                         {
+                            var wk = GetWorking.Where(w => w.transaction_register_id == r.transaction_register_id && w.transaction_job_id == j.transaction_job_id).Select(s => s.transaction_working_id).Count();
                             var data = new ListWorking();
-                            data.Id = r.transaction_register_id;
-                            data.j_Id = r.transaction_job_id;
-                            data.fullname = p.prefix_name + " " + r.fullname;
-                            data.jobname = j.job_name;
-                            data.s_id = r.s_id;
-                            data.status = "-";
-                            data.approve = r.approve_date;
-                            Models.Add(data);
+
+                            if (wk != j.amount_date)
+                            {
+                                data.Id = r.transaction_register_id;
+                                data.j_Id = r.transaction_job_id;
+                                data.fullname = p.prefix_name + " " + r.fullname;
+                                data.jobname = j.job_name;
+                                data.s_id = r.s_id;
+                                data.status = "ยังทำงานไม่สำเร็จ";
+                                data.approve = r.approve_date;
+                                Models.Add(data);
+                            }
+                            else if(wk == j.amount_date)
+                            {
+                                data.Id = r.transaction_register_id;
+                                data.j_Id = r.transaction_job_id;
+                                data.fullname = p.prefix_name + " " + r.fullname;
+                                data.jobname = j.job_name;
+                                data.s_id = r.s_id;
+                                data.status = "ทำงานสำเร็จ";
+                                data.approve = r.approve_date;
+                                Models.Add(data);
+                            }
                         }
                     }
                 }
@@ -399,6 +417,21 @@ namespace SeniorProject.Controllers
             return PartialView("DetailWorking", Models);
         }
 
+        //ดาวน์โหลดหลักฐานการเข้างาน
+        public FileResult Download2(string Name)
+        {
+            string path = Path.Combine(_environment.WebRootPath, "uploads/file_start_working/") + Name;
+            byte[] bytes = System.IO.File.ReadAllBytes(path);
+            return File(bytes, "application/octet-stream", Name);
+        }
+
+        //ดาวน์โหลดหลักฐานการทำงาน
+        public FileResult Download3(string Name)
+        {
+            string path = Path.Combine(_environment.WebRootPath,"uploads/file_end_working") + Name;
+            byte[] bytes = System.IO.File.ReadAllBytes(path);
+            return File(bytes,"application/octet-stream");
+        }
         #endregion
     }
 }
