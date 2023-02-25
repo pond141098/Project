@@ -19,7 +19,7 @@ namespace SeniorProject.Models
         public string bank_file { get; set; } 
         public string because_job { get; set; } 
         public DateTime register_date { get; set; } 
-        public string s_id { get; set; } 
+        public string student_id { get; set; } 
         public string fullname { get; set; } 
         public string bank_store { get; set; } 
         public DateTime approve_date { get; set; }

@@ -21,5 +21,10 @@ namespace SeniorProject.Models
         public string file_work_end { get; set; }
         public string file_work_start { get; set; }
         public int status_working_id { get; set; }
+        public int status_id { get; set; }
+        public double longitude_start { get; set; }
+        public double latitude_start { get; set;}
+        public double longitude_end { get; set; }
+        public double latitude_end { get; set;}
     }
 }

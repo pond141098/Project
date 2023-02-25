@@ -43,33 +43,78 @@
         $(document).ready(function () {
             $('form').submit(function (event) {
                 event.preventDefault();
-                var formData = new FormData($(this)[0]);
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: 'POST',
-                    data: formData,
-                    async: false,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
-                        if (response.valid == true) {
-                            sweetAlert({
-                                title: response.message
-                            });
-                            setTimeout(function () {
-                                window.location.href = "/Student/HistoryWorking";
-                            }, 2000)
-                        } else {
-                            sweetAlert({
-                                title: response.message,
-                                timeout: 3000
-                            });
+
+                // Get the user's location using the Geolocation API
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    // Get the latitude and longitude from the position object
+                    var latitude = position.coords.latitude;
+                    var longitude = position.coords.longitude;
+
+                    // Add the location data to the form data
+                    var formData = new FormData($(this)[0]);
+                    formData.append('latitude', latitude);
+                    formData.append('longitude', longitude);
+
+                    // Send the form data to the controller using AJAX
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: 'POST',
+                        data: formData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            if (response.valid == true) {
+                                sweetAlert({
+                                    title: response.message
+                                });
+                                setTimeout(function () {
+                                    window.location.href = "/Student/HistoryWorking";
+                                }, 2000)
+                            } else {
+                                sweetAlert({
+                                    title: response.message,
+                                    timeout: 3000
+                                });
+                            }
                         }
-                    }
+                    });
                 });
+
                 return false;
             });
         });
+        //$(document).ready(function () {
+        //    $('form').submit(function (event) {
+        //        event.preventDefault();
+        //        var formData = new FormData($(this)[0]);
+        //        $.ajax({
+        //            url: $(this).attr('action'),
+        //            type: 'POST',
+        //            data: formData,
+        //            async: false,
+        //            cache: false,
+        //            contentType: false,
+        //            processData: false,
+        //            success: function (response) {
+        //                if (response.valid == true) {
+        //                    sweetAlert({
+        //                        title: response.message
+        //                    });
+        //                    setTimeout(function () {
+        //                        window.location.href = "/Student/HistoryWorking";
+        //                    }, 2000)
+        //                } else {
+        //                    sweetAlert({
+        //                        title: response.message,
+        //                        timeout: 3000
+        //                    });
+        //                }
+        //            }
+        //        });
+        //        return false;
+        //    });
+        //});
     </script>
 }

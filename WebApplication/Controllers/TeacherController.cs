@@ -95,7 +95,7 @@ namespace SeniorProject.Controllers
                             model.id = r.transaction_register_id;
                             model.student_name = r.fullname;
                             model.job_name = j.job_name;
-                            model.s_id = r.s_id;
+                            model.s_id = r.student_id;
                             model.register_date = r.register_date;
                             model.status_name = s.status_name;
                             model.because_working = r.because_job;
@@ -153,7 +153,7 @@ namespace SeniorProject.Controllers
                 else if (Get.status_id == 8)
                 {
                     Get.fullname = model.fullname;
-                    Get.s_id = model.s_id;
+                    Get.student_id = model.student_id;
                     Get.bank_file = model.bank_file;
                     Get.bank_no = model.bank_no;
                     Get.bank_store = model.bank_store;
@@ -187,7 +187,7 @@ namespace SeniorProject.Controllers
                 }
 
                 Get.fullname = model.fullname;
-                Get.s_id = model.s_id;
+                Get.student_id = model.student_id;
                 Get.bank_file = model.bank_file;
                 Get.bank_no = model.bank_no;
                 Get.bank_store = model.bank_store;
@@ -251,10 +251,12 @@ namespace SeniorProject.Controllers
                     return Json(new { valid = false, message = "วันที่ปิดรับสมัครไม่ถูกต้อง" });
                 }
 
+                Model.type_job_id = 3;
                 Model.faculty_id = CurrentUser.faculty_id;
                 Model.branch_id = CurrentUser.branch_id;
                 Model.create_by = CurrentUser.UserName;
                 Model.update_date = DateTime.Now;
+                Model.create_date = DateTime.Now;
                 DB.TRANSACTION_JOB.Add(Model);
                 await DB.SaveChangesAsync();
 
@@ -300,6 +302,8 @@ namespace SeniorProject.Controllers
                 Get.branch_id = CurrentUser.branch_id;
                 Get.update_date = DateTime.Now;
                 Get.create_by = CurrentUser.UserName;
+                Get.create_date = Model.create_date;
+                Get.type_job_id = 3;
                 DB.TRANSACTION_JOB.Update(Get);
                 await DB.SaveChangesAsync();
 
@@ -318,6 +322,12 @@ namespace SeniorProject.Controllers
             try
             {
                 var Get = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == transaction_job_id).FirstOrDefault();
+                var Check = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == transaction_job_id).Select(s => s.transaction_register_id).Count() > 0;
+                if(Check == true)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถลบรายการงานนี้ได้" });
+                }
+
                 DB.TRANSACTION_JOB.Remove(Get);
                 await DB.SaveChangesAsync();
             }
@@ -349,7 +359,7 @@ namespace SeniorProject.Controllers
             {
                 foreach (var r in GetRegis.Where(w => w.transaction_job_id == j.transaction_job_id && w.status_id == 5))
                 {
-                    foreach (var u in GetUser.Where(w => w.UserName == r.s_id))
+                    foreach (var u in GetUser.Where(w => w.UserName == r.student_id))
                     {
                         
                         foreach (var p in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
@@ -363,7 +373,7 @@ namespace SeniorProject.Controllers
                                 data.j_Id = r.transaction_job_id;
                                 data.fullname = p.prefix_name + " " + r.fullname;
                                 data.jobname = j.job_name;
-                                data.s_id = r.s_id;
+                                data.s_id = r.student_id;
                                 data.status = "ยังออกเอกสารไม่ได้เนื่องจากยังทำงานไม่ครบ";
                                 data.approve = r.approve_date;
                                 Models.Add(data);
@@ -374,7 +384,7 @@ namespace SeniorProject.Controllers
                                 data.j_Id = r.transaction_job_id;
                                 data.fullname = p.prefix_name + " " + r.fullname;
                                 data.jobname = j.job_name;
-                                data.s_id = r.s_id;
+                                data.s_id = r.student_id;
                                 data.status = "ออกเอกสารได้";
                                 data.approve = r.approve_date;
                                 Models.Add(data);

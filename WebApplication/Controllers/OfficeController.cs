@@ -89,7 +89,7 @@ namespace SeniorProject.Controllers
                                 var Model = new AllListStudentRegister();
                                 Model.id = data.transaction_register_id;
                                 Model.student_name = data.fullname;
-                                Model.student_id = data.s_id;
+                                Model.student_id = data.student_id;
                                 Model.faculty_name = f.faculty_name;
                                 Model.status_name = item.status_name;
                                 Model.job_name = j.job_name;
@@ -135,7 +135,7 @@ namespace SeniorProject.Controllers
                 }
 
                 Get.fullname = model.fullname;
-                Get.s_id = model.s_id;
+                Get.student_id = model.student_id;
                 Get.bank_file = model.bank_file;
                 Get.bank_no = model.bank_no;
                 Get.bank_store = model.bank_store;
@@ -168,7 +168,7 @@ namespace SeniorProject.Controllers
                 }
 
                 Get.fullname = model.fullname;
-                Get.s_id = model.s_id;
+                Get.student_id = model.student_id;
                 Get.bank_file = model.bank_file;
                 Get.bank_no = model.bank_no;
                 Get.bank_store = model.bank_store;

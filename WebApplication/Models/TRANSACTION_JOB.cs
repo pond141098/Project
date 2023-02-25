@@ -19,10 +19,12 @@ namespace SeniorProject.Models
         public int amount_date { get; set; }
         public DateTime close_register_date { get; set; }
         public string create_by { get; set; } 
+        public DateTime create_date { get; set; } 
         public DateTime update_date { get; set; }
         public int place_id  { get; set; }   
         public int faculty_id  { get; set; }   
         public int branch_id  { get; set; }   
+        public int type_job_id  { get; set; }   
 
     }
 }

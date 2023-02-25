@@ -88,7 +88,7 @@ namespace SeniorProject.Controllers
                                 Model.job_name = j.job_name;
                                 Model.branch_name = b.branch_name;
                                 Model.student_name = r.fullname;
-                                Model.s_id = r.s_id;
+                                Model.s_id = r.student_id;
                                 Model.register_date = r.register_date;
                                 Model.status_name = s.status_name;
                                 Models.Add(Model);
@@ -133,7 +133,7 @@ namespace SeniorProject.Controllers
                 }
 
                 Get.fullname = model.fullname;
-                Get.s_id = model.s_id;
+                Get.student_id = model.student_id;
                 Get.bank_file = model.bank_file;
                 Get.bank_no = model.bank_no;
                 Get.bank_store = model.bank_store;
@@ -166,7 +166,7 @@ namespace SeniorProject.Controllers
                 }
 
                 Get.fullname = model.fullname;
-                Get.s_id = model.s_id;
+                Get.student_id = model.student_id;
                 Get.bank_file = model.bank_file;
                 Get.bank_no = model.bank_no;
                 Get.bank_store = model.bank_store;
