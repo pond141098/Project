@@ -22,6 +22,8 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace SeniorProject.Controllers
 {
@@ -253,6 +255,7 @@ namespace SeniorProject.Controllers
                         {
                             var Model = new ListJob();
                             var Check = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id && CurrentUser.UserName == w.student_id).Count() < 1;
+                            var regis = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id).Select(s => s.transaction_register_id).Count();
 
                             //ถ้าวันที่ปิดรับสมัครเท่ากับหรือมากกว่าวันที่ปัจจุบัน เเละ ถ้าในตารางการสมัครงานมี ไอดีงาน เเละ ไอดีผู้สมัครอยู่เเล้วเป็นจริง ให้ทำกรบันทึกข้อมูลลง Viewmodel
                             if (j.close_register_date >= DateTime.Now && Check == true)
@@ -264,6 +267,7 @@ namespace SeniorProject.Controllers
                                 Model.amount_person = j.amount_person;
                                 Model.amount_working = j.amount_date;
                                 Model.close_register = j.close_register_date;
+                                Model.amount_register = regis;
                                 model.Add(Model);
                             }
                         }
@@ -477,18 +481,6 @@ namespace SeniorProject.Controllers
             return PartialView("ListWorking", Models);
         }
 
-        public async Task<Geoposition> GetGeopositionAsync()
-        {
-            var geolocator = new Geolocator();
-            var geoposition = await geolocator.GetGeopositionAsync();
-
-            var latitude = geoposition.Coordinate.Point.Position.Latitude;
-            var longitude = geoposition.Coordinate.Point.Position.Longitude;
-
-            return geoposition;
-        }
-
-
         //ฟอร์มลงเวลาการเริ่มทำงาน
         public IActionResult FormStartWorking(int transaction_register_id, int transaction_job_id)
         {
@@ -507,6 +499,12 @@ namespace SeniorProject.Controllers
             var GetRegis = await DB.TRANSACTION_REGISTER.FirstOrDefaultAsync();
             var GetJob = await DB.TRANSACTION_JOB.FirstOrDefaultAsync();
             var GetWork = await DB.TRANSACTION_WORKING.FirstOrDefaultAsync();
+
+            //var url = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={Model.latitude_start},{Model.longitude_start}&key=YOUR_API_KEY";
+            //var client = new HttpClient();
+            //var response = await client.GetAsync(url);
+            //var result = await response.Content.ReadAsAsync<GoogleMapsResult>();
+            //var address = result.Results.FirstOrDefault()?.FormattedAddress;
 
             DateTime CurrentDate = DateTime.Now.Date;
 
@@ -542,6 +540,7 @@ namespace SeniorProject.Controllers
                 Model.start_work = DateTime.Now;
                 Model.end_work = DateTime.Now;
                 Model.status_working_id = 2;
+                Model.status_id = 10;
                 Model.file_work_start = UniqueFileName;
                 DB.TRANSACTION_WORKING.Add(Model);
                 await DB.SaveChangesAsync();

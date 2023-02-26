@@ -29,6 +29,8 @@
 
                 <input type="hidden" asp-for="transaction_job_id" value="@ViewBag.jid"/>
                 <input type="hidden" asp-for="transaction_register_id" value="@ViewBag.rid"/>
+                <input type="hidden" asp-for="longitude_start" id="longitude" />
+                <input type="hidden" asp-for="latitude_start" id="latitude" />
 
             </form>
         </fieldset>
@@ -43,44 +45,46 @@
         $(document).ready(function () {
             $('form').submit(function (event) {
                 event.preventDefault();
+                var form = this; // Store the form reference
 
-                // Get the user's location using the Geolocation API
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    // Get the latitude and longitude from the position object
-                    var latitude = position.coords.latitude;
-                    var longitude = position.coords.longitude;
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        $('#longitude').val(position.coords.longitude);
+                        $('#latitude').val(position.coords.latitude);
 
-                    // Add the location data to the form data
-                    var formData = new FormData($(this)[0]);
-                    formData.append('latitude', latitude);
-                    formData.append('longitude', longitude);
-
-                    // Send the form data to the controller using AJAX
-                    $.ajax({
-                        url: $(this).attr('action'),
-                        type: 'POST',
-                        data: formData,
-                        async: false,
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        success: function (response) {
-                            if (response.valid == true) {
-                                sweetAlert({
-                                    title: response.message
-                                });
-                                setTimeout(function () {
-                                    window.location.href = "/Student/HistoryWorking";
-                                }, 2000)
-                            } else {
-                                sweetAlert({
-                                    title: response.message,
-                                    timeout: 3000
-                                });
+                        // Submit the form
+                        var formData = new FormData(form); // Use the stored form reference
+                        $.ajax({
+                            url: $(form).attr('action'), // Use the stored form reference
+                            type: 'POST',
+                            data: formData,
+                            async: false,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                if (response.valid == true) {
+                                    sweetAlert({
+                                        title: response.message
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "/Student/HistoryWorking";
+                                    }, 2000)
+                                } else {
+                                    sweetAlert({
+                                        title: response.message,
+                                        timeout: 3000
+                                    });
+                                }
                             }
-                        }
+                        });
                     });
-                });
+                } else {
+                    sweetAlert({
+                        title: response.message,
+                        timeout: 3000
+                    });
+                }
 
                 return false;
             });
