@@ -238,14 +238,13 @@ namespace SeniorProject.Controllers
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetPlace = await DB.MASTER_PLACE.ToListAsync();
-            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetUser = await DB.Users.ToListAsync();
             var GetPrefix = await DB.MASTER_PREFIX.ToListAsync();
 
             //การ join table โดยนำค่าที่ต้องการมาเเสดง มาใส่ใน ViewsModels เเล้วไปเเสดงในหน้า Views
             var model = new List<ListJob>();
 
-            foreach (var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id))
+            foreach (var j in  DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id))
             {
                 foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                 {

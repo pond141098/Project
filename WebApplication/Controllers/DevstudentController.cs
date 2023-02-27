@@ -2,21 +2,25 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SeniorProject.Data;
 using SeniorProject.Models;
 using SeniorProject.ViewModels.Devstudent;
+using SeniorProject.ViewModels.User;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApplication.Controllers;
 using WebApplication.Data;
 using WebApplication.Models;
+using Windows.System;
 
 namespace SeniorProject.Controllers
 {
@@ -45,6 +49,8 @@ namespace SeniorProject.Controllers
             _environment = environment;
         }
 
+        #region DashBoard
+
         //เเดชบอร์ด
         public async Task<IActionResult> Index()
         {
@@ -58,11 +64,16 @@ namespace SeniorProject.Controllers
             return View("Index");
         }
 
+        #endregion
+
+        #region รายชื่อนักศึกษาที่อาจารย์/เจ้าหน้าที่ในคณะส่งมา
+
         //ข้อมูลนศ.ที่สมัครงาน
         public IActionResult ListStudentFaculty()
         {
             return View("ListStudentFaculty");
         }
+
         public async Task<IActionResult> getListStudentFaculty()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
@@ -198,5 +209,208 @@ namespace SeniorProject.Controllers
             }
             return Json(new { valid = true, message = "อนุมัติเรียบร้อย" });
         }
+
+        #endregion
+
+        #region จัดการผู้ใช้
+
+        public IActionResult UserIndex()
+        {
+            return View("UserIndex");
+        }
+
+        public async Task<IActionResult> GetUserIndex()
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var Prefix = await DB.MASTER_PREFIX.ToListAsync();
+            var Faculty = await DB.MASTER_FACULTY.ToListAsync();
+            var Branch = await DB.MASTER_BRANCH.ToListAsync();
+            
+
+            var ViewModels = new List<UserViewModels>();
+            var GetUsers = DB.Users.ToList();
+            foreach (var GetUser in GetUsers.Where(w => w.faculty_id == CurrentUser.faculty_id))
+            {
+                var Roles = DB.UserRoles.Where(w => w.UserId == GetUser.Id).Select(s => s.RoleId).FirstOrDefault();
+                var ViewModel = new UserViewModels();
+
+                if (Roles != "e5ce49ea-eaf4-431e-b7c6-50ac72ff505b")
+                {
+                    ViewModel.UserId = GetUser.Id;
+                    ViewModel.FullName = Prefix.Where(w => w.prefix_id == GetUser.prefix_id).Select(s => s.prefix_name).FirstOrDefault() + " " + GetUser.FirstName + " " + GetUser.LastName;
+                    ViewModel.Username = GetUser.UserName;
+                    ViewModel.FacultyName = Faculty.Where(w => w.faculty_id == GetUser.faculty_id).Select(s => s.faculty_name).FirstOrDefault();
+                    ViewModel.BranchName = Branch.Where(w => w.branch_id == GetUser.branch_id).Select(s => s.branch_name).FirstOrDefault();
+                    ViewModel.PhoneNumber = GetUser.PhoneNumber;
+                    ViewModels.Add(ViewModel);
+                }
+            }
+
+            return PartialView("GetUserIndex", ViewModels);
+        }
+
+        public async Task<IActionResult> AddUser()
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+
+            ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.Where(w => w.faculty_id == CurrentUser.faculty_id).ToList(), "faculty_id", "faculty_name");
+            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.Where(w => w.faculty_id == CurrentUser.faculty_id).ToList(), "branch_id", "branch_name"); ;
+            ViewBag.prefix = new SelectList(DB.MASTER_PREFIX.ToList(), "prefix_id", "prefix_name");
+
+            ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "นักศึกษา" && w.Name != "ฝ่ายพัฒนานักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงาน").ToList(), "Id", "Name");
+
+            return View("AddUser");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddUser(AddUserViewModels models, string RoleId)
+        {
+            string Msg = "";
+            try
+            {
+                var user = new ApplicationUser
+                {
+                    FirstName = models.FirstName,
+                    LastName = models.LastName,
+                    Email = models.UserName,
+                    UserName = models.UserName,
+                    PhoneNumber = models.PhoneNumber,
+                    faculty_id = models.faculty_id,
+                    branch_id = models.branch_id,
+                    prefix_id = models.prefix_id
+                };
+
+                var result = await _userManager.CreateAsync(user, models.Password);
+                if (result.Succeeded)
+                {
+                    var currentUser = await _userManager.FindByEmailAsync(user.Email);
+                    var GetAllRoles = await _roleManager.Roles.Where(w => w.Id == RoleId).ToListAsync();
+
+                    foreach (var GetAllRole in GetAllRoles)
+                    {
+                        var roleresult = await _userManager.AddToRoleAsync(currentUser, GetAllRole.NormalizedName);
+                    }
+
+                    // add log
+                    var UserLogin = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+                }
+                else
+                {
+                    foreach (var Error in result.Errors)
+                    {
+                        Msg = Error.Description + "<br/>";
+                    }
+                    return Json(new { valid = false, message = Msg });
+                }
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error.Message });
+            }
+            return Json(new { valid = true, message = "เพิ่มสมาชิกเรียบร้อย" });
+        }
+
+        public IActionResult EditUser(string UserId)
+        {
+            var User = DB.Users.Where(w => w.Id == UserId).FirstOrDefault();
+            var GetRoleId = DB.UserRoles.Where(w => w.UserId == User.Id).Select(s => s.RoleId).FirstOrDefault();
+            var GetFaculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == User.faculty_id).Select(s => s.faculty_id).FirstOrDefault();
+            var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == User.branch_id).Select(s => s.branch_id).FirstOrDefault();
+
+            ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "นักศึกษา" && w.Name != "ฝ่ายพัฒนานักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงาน").ToList(), "Id", "Name",GetRoleId);
+            ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.Where(w => w.faculty_id == User.faculty_id).ToList(), "faculty_id", "faculty_name", GetFaculty);
+            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.Where(w => w.faculty_id == User.faculty_id).ToList(), "branch_id", "branch_name", GetBranch); ;
+            ViewBag.prefix = new SelectList(DB.MASTER_PREFIX.ToList(), "prefix_id", "prefix_name");
+
+            var ViewModel = new AddUserViewModels();
+            ViewModel.Id = User.Id;
+            ViewModel.FirstName = User.FirstName;
+            ViewModel.LastName = User.LastName;
+            ViewModel.Password = User.PasswordHash;
+            ViewModel.UserName = User.UserName;
+            ViewModel.PhoneNumber = User.PhoneNumber;
+            ViewModel.prefix_id = User.prefix_id;
+            ViewModel.faculty_id = User.faculty_id;
+            ViewModel.branch_id = User.branch_id;
+
+            return View("EditUser",ViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditUser(AddUserViewModels model,string OldPassword)
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            string Msg = "";
+            try
+            {
+                var ThisUser = await _userManager.FindByIdAsync(model.Id);
+
+                ThisUser.UserName = model.UserName;
+                ThisUser.FirstName = model.FirstName;
+                ThisUser.LastName = model.LastName;
+                ThisUser.Email = model.UserName;
+                ThisUser.faculty_id = model.faculty_id;
+                ThisUser.branch_id = model.branch_id;
+                ThisUser.prefix_id = model.prefix_id;
+                ThisUser.LastName = model.LastName;
+                ThisUser.PhoneNumber = model.PhoneNumber;
+
+                string GeneratePassword = "";
+                if (model.Password == null)
+                {
+                    ThisUser.PasswordHash = OldPassword;
+                }
+                else
+                {
+                    GeneratePassword = model.Password;
+                    var Code = await _userManager.GeneratePasswordResetTokenAsync(ThisUser);
+                    var ChangePassword = await _userManager.ResetPasswordAsync(ThisUser, Code, GeneratePassword);
+                    if (!ChangePassword.Succeeded)
+                    {
+                        return Json(new { valid = false, message = ChangePassword.Errors.Select(s => s.Code + " " + s.Description).FirstOrDefault() });
+                    }
+                }
+
+                var result = await _userManager.UpdateAsync(ThisUser);
+                if (result.Succeeded)
+                {
+                    if (DB.UserRoles.Where(w => w.UserId == model.Id).Count() > 0)
+                    {
+                        var RoleThisUser = DB.UserRoles.Where(w => w.UserId == model.Id).FirstOrDefault();
+                        DB.UserRoles.Remove(RoleThisUser);
+                        DB.SaveChanges();
+
+                        var currentUser = await _userManager.FindByEmailAsync(model.UserName);
+                        var GetAllRoles = await _roleManager.Roles.Where(w => w.Id == model.RoleId).ToListAsync();
+                        foreach (var GetAllRole in GetAllRoles)
+                        {
+                            var roleresult = await _userManager.AddToRoleAsync(currentUser, GetAllRole.NormalizedName);
+                        }
+                    }
+
+                    var UserLogin = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+
+                    return Json(new { valid = true, Message = "บักทึกข้อมูลสำเร็จ" });
+                }
+                else
+                {
+                    foreach (var Error in result.Errors)
+                    {
+                        Msg = Error.Description + "<br/>";
+                    }
+
+                    return Json(new { valid = false, message = Msg });
+                }
+            }
+            catch (Exception Error)
+            {
+                Msg = "Error is : " + Error.Message;
+                return Json(new { valid = false, message = Msg });
+            }
+        }
+
+        #endregion
     }
 }

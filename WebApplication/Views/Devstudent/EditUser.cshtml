@@ -1,0 +1,235 @@
+﻿@model SeniorProject.ViewModels.User.AddUserViewModels
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+    ViewData["title"] = "เเก้ไขผู้ใช้ระบบ";
+}
+<div id="ribbon">
+    <span class="ribbon-button-alignment">
+        <span id="refresh" class="btn btn-ribbon">
+            <i class="fa fa-refresh"></i>
+        </span>
+    </span>
+    <ol class="breadcrumb">
+        <li><a href="/Devstudent/UserIndex">จัดการผู้ใช้</a></li>
+        <li>@ViewData["Title"]</li>
+    </ol>
+</div>
+<div id="content">
+    <section id="widget-grid">
+        <div class="row">
+            <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+                <div class="jarviswidget   jarviswidget-sortable" id="wid-id-2" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" role="widget" style="">
+                    <header role="heading">
+                        <h2 class="font-md"><i class="fa fa-list-ul"></i> @ViewData["Title"]</h2>
+                        <span class="jarviswidget-loader" style="display: none;"><i class="fa fa-refresh fa-spin"></i></span>
+                    </header>
+                    <div role="contentinfo" style="display: block;">
+                        <div class="jarviswidget-editbox"></div>
+                        <div class="widget-body">
+                            <div class="row">
+                                <div class="col-lg-2"></div>
+                                <div class="col-lg-8">
+
+                                    <form id="FormEditUser" class="form-horizontal"
+                                          asp-antiforgery="true"
+                                          data-bv-message="This value is not valid"
+                                          data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
+                                          data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
+                                          data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+
+                                        <fieldset>
+                                            <legend style="color:red;">กรุณากรอกข้อมูลให้ครบถ้วน</legend>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">กำหนดสิทธิ์ <span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    @Html.DropDownList("RoleId", (IEnumerable<SelectListItem>)ViewBag.Role, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">คณะ <span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    @Html.DropDownList("faculty_id", (IEnumerable<SelectListItem>)ViewBag.faculty, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">สาขา <span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    @Html.DropDownList("branch_id", (IEnumerable<SelectListItem>)ViewBag.branch, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">รหัสผู้ใช้ <span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="UserName"
+                                                           data-bv-notempty="true"
+                                                           data-bv-notempty-message="กรุณากรอกชื่อผู็ใช้"/>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">รหัสผ่าน <span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    <input type="password" class="form-control" asp-for="Password"
+                                                           data-bv-notempty="true"
+                                                           data-bv-notempty-message="กรุณากรอกรหัสผ่าน"
+                                                           data-bv-identical="true"
+                                                           data-bv-identical-field="confirmPassword"
+                                                           data-bv-identical-message="รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน"
+                                                           data-bv-stringlength="true"
+                                                           data-bv-stringlength-min="6"
+                                                           data-bv-stringlength-max="30"
+                                                           data-bv-stringlength-message="รหัสผ่านอย่างน้อย 6 ถึง 12"
+                                                           pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@@#$%^&*-]).{6,}$"
+                                                           data-bv-message="รหัสผ่านอย่างน้อย 6 ควรมีอักขระพิเศษอย่างน้อยหนึ่งตัว ตัวเลขอย่างน้อยหนึ่งตัว และตัวพิมพ์ใหญ่ พิมพ์เล็ก" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">ยืนยันรหัสผ่าน <span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    <input type="password" class="form-control" asp-for="Confirmpassword"
+                                                           data-bv-notempty="true"
+                                                           data-bv-notempty-message="กรุณากรอกยืนยันรหัสผ่าน"
+                                                           data-bv-identical="true"
+                                                           data-bv-identical-field="Password"
+                                                           data-bv-identical-message="รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน"
+                                                           data-bv-stringlength="true"
+                                                           data-bv-stringlength-min="6"
+                                                           data-bv-stringlength-max="30"
+                                                           data-bv-stringlength-message="รหัสผ่านอย่างน้อย 6 ถึง 12"
+                                                           pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@@#$%^&*-]).{6,}$"
+                                                           data-bv-message="รหัสผ่านอย่างน้อย 6 ควรมีอักขระพิเศษอย่างน้อยหนึ่งตัว ตัวเลขอย่างน้อยหนึ่งตัว และตัวพิมพ์ใหญ่ พิมพ์เล็ก" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">คำนำหน้าชื่อ <span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    @Html.DropDownList("prefix_id", (IEnumerable<SelectListItem>)ViewBag.prefix, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">ชื่อ <span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="FirstName"
+                                                           data-bv-notempty="true"
+                                                           data-bv-notempty-message="กรุณากรอกชื่อ" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">นามสกุล <span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="LastName"
+                                                           data-bv-notempty="true"
+                                                           data-bv-notempty-message="กรุณากรอกนามสกุล" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">หมายเลขโทรศัพท์ <span style="color:red;">*</span></label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="PhoneNumber"
+                                                           data-bv-notempty="true"
+                                                           data-bv-notempty-message="กรุณากรอกหมายเลขโทรศัพท์"
+                                                           pattern="^[0-9]{10}$"
+                                                           data-bv-message="รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <input type="hidden" asp-for="Id"/>
+
+                                        <div class="form-actions">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button class="btn btn-success" type="submit" id="submit">บันทึก</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-lg-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+    <script src="~/js/plugin/select2/select2.min.js"></script>
+    <script src="~/js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+    <script>
+        $(function () {
+            $("#RoleId").select2();
+            $('#FormEditUser').bootstrapValidator();
+            $("#submit").click(function () {
+                $('#FormEditUser').data("bootstrapValidator").validate();
+                if ($('#FormEditUser').data("bootstrapValidator").isValid() == true) {
+                    var Data = new FormData($("#FormEditUser")[0]);
+                    $.ajax(
+                        {
+                            type: "POST",
+                            url: "/Devstudent/EditUser",
+                            contentType: false,
+                            processData: false,
+                            data: Data,
+                            success: function (response) {
+                                if (response.valid == true) {
+                                    $.smallBox({
+                                        title: response.message,
+                                        content: "<i class='fa fa-clock-o'></i> <i>" + response.message + "</i>",
+                                        color: "#296191",
+                                        iconSmall: "fa fa-thumbs-up bounce animated",
+                                        timeout: 2000
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "/Devstudent/UserIndex";
+                                    }, 1000)
+                                } else {
+                                    $.smallBox({
+                                        title: response.message,
+                                        content: "<i class='fa fa-clock-o'></i> <i>" + response.message + "</i>",
+                                        color: "#FB0404",
+                                        iconSmall: "fa fa-thumbs-up bounce animated",
+                                        timeout: 2000
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "/Devstudent/UserIndex";
+                                    }, 3000)
+                                }
+                            }
+                        });
+                }
+            });
+        });
+    </script>
+}

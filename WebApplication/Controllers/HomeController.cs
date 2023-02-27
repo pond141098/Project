@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SeniorProject.Data;
 using SeniorProject.Models;
@@ -41,19 +42,21 @@ namespace WebApplication.Controllers
         public async Task<IActionResult> Index()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            if (CurrentUser.role_id == 2)
+            var CheckRoles = await DB.UserRoles.Where(w => w.UserId == CurrentUser.Id).Select(s => s.RoleId).FirstOrDefaultAsync();
+
+            if (CheckRoles == "cfed75aa-4322-4f0a-ab5e-ea44e48d76e2") //อาจารย์เเละเจ้าหน้าที่สาขา
             {
                 return RedirectToAction("Job", "Teacher");
             }
-            else if (CurrentUser.role_id == 3)
+            else if (CheckRoles == "42d5797d-0dce-412b-beea-9337f482e9e5") //ฝ่ายพัฒนานักศึกษา
             {
                 return RedirectToAction("Index", "Devstudent");
             }
-            else if (CurrentUser.role_id == 4)
+            else if (CheckRoles == "34cdaea1-7b6d-4a1e-9c97-3542403bcb09") //กองพัฒนานักศึกษา
             {
                 return RedirectToAction("Index", "Office");
             }
-            else if(CurrentUser.role_id == 1)
+            else if (CheckRoles == "e5ce49ea-eaf4-431e-b7c6-50ac72ff505b") //นักศึกษา
             {
                 return RedirectToAction("Home", "Student");
             }
