@@ -52,13 +52,21 @@ namespace WebApplication.Controllers
             {
                 return RedirectToAction("Index", "Devstudent");
             }
-            else if (CheckRoles == "34cdaea1-7b6d-4a1e-9c97-3542403bcb09") //กองพัฒนานักศึกษา
+            else if (CheckRoles == "34cdaea1-7b6d-4a1e-9c97-3542403bcb09") //เจ้าหน้าที่หน่วยงานในคณะ
             {
-                return RedirectToAction("Index", "Office");
+                return RedirectToAction("Job", "OfficerFaculty");
             }
             else if (CheckRoles == "e5ce49ea-eaf4-431e-b7c6-50ac72ff505b") //นักศึกษา
             {
                 return RedirectToAction("Home", "Student");
+            }
+            else if(CheckRoles == "d93d333d-1a16-4707-b06e-eb14b89050f0") //กองพัฒนานักศึกษา
+            {
+                return RedirectToAction("AllListStudent", "DepartmentDevStudent");
+            }
+            else if(CheckRoles == "cddaeb6d-62db-4f03-98e5-8c473a5ff64e") //เจ้าหน้าที่หน่วยงาน
+            {
+                return RedirectToAction("Index","Officer");
             }
             return View();
         }

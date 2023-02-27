@@ -1,0 +1,34 @@
+﻿@model IEnumerable<SeniorProject.ViewModels.OfficerFaculty.ListWorkingF>
+
+<table id="JsonTable" class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th class="text-align-left">ลำดับ</th>
+            <th class="text-align-left">ชื่องาน</th>
+            <th class="text-align-left">ชื่อ-นามสกุลนักศึกษา</th>
+            <th class="text-align-left">รหัสนักศึกษา</th>
+            <th class="text-align-left">สถานะ</th>
+            <th class="text-align-center">ตัวดำเนินการ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int Rows = 1;
+            foreach (var Get in Model.OrderBy(f => f.approve))
+            {
+                <tr>
+                    <td class="text-align-center" width="50">@Rows.</td>
+                    <td>@Get.jobname  </td>
+                    <td>@Get.fullname  </td>
+                    <td>@Get.s_id  </td>
+                    <td>@Get.status  </td>
+                    <td class="text-align-center">
+                        <button class="btn btn-success btn-xs viewdetail" value="@Get.Id"><i class="fa fa-tasks"></i> รายละเอียด</button>
+                        <button class="btn btn-primary btn-xs check"><i class="fa fa-file-pdf-o"></i> เอกสารการปฎิบัติงาน</button>
+                    </td>
+                </tr>
+                Rows++;
+            }
+        }
+    </tbody>
+</table>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<SeniorProject.ViewModels.OfficerFaculty.ListStudentRegisterF>
+
+<table id="JsonTable" class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th class="text-align-left">ลำดับ</th>
+            <th class="text-align-left">งาน</th>
+            <th class="text-align-left">ชื่อนักศึกษา</th>
+            <th class="text-align-left">รหัสนักศึกษา</th>
+            <th class="text-align-left">สถานะ</th>
+            <th class="text-align-center">ตัวดำเนินการ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int Rows = 1;
+            foreach (var Get in Model.OrderBy(f => f.register_date))
+            {
+                <tr>
+                    <td class="text-align-center" width="25">@Rows.</td>
+                    <td>@Get.job_name</td>
+                    <td>@Get.student_name</td>
+                    <td>@Get.s_id</td>
+                    <td>@Get.status_name</td>
+                    <td class="text-align-center">
+                        <button class="btn btn-warning btn-xs check" value="@Get.id"><i class="fa fa-pencil"></i> ตรวจสอบ/ส่งอนุมัติ</button>
+                    </td>
+                </tr>
+                Rows++;
+            }
+        }
+    </tbody>
+</table>

@@ -6,6 +6,7 @@
 
 @{
     var CurrentUser = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
+    
 }
 
 <!DOCTYPE html>
@@ -51,7 +52,7 @@
     <link rel="apple-touch-startup-image" href="/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
 
 </head>
-<body class="smart-style-1">
+<body class="smart-style-2">
     <header id="header">
         <div id="logo-group">
             <span id="logo"> <img src="/img/logo-parttime.png" alt="SmartAdmin"> </span>
@@ -73,10 +74,10 @@
     <aside id="left-panel">
         <div class="login-info">
             <span>
-                <a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut" title="@CurrentUser.FirstName @CurrentUser.LastName">
+                <a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut" title="@ViewData["Prefix"] @CurrentUser.FirstName @CurrentUser.LastName">
                     <span style="font-size: 26px;">
                         <img src="~/img/avatars/3.png">
-                        @CurrentUser.FirstName @CurrentUser.LastName
+                        @ViewData["Prefix"] @CurrentUser.FirstName @CurrentUser.LastName
                        
                     </span>
                 </a>
@@ -85,17 +86,22 @@
         <nav>
             <ul>
                 <li>
-                    <a href="@Url.Action("Index", "DepartmentDevStudent")"><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> <span class="menu-item-parent" style="font-size: 14px;">DashBoard</span></a>
+                    <a href="@Url.Action("Job", "OfficerFaculty")"><i class="fa fa-lg fa-fw fa-pencil-square"></i> <span class="menu-item-parent" style="font-size: 14px;">ขอรับนักศึกษา<br>มาปฎิบัติงาน</span></a>
                 </li>
             </ul>
             <ul>
                 <li>
-                    <a href="@Url.Action("AllListStudent", "DepartmentDevStudent")"><i class="fa fa-lg fa-fw fa-pencil-square"></i> <span class="menu-item-parent" style="font-size: 14px;">รายชื่อนักศึกษา<br>ที่สมัครงาน</span></a>
+                    <a href="@Url.Action("ListStudent", "OfficerFaculty")"><i class="fa fa-lg fa-fw fa-child"></i> <span class="menu-item-parent" style="font-size: 14px;">รายชื่อนักศึกษา<br>ที่มาสมัครงาน</span></a>
                 </li>
             </ul>
             <ul>
                 <li>
-                    <a href="@Url.Action("UserIndex", "DepartmentDevStudent")"><i class="fa fa-lg fa-fw fa-pencil-square"></i> <span class="menu-item-parent" style="font-size: 14px;">จัดการผู้ใช้</span></a>
+                    <a href="@Url.Action("ListStudentWorking", "OfficerFaculty")"><i class="fa fa-lg fa-fw fa-clock-o"></i> <span class="menu-item-parent" style="font-size: 14px;">เวลาเข้าออกงาน<br>นักศึกษา</span></a>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <a href="@Url.Action("Proofpayment", "OfficerFaculty")"><i class="fa fa-lg fa-fw fa-file-pdf-o"></i> <span class="menu-item-parent" style="font-size: 14px;">เอกสารเบิกจ่าย<br>ค่าตอบเเทน</span></a>
                 </li>
             </ul>
         </nav>
@@ -150,8 +156,6 @@
     <script src="/js/plugin/fastclick/fastclick.min.js"></script>
     <!-- MAIN APP JS FILE -->
     <script src="/js/app.min.js"></script>
-
-    <script src="~/js/plugin/moment/moment.min.js"></script>
 
     @RenderSection("Scripts",required: false)
 

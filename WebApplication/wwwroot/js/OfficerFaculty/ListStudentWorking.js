@@ -1,19 +1,20 @@
 ﻿$(function () {
     $("#JsonData").html('<img src="/img/loading.gif" width="50">');
-    $.get("/Office/getAllListStudent", function (JsonResult) {
+    $.get("/OfficerFaculty/getListStudentWorking", function (JsonResult) {
         setTimeout(function () {
 
             $("#JsonData").html(JsonResult);
             Datatable();
 
-            $("#JsonData").on("click", ".check", function () {
-                window.location.href = "/Office/CheckRegisterAll?transaction_register_id=" + $(this).val();
+            $("#JsonData").on("click", ".viewdetail", function () {
+                window.location.href = "/OfficerFaculty/DetailWorking?transaction_register_id=" + $(this).val();
             });
 
         }, 200);
     });
 
 });
+
 
 function Datatable() {
     /* User List using datatable ;*/

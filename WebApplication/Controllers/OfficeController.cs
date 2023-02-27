@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SeniorProject.Data;
 using SeniorProject.Models;
-using SeniorProject.ViewModels.Office;
+using SeniorProject.ViewModels.DepartmentDevStudent;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -45,145 +45,25 @@ namespace SeniorProject.Controllers
             _environment = environment;
         }
 
+        #region Dashboard
+
         //แดชบอร์ด
         public IActionResult Index()
         {
-            var branch = DB.MASTER_BRANCH.Where(w => w.faculty_id != 13).Select(s => s.branch_id).Count();
-            var faculty = DB.MASTER_FACULTY.Where(w => w.faculty_id != 13).Count();
-            var Regis = DB.TRANSACTION_REGISTER.Count();
-            var All = DB.Users.Where(w => w.role_id == 1).Count();
-
-            ViewBag.Regis = Regis;
-            ViewBag.All = All;
-            ViewBag.branch = branch;
-            ViewBag.faculty = faculty;
-
             return View("Index");
         }
 
-        //ข้อมมูลนศ.ที่สมัครงาน
-        public IActionResult AllListStudent()
-        {
-            return View("AllListStudent");
-        }
-        public async Task<IActionResult> getAllListStudent()
-        {
-            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
-            var GetPerson = await DB.TRANSACTION_REGISTER.ToListAsync();
-            var GetStatus = await DB.MASTER_STATUS.ToListAsync();
-            var GetFaculty = await DB.MASTER_FACULTY.ToListAsync();
-            var Gets = await DB.Users.ToListAsync();
-            var Models = new List<AllListStudentRegister>();
+        #endregion
 
-            foreach (var j in GetJob)
-            {
-                foreach (var f in GetFaculty.Where(w => w.faculty_id == j.faculty_id))
-                {
-                    foreach (var data in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
-                    {
-                        foreach (var item in GetStatus.Where(w => w.status_id == data.status_id))
-                        {
-                            if (item.status_id == 7 || item.status_id == 6 || item.status_id == 5)
-                            {
-                                var Model = new AllListStudentRegister();
-                                Model.id = data.transaction_register_id;
-                                Model.student_name = data.fullname;
-                                Model.student_id = data.student_id;
-                                Model.faculty_name = f.faculty_name;
-                                Model.status_name = item.status_name;
-                                Model.job_name = j.job_name;
-                                Models.Add(Model);
-                            }
-                        }
-                    }
-                }
-            }
-            return PartialView("getAllListStudent", Models);
-        }
+        #region ขอรับนักศึกษามาปฎิบัติงาน
 
-        //ดาวน์โหลดไฟล์
-        public FileResult Download(string Name)
-        {
-            string path = Path.Combine(_environment.WebRootPath, "uploads/bookbank/") + Name;
-            byte[] bytes = System.IO.File.ReadAllBytes(path);
-            return File(bytes, "application/octet-stream", Name);
-        }
 
-        //ตรวจสอบ
-        public IActionResult CheckRegisterAll(int transaction_register_id)
-        {
-            var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
-            var GetBank = DB.MASTER_BANK.ToList();
 
-            ViewBag.bank = GetBank.Where(w => w.banktype_id == Get.banktype_id).Select(s => s.banktype_name).FirstOrDefault();
-            return View("CheckRegisterAll", Get);
-        }
+        #endregion
 
-        //อนุมัติ
-        [HttpPost]
-        public async Task<IActionResult> Approve(TRANSACTION_REGISTER model)
-        {
-            try
-            {
-                var Get = DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefault();
+        #region รายชื่อนักศึกษาที่สมัครงาน
 
-                //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
-                if (Get.status_id == 5 || Get.status_id == 6)
-                {
-                    return Json(new { valid = false, message = "ไม่สามารถอนุมัติได้ !!!" });
-                }
 
-                Get.fullname = model.fullname;
-                Get.student_id = model.student_id;
-                Get.bank_file = model.bank_file;
-                Get.bank_no = model.bank_no;
-                Get.bank_store = model.bank_store;
-                Get.because_job = model.because_job;
-                Get.register_date = model.register_date;
-                Get.status_id = 5;
-                Get.approve_date = DateTime.Now;
-                DB.TRANSACTION_REGISTER.Update(Get);
-                await DB.SaveChangesAsync();
-            }
-            catch (Exception Error)
-            {
-                return Json(new { valid = false, message = Error });
-            }
-            return Json(new { valid = true, message = "อนุมัติสำเร็จ" });
-        }
-
-        //ไม่อนุมัติ
-        [HttpPost]
-        public async Task<IActionResult> NotApprove(TRANSACTION_REGISTER model)
-        {
-            try
-            {
-                var Get = DB.TRANSACTION_REGISTER.Where(w => w.status_id == model.status_id).FirstOrDefault();
-
-                //เช็คว่าถ้าไม่ใช่ อนุมัติ หรือ ไม่อนุมัติ หรือ รออนุมัติ
-                if (Get.status_id == 5 || Get.status_id == 6 || Get.status_id == 7)
-                {
-                    return Json(new { valid = false, message = "ไม่สามารถไม่อนุมัติได้ !!!" });
-                }
-
-                Get.fullname = model.fullname;
-                Get.student_id = model.student_id;
-                Get.bank_file = model.bank_file;
-                Get.bank_no = model.bank_no;
-                Get.bank_store = model.bank_store;
-                Get.because_job = model.because_job;
-                Get.register_date = model.register_date;
-                Get.status_id = 6;
-                Get.notapprove_date = DateTime.Now;
-                DB.TRANSACTION_REGISTER.Update(Get);
-                await DB.SaveChangesAsync();
-            }
-            catch (Exception Error)
-            {
-                return Json(new { valid = false, message = Error });
-            }
-            return Json(new { valid = true, message = "ไม่อนุมัติสำเร็จ" });
-        }
+        #endregion
     }
 }
