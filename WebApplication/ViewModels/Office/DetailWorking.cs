@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace SeniorProject.ViewModels.OfficerFaculty
+﻿namespace SeniorProject.ViewModels.Office
 {
-    public class DetailWorkingF
+    public class DetailWorking
     {
         public int Id { get; set; }
         public string date { get; set; }

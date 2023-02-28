@@ -1,0 +1,179 @@
+﻿@model SeniorProject.Models.TRANSACTION_JOB
+@{
+    Layout = "~/Views/Shared/_Layout_Office.cshtml";
+    ViewData["title"] = "สร้างงาน";
+}
+<div id="ribbon">
+    <span class="ribbon-button-alignment">
+        <span id="refresh" class="btn btn-ribbon">
+            <i class="fa fa-refresh"></i>
+        </span>
+    </span>
+    <ol class="breadcrumb">
+        <li><a href="/Office/Job">รับนักศึกษามาปฎิบัติงาน</a></li>
+        <li>@ViewData["Title"]</li>
+    </ol>
+</div>
+<div id="content">
+    <section id="widget-grid">
+        <div class="row">
+            <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
+                <div class="jarviswidget   jarviswidget-sortable" id="wid-id-2" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" role="widget" style="">
+                    <header role="heading">
+                        <h2 class="font-md"><i class="fa fa-list-ul"></i> @ViewData["Title"]</h2>
+                        <span class="jarviswidget-loader" style="display: none;"><i class="fa fa-refresh fa-spin"></i></span>
+                    </header>
+                    <div role="contentinfo" style="display: block;">
+                        <div class="jarviswidget-editbox"></div>
+                        <div class="widget-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <form id="FormAdd" class="form-horizontal"
+                                          asp-antiforgery="true"
+                                          data-bv-message="This value is not valid"
+                                          data-bv-feedbackicons-valid="glyphicon glyphicon-ok"
+                                          data-bv-feedbackicons-invalid="glyphicon glyphicon-remove"
+                                          data-bv-feedbackicons-validating="glyphicon glyphicon-refresh">
+                                        <fieldset>
+                                            <legend style="color:red;">
+                                                * กรุณากรอกข้อมูลให้ครบถ้วน
+                                            </legend>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">หัวข้องานที่รับนักศึกษามาทำงาน<span style="color:red;"> *</span></label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="job_name"
+                                                           data-bv-notempty="true"
+                                                           data-bv-notempty-message="กรุณากรอกข้อมูล"
+                                                           pattern="^[กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์1234567890a-zA-Z ]+$"
+                                                           data-bv-message="กรุณาอย่ากรอกเครื่องหมาย/อักขระพิเศษ" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">สถานที่ทำงาน<span style="color:red;"> *</span></label>
+                                                <div class="col-lg-9">
+                                                    @Html.DropDownList("place_id", (IEnumerable<SelectListItem>)ViewBag.Place, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">รายละเอียดงาน<span style="color:red;"> *</span></label>
+                                                <div class="col-lg-9">
+                                                    <textarea class="form-control" asp-for="job_detail"
+                                                              data-bv-notempty-message="กรุณากรอกข้อมูล"
+                                                              data-bv-notempty="true"></textarea>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">จำนวนวันที่ปฎิบัติงาน (จำนวนวันที่ปฎิบัติงานต้องไม่เกิน 5 วัน)<span style="color:red;"> *</span></label>
+                                                <div class="col-lg-9">
+                                                    <input type="number" class="form-control" asp-for="amount_date"
+                                                           data-bv-notempty="true"
+                                                           data-bv-notempty-message="กรุณากรอกข้อมูล"
+                                                           pattern="^[1234567890]+$"
+                                                           data-bv-message="กรุณากรอกตัวเลขเท่านั้น"
+                                                           min="1"
+                                                           max="5" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">จำนวนนักศึกษาที่ต้องการ (จำนวนนักศึกษาที่ต้องการต้องไม่เกิน 10 คนต่อ 1 งาน)<span style="color:red;"> *</span></label>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="form-control" asp-for="amount_person"
+                                                           data-bv-notempty="true"
+                                                           data-bv-notempty-message="กรุณากรอกข้อมูล"
+                                                           pattern="^[1234567890]+$"
+                                                           data-bv-message="กรุณากรอกตัวเลขเท่านั้น"
+                                                           min="1"
+                                                           max="10" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-lg-3 control-label">วัน/เวลาที่ปิดรับสมัคร<span style="color:red;"> *</span></label>
+                                                <div class="col-lg-9">
+                                                    <input type="datetime-local" class="form-control" asp-for="close_register_date" />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+
+                                        <div class="form-actions">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button class="btn btn-success" type="submit" id="submit">บันทึก</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+</div>
+
+
+@section Scripts{
+    <!-- bootstrapValidator Form -->
+    <script src="~/js/plugin/bootstrapvalidator/bootstrapValidator.min.js"></script>
+    <script src="~/js/fontawesome-iconpicker/fontawesome-iconpicker.min.js"></script>
+    <script>
+        $(function () {
+            $('#FormAdd').bootstrapValidator();
+            $("#submit").click(function () {
+                $('#FormAdd').data("bootstrapValidator").validate();
+                if ($('#FormAdd').data("bootstrapValidator").isValid() == true) {
+                    var Data = new FormData($("#FormAdd")[0]);
+                    $.ajax(
+                        {
+                            type: "POST",
+                            url: "/Office/FormAddJob",
+                            contentType: false,
+                            processData: false,
+                            data: Data,
+                            success: function (response) {
+                                if (response.valid == true) {
+                                    $.smallBox({
+                                        title: response.message,
+                                        content: "<i class='fa fa-clock-o'></i> <i>" + response.message + "</i>",
+                                        color: "#296191",
+                                        iconSmall: "fa fa-thumbs-up bounce animated",
+                                        timeout: 2000
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "/Office/Job";
+                                    }, 1000)
+                                } else {
+                                    $.smallBox({
+                                        title: response.message,
+                                        content: "<i class='fa fa-clock-o'></i> <i>" + response.message + "</i>",
+                                        color: "#FB0404",
+                                        iconSmall: "fa fa-thumbs-up bounce animated",
+                                        timeout: 2000
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "/Office/Job";
+                                    }, 1000)
+                                }
+                            }
+                        });
+                }
+            });
+        });
+    </script>
+}

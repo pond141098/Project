@@ -413,7 +413,7 @@ namespace SeniorProject.Controllers
                     string time_in = wk.start_work.ToString("HH:mm:ss");
                     string time_out = wk.end_work.ToString("HH:mm:ss");
 
-                    if(s.status_working_id == 2)
+                    if (s.status_working_id == 2)
                     {
                         data.Id = wk.transaction_working_id;
                         data.date = d;
@@ -422,6 +422,10 @@ namespace SeniorProject.Controllers
                         data.file_in = wk.file_work_start;
                         data.file_out = wk.file_work_end;
                         data.status = s.status_working_name;
+                        data.laitude_in = wk.latitude_start;
+                        data.longitude_in = wk.longitude_start;
+                        data.laitude_out = wk.latitude_end;
+                        data.longitude_out = wk.longitude_end;
                         Models.Add(data);
                     }
                     else if(s.status_working_id == 3)
@@ -433,6 +437,10 @@ namespace SeniorProject.Controllers
                         data.file_in = wk.file_work_start;
                         data.file_out = wk.file_work_end;
                         data.status = s.status_working_name;
+                        data.laitude_in = wk.latitude_start;
+                        data.longitude_in = wk.longitude_start;
+                        data.laitude_out = wk.latitude_end;
+                        data.longitude_out = wk.longitude_end;
                         Models.Add(data);
                     }
                 }

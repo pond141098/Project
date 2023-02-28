@@ -37,7 +37,6 @@
 
   <ItemGroup>
     <Folder Include="Helpers\" />
-    <Folder Include="ViewModels\Office\" />
     <Folder Include="wwwroot\img\realestate\thumbs\" />
     <Folder Include="wwwroot\uploads\bookbank\" />
     <Folder Include="wwwroot\uploads\file_start_working\" />

@@ -13,7 +13,7 @@
         <fieldset>
             <form asp-action="FormEndWorking"
                   method="post"
-                  enctype="multipart/form-data" >
+                  enctype="multipart/form-data">
 
                 <div class="form-group">
                     <label for="exampleFormControlInput1" style="font-size:20px">รายละเอียดการทำปฎิบัติงาน</label>
@@ -25,7 +25,7 @@
                     <br>
                     <label for="exampleFormControlSelect1" style="font-size:20px">ไฟล์งานที่นักศึกษาได้ปฎิบัติ หรือ ภาพถ่าย ณ ตอนที่กำลังจะปฎิบัติงาน</label>
                     <div class="custom-file">
-                        <input asp-for="file_work_end" class="form-control custom-file-input" type="file" name="file_end" required/>
+                        <input asp-for="file_work_end" class="form-control custom-file-input" type="file" name="file_end" required />
                     </div>
                 </div>
 
@@ -39,6 +39,11 @@
                 <input type="hidden" asp-for="transaction_job_id">
                 <input type="hidden" asp-for="start_work">
                 <input type="hidden" asp-for="file_work_start">
+                <input type="hidden" asp-for="longitude_start">
+                <input type="hidden" asp-for="latitude_start">
+
+                <input type="hidden" asp-for="longitude_end" id="longitude">
+                <input type="hidden" asp-for="latitude_end" id="latitude">
 
             </form>
         </fieldset>
@@ -53,34 +58,81 @@
         $(document).ready(function () {
             $('form').submit(function (event) {
                 event.preventDefault();
-                var formData = new FormData($(this)[0]);
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: 'POST',
-                    data: formData,
-                    async: false,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
-                        if (response.valid == true) {
-                            sweetAlert({
-                                title: response.message
-                            });
-                            setTimeout(function () {
-                                window.location.href = "/Student/HistoryWorking";
-                            }, 2000)
-                        } else {
-                            sweetAlert({
-                                title: response.message,
-                                timeout: 3000
-                            });
-                        }
-                    }
-                });
+                var form = this; // Store the form reference
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        $('#longitude').val(position.coords.longitude);
+                        $('#latitude').val(position.coords.latitude);
+
+                        // Submit the form
+                        var formData = new FormData(form); // Use the stored form reference
+                        $.ajax({
+                            url: $(form).attr('action'), // Use the stored form reference
+                            type: 'POST',
+                            data: formData,
+                            async: false,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                if (response.valid == true) {
+                                    sweetAlert({
+                                        title: response.message
+                                    });
+                                    setTimeout(function () {
+                                        window.location.href = "/Student/HistoryWorking";
+                                    }, 2000)
+                                } else {
+                                    sweetAlert({
+                                        title: response.message,
+                                        timeout: 3000
+                                    });
+                                }
+                            }
+                        });
+                    });
+                } else {
+                    sweetAlert({
+                        title: response.message,
+                        timeout: 3000
+                    });
+                }
+
                 return false;
             });
         });
+                //$(document).ready(function () {
+                //    $('form').submit(function (event) {
+                //        event.preventDefault();
+                //        var formData = new FormData($(this)[0]);
+                //        $.ajax({
+                //            url: $(this).attr('action'),
+                //            type: 'POST',
+                //            data: formData,
+                //            async: false,
+                //            cache: false,
+                //            contentType: false,
+                //            processData: false,
+                //            success: function (response) {
+                //                if (response.valid == true) {
+                //                    sweetAlert({
+                //                        title: response.message
+                //                    });
+                //                    setTimeout(function () {
+                //                        window.location.href = "/Student/HistoryWorking";
+                //                    }, 2000)
+                //                } else {
+                //                    sweetAlert({
+                //                        title: response.message,
+                //                        timeout: 3000
+                //                    });
+                //                }
+                //            }
+                //        });
+                //        return false;
+                //    });
+                //});
     </script>
 }
 

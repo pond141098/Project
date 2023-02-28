@@ -24,6 +24,7 @@ using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using System.Net.Http;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SeniorProject.Controllers
 {
@@ -499,12 +500,6 @@ namespace SeniorProject.Controllers
             var GetJob = await DB.TRANSACTION_JOB.FirstOrDefaultAsync();
             var GetWork = await DB.TRANSACTION_WORKING.FirstOrDefaultAsync();
 
-            //var url = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={Model.latitude_start},{Model.longitude_start}&key=YOUR_API_KEY";
-            //var client = new HttpClient();
-            //var response = await client.GetAsync(url);
-            //var result = await response.Content.ReadAsAsync<GoogleMapsResult>();
-            //var address = result.Results.FirstOrDefault()?.FormattedAddress;
-
             DateTime CurrentDate = DateTime.Now.Date;
 
             try
@@ -592,6 +587,10 @@ namespace SeniorProject.Controllers
                 Get.file_work_start = Model.file_work_start;
                 Get.file_work_end = UniqueFileName;
                 Get.status_working_id = 3;
+                Get.latitude_start = Model.latitude_start;
+                Get.longitude_start = Model.longitude_start;
+                Get.latitude_end = Model.latitude_end;
+                Get.longitude_end = Model.longitude_end;
                 Get.transaction_job_id = Model.transaction_job_id;
                 Get.transaction_register_id = Model.transaction_register_id;
                 DB.TRANSACTION_WORKING.Update(Get);

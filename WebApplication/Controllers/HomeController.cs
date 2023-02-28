@@ -66,7 +66,7 @@ namespace WebApplication.Controllers
             }
             else if(CheckRoles == "cddaeb6d-62db-4f03-98e5-8c473a5ff64e") //เจ้าหน้าที่หน่วยงาน
             {
-                return RedirectToAction("Index","Officer");
+                return RedirectToAction("Job", "Office");
             }
             return View();
         }

@@ -1,7 +1,7 @@
-﻿@model IEnumerable<SeniorProject.ViewModels.Teacher.DetailWorking>
+﻿@model IEnumerable<SeniorProject.ViewModels.Office.DetailWorking>
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout_Office.cshtml";
     ViewData["Title"] = "รายละเอียดการทำงาน";
 }
 
@@ -12,7 +12,7 @@
         </span>
     </span>
     <ol class="breadcrumb">
-        <li><a href="/Teacher/ListStudentWorking">รายการทำงานนักศึกษา</a></li>
+        <li><a href="/Office/ListStudentWorking">รายการทำงานนักศึกษา</a></li>
         <li>@ViewData["Title"]</li>
     </ol>
 </div>
@@ -35,10 +35,8 @@
                                         <th class="text-align-left">วันที่</th>
                                         <th class="text-align-left">เวลาเข้างาน</th>
                                         <th class="text-align-left">หลักฐานตอนเริ่มทำงาน</th>
-                                        <th class="text-align-left">สถานที่เข้างาน</th>
                                         <th class="text-align-left">เวลาออกงาน</th>
                                         <th class="text-align-left">หลักฐานตอนเลิกทำงาน</th>
-                                        <th class="text-align-left">สถานที่ออกงาน</th>
                                         <th class="text-align-left">สถานะ</th>
                                     </tr>
                                 </thead>
@@ -52,14 +50,8 @@
                                                 <td>@Get.date  </td>
                                                 <td>@Get.check_in  </td>
                                                 <td>@Get.file_in <button class="btn">@Html.ActionLink("Download","Download2", new { Name = Get.file_in })</button></td>
-                                                <td>
-                                                    <a href="https://www.google.com/maps?q=@Get.laitude_in,@Get.longitude_in" target="_blank">Show location on map</a>
-                                                </td>
                                                 <td>@Get.check_out  </td>
                                                 <td>@Get.file_out <button class="btn">@Html.ActionLink("Download","Download3", new { Name = Get.file_out })</button></td>
-                                                <td>
-                                                    <a href="https://www.google.com/maps?q=@Get.laitude_out,@Get.longitude_out" target="_blank">Show location on map</a>
-                                                </td>
                                                 <td>@Get.status  </td>
                                             </tr>
                                             Rows++;
