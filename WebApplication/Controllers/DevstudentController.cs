@@ -64,6 +64,29 @@ namespace SeniorProject.Controllers
 
         #endregion
 
+        #region ขอรับนักศึกษามาปฎิบัติงาน
+
+
+
+        #endregion
+
+        #region รายชื่อนักศึกษาที่มาสมัครงาน
+
+
+
+        #endregion
+
+        #region เวลาการทำงานของนักศึกษา/ออกรายงาน
+
+
+        #endregion
+
+        #region เอกสารเบิกจ่ายค่าตอบเเทน
+
+
+
+        #endregion
+
         #region รายชื่อนักศึกษาที่อาจารย์/เจ้าหน้าที่ในคณะส่งมา
 
         //ข้อมูลนศ.ที่สมัครงาน
@@ -321,11 +344,12 @@ namespace SeniorProject.Controllers
             var GetRoleId = DB.UserRoles.Where(w => w.UserId == User.Id).Select(s => s.RoleId).FirstOrDefault();
             var GetFaculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == User.faculty_id).Select(s => s.faculty_id).FirstOrDefault();
             var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == User.branch_id).Select(s => s.branch_id).FirstOrDefault();
+            var GetPrefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == User.prefix_id).Select(s => s.prefix_id).FirstOrDefault();
 
             ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "นักศึกษา" && w.Name != "ฝ่ายพัฒนานักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงาน").ToList(), "Id", "Name",GetRoleId);
-            ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.Where(w => w.faculty_id == User.faculty_id).ToList(), "faculty_id", "faculty_name", GetFaculty);
-            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.Where(w => w.faculty_id == User.faculty_id).ToList(), "branch_id", "branch_name", GetBranch); ;
-            ViewBag.prefix = new SelectList(DB.MASTER_PREFIX.ToList(), "prefix_id", "prefix_name");
+            ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.ToList(), "faculty_id", "faculty_name", GetFaculty);
+            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.ToList(), "branch_id", "branch_name", GetBranch); ;
+            ViewBag.prefix = new SelectList(DB.MASTER_PREFIX.ToList(), "prefix_id", "prefix_name", GetPrefix);
 
             var ViewModel = new AddUserViewModels();
             ViewModel.Id = User.Id;
