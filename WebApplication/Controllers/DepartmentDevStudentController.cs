@@ -190,6 +190,7 @@ namespace SeniorProject.Controllers
 
         #region จัดการผู้ใช้
 
+        //หน้ารายการผู้ใช้ทั้งหมด
         public IActionResult UserIndex()
         {
             return View("UserIndex");
@@ -205,12 +206,12 @@ namespace SeniorProject.Controllers
 
             var ViewModels = new List<UserViewModels>();
             var GetUsers = DB.Users.ToList();
-            foreach (var GetUser in GetUsers.Where(w => w.faculty_id == CurrentUser.faculty_id))
+            foreach (var GetUser in GetUsers)
             {
                 var Roles = DB.UserRoles.Where(w => w.UserId == GetUser.Id).Select(s => s.RoleId).FirstOrDefault();
                 var ViewModel = new UserViewModels();
 
-                if (Roles != "e5ce49ea-eaf4-431e-b7c6-50ac72ff505b")
+                if (Roles != "e5ce49ea-eaf4-431e-b7c6-50ac72ff505b" && Roles != "cfed75aa-4322-4f0a-ab5e-ea44e48d76e2" && Roles != "34cdaea1-7b6d-4a1e-9c97-3542403bcb09")
                 {
                     ViewModel.UserId = GetUser.Id;
                     ViewModel.FullName = Prefix.Where(w => w.prefix_id == GetUser.prefix_id).Select(s => s.prefix_name).FirstOrDefault() + " " + GetUser.FirstName + " " + GetUser.LastName;
@@ -225,18 +226,16 @@ namespace SeniorProject.Controllers
             return PartialView("GetUserIndex", ViewModels);
         }
 
-        public IActionResult AddUser()
+        //เพิ่มผู้ใช้ระบบ
+        public async Task<IActionResult> AddUser()
         {
-            //var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
 
-            //ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.Where(w => w.faculty_id == CurrentUser.faculty_id).ToList(), "faculty_id", "faculty_name");
             ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.ToList(), "faculty_id", "faculty_name");
-            //ViewBag.branch = new SelectList(DB.MASTER_BRANCH.Where(w => w.faculty_id == CurrentUser.faculty_id).ToList(), "branch_id", "branch_name"); ;
-            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.ToList(), "branch_id", "branch_name"); ;
+            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.Where(w => w.faculty_id == 13).ToList(), "branch_id", "branch_name"); ;
             ViewBag.prefix = new SelectList(DB.MASTER_PREFIX.ToList(), "prefix_id", "prefix_name");
 
-            //ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "นักศึกษา" && w.Name != "ฝ่ายพัฒนานักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงาน").ToList(), "Id", "Name");
-            ViewBag.Role = new SelectList(DB.Roles.ToList(), "Id", "Name");
+            ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "นักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงานในคณะ" && w.Name != "อาจารย์/เจ้าหน้าที่สาขา").ToList(), "Id", "Name");
 
             return View("AddUser");
         }
@@ -271,7 +270,6 @@ namespace SeniorProject.Controllers
                         var roleresult = await _userManager.AddToRoleAsync(currentUser, GetAllRole.NormalizedName);
                     }
 
-                    // add log
                     var UserLogin = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
                 }
                 else
@@ -290,17 +288,19 @@ namespace SeniorProject.Controllers
             return Json(new { valid = true, message = "เพิ่มสมาชิกเรียบร้อย" });
         }
 
+        //เเก้ไขข้อมูลผู้ใช้
         public IActionResult EditUser(string UserId)
         {
             var User = DB.Users.Where(w => w.Id == UserId).FirstOrDefault();
             var GetRoleId = DB.UserRoles.Where(w => w.UserId == User.Id).Select(s => s.RoleId).FirstOrDefault();
             var GetFaculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == User.faculty_id).Select(s => s.faculty_id).FirstOrDefault();
             var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == User.branch_id).Select(s => s.branch_id).FirstOrDefault();
+            var GetPrefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == User.prefix_id).Select(s => s.prefix_id).FirstOrDefault();
 
             ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "นักศึกษา" && w.Name != "ฝ่ายพัฒนานักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงาน").ToList(), "Id", "Name", GetRoleId);
-            ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.Where(w => w.faculty_id == User.faculty_id).ToList(), "faculty_id", "faculty_name", GetFaculty);
-            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.Where(w => w.faculty_id == User.faculty_id).ToList(), "branch_id", "branch_name", GetBranch); ;
-            ViewBag.prefix = new SelectList(DB.MASTER_PREFIX.ToList(), "prefix_id", "prefix_name");
+            ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.ToList(), "faculty_id", "faculty_name", GetFaculty);
+            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.ToList(), "branch_id", "branch_name", GetBranch); ;
+            ViewBag.prefix = new SelectList(DB.MASTER_PREFIX.ToList(), "prefix_id", "prefix_name", GetPrefix);
 
             var ViewModel = new AddUserViewModels();
             ViewModel.Id = User.Id;
@@ -389,6 +389,35 @@ namespace SeniorProject.Controllers
                 return Json(new { valid = false, message = Msg });
             }
         }
+
+        //ลบข้อมูลผู้ใช้
+        public async Task<IActionResult> DeleteUser(string UserId)
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            string Msg = "";
+            try
+            {
+                // check administrator
+                if (DB.UserRoles.Where(w => w.UserId == UserId).Count() > 0)
+                {
+                    var GetRoles = DB.UserRoles.Where(w => w.UserId == UserId);
+                    DB.RemoveRange(GetRoles);
+                    DB.SaveChanges();
+                }
+
+                var GetUser = DB.Users.Where(w => w.Id == UserId).FirstOrDefault();
+                DB.Users.Remove(GetUser);
+                DB.SaveChanges();
+
+            }
+            catch (Exception Error)
+            {
+                Msg = "Error is : " + Error.Message;
+                return Json(new { valid = false, message = Msg });
+            }
+            return Json(new { valid = true, Message = "บันทึกรายการสำเร็จ" });
+        }
+
 
         #endregion
     }

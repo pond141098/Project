@@ -415,6 +415,10 @@ namespace SeniorProject.Controllers
                         data.check_out = "00:00:00";
                         data.file_in = wk.file_work_start;
                         data.file_out = wk.file_work_end;
+                        data.laitude_in = wk.latitude_start;
+                        data.longitude_in = wk.longitude_start;
+                        data.laitude_out = wk.latitude_end;
+                        data.longitude_out = wk.longitude_end;
                         data.status = s.status_working_name;
                         Models.Add(data);
                     }
@@ -426,6 +430,10 @@ namespace SeniorProject.Controllers
                         data.check_out = time_out;
                         data.file_in = wk.file_work_start;
                         data.file_out = wk.file_work_end;
+                        data.laitude_in = wk.latitude_start;
+                        data.longitude_in = wk.longitude_start;
+                        data.laitude_out = wk.latitude_end;
+                        data.longitude_out = wk.longitude_end;
                         data.status = s.status_working_name;
                         Models.Add(data);
                     }

@@ -419,8 +419,10 @@ namespace SeniorProject.Controllers
                         data.file_in = wk.file_work_start;
                         data.file_out = wk.file_work_end;
                         data.status = s.status_working_name;
-                        data.map_check_in = "https://www.google.com/maps?q=" + wk.longitude_start + "," + wk.latitude_start;
-                        data.map_check_out = "";
+                        data.laitude_in = wk.latitude_start;
+                        data.longitude_in = wk.longitude_start;
+                        data.laitude_out = wk.latitude_end;
+                        data.longitude_out = wk.longitude_end;
                         Models.Add(data);
                     }
                     else if (s.status_working_id == 3)
@@ -432,8 +434,10 @@ namespace SeniorProject.Controllers
                         data.file_in = wk.file_work_start;
                         data.file_out = wk.file_work_end;
                         data.status = s.status_working_name;
-                        data.map_check_in = "https://www.google.com/maps?q=" + wk.longitude_start + "," + wk.latitude_start;
-                        data.map_check_out = "https://www.google.com/maps?q=" + wk.longitude_end + "," + wk.latitude_end;
+                        data.laitude_in = wk.latitude_start;
+                        data.longitude_in = wk.longitude_start;
+                        data.laitude_out = wk.latitude_end;
+                        data.longitude_out = wk.longitude_end;
                         Models.Add(data);
                     }
                 }

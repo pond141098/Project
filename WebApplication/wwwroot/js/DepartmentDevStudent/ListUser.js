@@ -6,6 +6,47 @@
             $("#JsonData").html(JsonResult);
             Datatable();
 
+            $("#JsonData").on("click", ".Delete", function () {
+                var UserId = $(this).val();
+                $.SmartMessageBox({
+                    title: "คำเตือน!",
+                    content: "ต้องการลบรายการนี้หรือไม่?",
+                    buttons: '[ไม่][ใช่]'
+                }, function (ButtonPressed) {
+                    if (ButtonPressed == "ใช่") {
+                        $.get("/DepartmentDevStudent/DeleteUser", { "UserId": UserId }, function (response) {
+                            if (response.valid == true) {
+                                $.smallBox({
+                                    title: response.message,
+                                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                                    color: "#296191", // red color code #FB0404
+                                    iconSmall: "fa fa-thumbs-up bounce animated",
+                                    timeout: 1000
+                                });
+                                setTimeout(function () {
+                                    window.location.href = "/DepartmentDevStudent/UserIndex";
+                                }, 1000)
+                            } else {
+                                $.smallBox({
+                                    title: response.message,
+                                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                                    color: "#FB0404", // red color code #FB0404
+                                    iconSmall: "fa fa-thumbs-up bounce animated",
+                                    timeout: 1000
+                                });
+                                setTimeout(function () {
+                                    window.location.href = "/DepartmentDevStudent/UserIndex";
+                                }, 1000)
+                            }
+                        })
+                    }
+                    if (ButtonPressed == "ไม่") {
+
+                    }
+                });
+                e.preventDefault();
+            });
+
             $("#JsonData").on("click", ".edit", function () {
                 window.location.href = "/DepartmentDevStudent/EditUser?UserId=" + $(this).val();
             });
