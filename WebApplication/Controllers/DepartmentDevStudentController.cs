@@ -391,6 +391,7 @@ namespace SeniorProject.Controllers
         }
 
         //ลบข้อมูลผู้ใช้
+        [HttpGet]
         public async Task<IActionResult> DeleteUser(string UserId)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));

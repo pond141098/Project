@@ -212,6 +212,7 @@ namespace SeniorProject.Controllers
 
         #region จัดการผู้ใช้
 
+        //รายการผู้ใช้ระบบ
         public IActionResult UserIndex()
         {
             return View("UserIndex");
@@ -247,6 +248,7 @@ namespace SeniorProject.Controllers
             return PartialView("GetUserIndex", ViewModels);
         }
 
+        //เพิ่มผู้ใช้ระบบ
         public IActionResult AddUser()
         {
             //var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
@@ -312,6 +314,7 @@ namespace SeniorProject.Controllers
             return Json(new { valid = true, message = "เพิ่มสมาชิกเรียบร้อย" });
         }
 
+        //เเก้ไขข้อมูลผู้ใช้
         public IActionResult EditUser(string UserId)
         {
             var User = DB.Users.Where(w => w.Id == UserId).FirstOrDefault();
@@ -410,6 +413,35 @@ namespace SeniorProject.Controllers
                 Msg = "Error is : " + Error.Message;
                 return Json(new { valid = false, message = Msg });
             }
+        }
+
+        //ลบข้อมูลผู้ใช้
+        [HttpGet]
+        public async Task<IActionResult> DeleteUser(string UserId)
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            string Msg = "";
+            try
+            {
+                // check administrator
+                if (DB.UserRoles.Where(w => w.UserId == UserId).Count() > 0)
+                {
+                    var GetRoles = DB.UserRoles.Where(w => w.UserId == UserId);
+                    DB.RemoveRange(GetRoles);
+                    DB.SaveChanges();
+                }
+
+                var GetUser = DB.Users.Where(w => w.Id == UserId).FirstOrDefault();
+                DB.Users.Remove(GetUser);
+                DB.SaveChanges();
+
+            }
+            catch (Exception Error)
+            {
+                Msg = "Error is : " + Error.Message;
+                return Json(new { valid = false, message = Msg });
+            }
+            return Json(new { valid = true, Message = "บันทึกรายการสำเร็จ" });
         }
 
         #endregion
