@@ -25,6 +25,7 @@ using Windows.Foundation;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace SeniorProject.Controllers
 {
@@ -140,9 +141,18 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> FormEditRegister(TRANSACTION_REGISTER model, IFormFile bank_file)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            string pattern = @"^(0[6|8|9]{1}[0-9]{8})$";
+            Regex regex = new Regex(pattern);
+
             try
             {
                 var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == model.transaction_register_id).FirstOrDefault();
+                var CheckPhone = regex.IsMatch(model.tel_no);
+
+                if(CheckPhone == false)
+                {
+                    return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่" });
+                }
 
                 //ถ้าสถานะเป็นอนุมัติไม่สามารถเเก้ไขได้
                 if (model.status_id == 5)
@@ -245,7 +255,7 @@ namespace SeniorProject.Controllers
             //การ join table โดยนำค่าที่ต้องการมาเเสดง มาใส่ใน ViewsModels เเล้วไปเเสดงในหน้า Views
             var model = new List<ListJob>();
 
-            foreach (var j in  DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id))
+            foreach (var j in  DB.TRANSACTION_JOB)
             {
                 foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                 {
@@ -260,20 +270,46 @@ namespace SeniorProject.Controllers
                             //ถ้าวันที่ปิดรับสมัครเท่ากับหรือมากกว่าวันที่ปัจจุบัน เเละ ถ้าในตารางการสมัครงานมี ไอดีงาน เเละ ไอดีผู้สมัครอยู่เเล้วเป็นจริง ให้ทำกรบันทึกข้อมูลลง Viewmodel
                             if (j.close_register_date >= DateTime.Now && Check == true)
                             {
-                                Model.id = j.transaction_job_id;
-                                Model.jobname = j.job_name;
-                                Model.job_owner_name = pr.prefix_name + "" + u.FirstName + " " + u.LastName;
-                                Model.job_detail = j.job_detail + " ณ " + p.place_name;
-                                Model.amount_person = j.amount_person;
-                                Model.amount_working = j.amount_date;
-                                Model.close_register = j.close_register_date;
-                                Model.amount_register = regis;
-                                model.Add(Model);
+                                if (j.type_job_id == 1)
+                                {
+                                    Model.id = j.transaction_job_id;
+                                    Model.jobname = j.job_name;
+                                    Model.job_owner_name = pr.prefix_name + "" + u.FirstName + " " + u.LastName;
+                                    Model.job_detail = j.job_detail + " ณ " + p.place_name;
+                                    Model.amount_person = j.amount_person;
+                                    Model.amount_working = j.amount_date;
+                                    Model.close_register = j.close_register_date;
+                                    Model.amount_register = regis;
+                                    model.Add(Model);
+                                }
+                                else if (j.type_job_id == 2 && j.faculty_id == CurrentUser.faculty_id)
+                                {
+                                    Model.id = j.transaction_job_id;
+                                    Model.jobname = j.job_name;
+                                    Model.job_owner_name = pr.prefix_name + "" + u.FirstName + " " + u.LastName;
+                                    Model.job_detail = j.job_detail + " ณ " + p.place_name;
+                                    Model.amount_person = j.amount_person;
+                                    Model.amount_working = j.amount_date;
+                                    Model.close_register = j.close_register_date;
+                                    Model.amount_register = regis;
+                                    model.Add(Model);
+                                }
+                                else if (j.type_job_id == 3 && j.branch_id == CurrentUser.branch_id)
+                                {
+                                    Model.id = j.transaction_job_id;
+                                    Model.jobname = j.job_name;
+                                    Model.job_owner_name = pr.prefix_name + "" + u.FirstName + " " + u.LastName;
+                                    Model.job_detail = j.job_detail + " ณ " + p.place_name;
+                                    Model.amount_person = j.amount_person;
+                                    Model.amount_working = j.amount_date;
+                                    Model.close_register = j.close_register_date;
+                                    Model.amount_register = regis;
+                                    model.Add(Model);
+                                }
                             }
                         }
                     }
                 }
-
             }
             return PartialView("Job", model);
         }
@@ -307,11 +343,19 @@ namespace SeniorProject.Controllers
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
+            string pattern = @"^(0[6|8|9]{1}[0-9]{8})$";
+            Regex regex = new Regex(pattern);
 
             try
             {
                 if (ModelState.IsValid)
                 {
+                    var CheckPhone = regex.IsMatch(Model.tel_no);
+                    if(CheckPhone == false)
+                    {
+                        return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่" });
+                    } 
+
                     if (Model.banktype_id == 7 && Model.bank_no.Length < 12 || Model.bank_no.Length > 15)
                     {
                         return Json(new { valid = false, message = "เลขที่บัญชีธนาคารออมสินไม่ถูกต้อง" });

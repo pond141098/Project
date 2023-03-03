@@ -244,7 +244,7 @@ namespace SeniorProject.Controllers
                     return Json(new { valid = false, message = "วันที่ปิดรับสมัครไม่ถูกต้อง" });
                 }
 
-                Model.type_job_id = 3;
+                Model.type_job_id = 2;
                 Model.faculty_id = CurrentUser.faculty_id;
                 Model.branch_id = CurrentUser.branch_id;
                 Model.create_by = CurrentUser.UserName;
@@ -296,7 +296,7 @@ namespace SeniorProject.Controllers
                 Get.update_date = DateTime.Now;
                 Get.create_by = CurrentUser.UserName;
                 Get.create_date = Model.create_date;
-                Get.type_job_id = 3;
+                Get.type_job_id = Model.type_job_id;
                 DB.TRANSACTION_JOB.Update(Get);
                 await DB.SaveChangesAsync();
 

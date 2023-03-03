@@ -10,7 +10,7 @@
         </span>
     </span>
     <ol class="breadcrumb">
-        <li><a href="/DepartmentDevStudent/Job">รับนักศึกษามาปฎิบัติงาน</a></li>
+        <li><a href="/OfficerFaculty/Job">รับนักศึกษามาปฎิบัติงาน</a></li>
         <li>@ViewData["Title"]</li>
     </ol>
 </div>
@@ -142,7 +142,7 @@
                     $.ajax(
                         {
                             type: "POST",
-                            url: "/DepartmentDevStudent/FormAddJob",
+                            url: "/OfficerFaculty/FormAddJob",
                             contentType: false,
                             processData: false,
                             data: Data,
@@ -156,7 +156,7 @@
                                         timeout: 2000
                                     });
                                     setTimeout(function () {
-                                        window.location.href = "/DepartmentDevStudent/Job";
+                                        window.location.href = "/OfficerFaculty/Job";
                                     }, 1000)
                                 } else {
                                     $.smallBox({
@@ -167,7 +167,7 @@
                                         timeout: 2000
                                     });
                                     setTimeout(function () {
-                                        window.location.href = "/DepartmentDevStudent/Job";
+                                        window.location.href = "/OfficerFaculty/Job";
                                     }, 1000)
                                 }
                             }

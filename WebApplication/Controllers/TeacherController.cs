@@ -303,7 +303,7 @@ namespace SeniorProject.Controllers
                 Get.update_date = DateTime.Now;
                 Get.create_by = CurrentUser.UserName;
                 Get.create_date = Model.create_date;
-                Get.type_job_id = 3;
+                Get.type_job_id = Model.type_job_id;
                 DB.TRANSACTION_JOB.Update(Get);
                 await DB.SaveChangesAsync();
 
