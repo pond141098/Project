@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebApplication.Controllers;
 using WebApplication.Data;
@@ -245,41 +246,78 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> AddUser(AddUserViewModels models, string RoleId)
         {
             string Msg = "";
+            string pattern = @"^(0[6|8|9]{1}[0-9]{8})$";
+            Regex regex = new Regex(pattern);
+
             try
             {
-                var user = new ApplicationUser
+                if (regex.IsMatch(models.PhoneNumber))
                 {
-                    FirstName = models.FirstName,
-                    LastName = models.LastName,
-                    Email = models.UserName,
-                    UserName = models.UserName,
-                    PhoneNumber = models.PhoneNumber,
-                    faculty_id = models.faculty_id,
-                    branch_id = models.branch_id,
-                    prefix_id = models.prefix_id
-                };
-
-                var result = await _userManager.CreateAsync(user, models.Password);
-                if (result.Succeeded)
-                {
-                    var currentUser = await _userManager.FindByEmailAsync(user.Email);
-                    var GetAllRoles = await _roleManager.Roles.Where(w => w.Id == RoleId).ToListAsync();
-
-                    foreach (var GetAllRole in GetAllRoles)
+                    //เช็คชื่อผู้ใช้ซ้ำ
+                    if (DB.Users.Where(w => w.UserName == models.UserName).Select(s => s.Id).Count() > 0)
                     {
-                        var roleresult = await _userManager.AddToRoleAsync(currentUser, GetAllRole.NormalizedName);
+                        return Json(new { valid = false, message = "มีชื่อผู้ใช้ในระบบอยู่เเล้ว!!!" });
                     }
 
-                    var UserLogin = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+                    //เช็คจำนวนฝ่ายพัฒนานักศึกษาห้ามเกิน 13 คณะ
+                    if (DB.UserRoles.Where(w => w.RoleId == "42d5797d-0dce-412b-beea-9337f482e9e5").Select(s => s.UserId).Count() == 13)
+                    {
+                        return Json(new { valid = false, message = "มีสิทธิ์ของฝ่ายพัฒนานักศึกษาครบเเล้ว!!!" });
+                    }
+
+                    //ถ้าเลือกสิทธิ์เป็นฝ่ายพัฒนานักศึกษาเเล้วไม่ได้เลือก(มหาลัย/คณะ) = คณะ เเละไมได้เลือก(หน่วยงาน) = หน่วยงาน จะไม่สามารถบันทึกได้ 
+                    if (models.RoleId == "42d5797d-0dce-412b-beea-9337f482e9e5" && models.faculty_id == 13 && models.branch_id != 86)
+                    {
+                        return Json(new { valid = false, message = "กรุณาตรวจสอบข้อมูลสิทธิ์ มหาวิทยาลัย/คณะ เเละ หน่วยงานใหม่ !!!" });
+                    }
+
+                    //ถ้าเลือกสิทธิ์เป็นเจ้าหน้าที่หน่วยงานเเล้วไม่ได้เลือก(มหาลัย/คณะ)=มหาลัย เเละได้เลือก(หน่วยงาน) = หน่วยงาน จะไม่สามารถบันทึกได้
+                    var branchName = DB.MASTER_BRANCH.Where(w => w.branch_id == models.branch_id).Select(s => s.branch_name).FirstOrDefault();
+                    if (models.RoleId == "cddaeb6d-62db-4f03-98e5-8c473a5ff64e" && models.faculty_id != 13 || models.faculty_id == 13 && branchName == "หน่วยงาน")
+                    {
+                        return Json(new { valid = false, message = "กรุณาตรวจสอบข้อมูลสิทธิ์ มหาวิทยาลัย/คณะ เเละ หน่วยงานใหม่ !!!" });
+                    }
+
+
+                    var user = new ApplicationUser
+                    {
+                        FirstName = models.FirstName,
+                        LastName = models.LastName,
+                        Email = models.UserName,
+                        UserName = models.UserName,
+                        PhoneNumber = models.PhoneNumber,
+                        faculty_id = models.faculty_id,
+                        branch_id = models.branch_id,
+                        prefix_id = models.prefix_id
+                    };
+
+                    var result = await _userManager.CreateAsync(user, models.Password);
+                    if (result.Succeeded)
+                    {
+                        var currentUser = await _userManager.FindByEmailAsync(user.Email);
+                        var GetAllRoles = await _roleManager.Roles.Where(w => w.Id == RoleId).ToListAsync();
+
+                        foreach (var GetAllRole in GetAllRoles)
+                        {
+                            var roleresult = await _userManager.AddToRoleAsync(currentUser, GetAllRole.NormalizedName);
+                        }
+
+                        var UserLogin = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+                    }
+                    else
+                    {
+                        foreach (var Error in result.Errors)
+                        {
+                            Msg = Error.Description + "<br/>";
+                        }
+                        return Json(new { valid = false, message = Msg });
+                    }
                 }
                 else
                 {
-                    foreach (var Error in result.Errors)
-                    {
-                        Msg = Error.Description + "<br/>";
-                    }
-                    return Json(new { valid = false, message = Msg });
+                    return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่ !!!" });
                 }
+
             }
             catch (Exception Error)
             {
@@ -297,7 +335,7 @@ namespace SeniorProject.Controllers
             var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == User.branch_id).Select(s => s.branch_id).FirstOrDefault();
             var GetPrefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == User.prefix_id).Select(s => s.prefix_id).FirstOrDefault();
 
-            ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "นักศึกษา"  && w.Name != "เจ้าหน้าที่หน่วยงานในคณะ" && w.Name != "อาจารย์/เจ้าหน้าที่สาขา").ToList(), "Id", "Name", GetRoleId);
+            ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "นักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงานในคณะ" && w.Name != "อาจารย์/เจ้าหน้าที่สาขา").ToList(), "Id", "Name", GetRoleId);
             ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.ToList(), "faculty_id", "faculty_name", GetFaculty);
             ViewBag.branch = new SelectList(DB.MASTER_BRANCH.ToList(), "branch_id", "branch_name", GetBranch); ;
             ViewBag.prefix = new SelectList(DB.MASTER_PREFIX.ToList(), "prefix_id", "prefix_name", GetPrefix);
@@ -322,8 +360,30 @@ namespace SeniorProject.Controllers
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             string Msg = "";
+            string pattern = @"^(0[6|8|9]{1}[0-9]{8})$";
+            Regex regex = new Regex(pattern);
+
             try
             {
+                var CheckPhone = regex.IsMatch(model.PhoneNumber);
+                if (CheckPhone == false)
+                {
+                    return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่" });
+                }
+
+                //ถ้าเลือกสิทธิ์เป็นฝ่ายพัฒนานักศึกษาเเล้วไม่ได้เลือก(มหาลัย/คณะ) = คณะ เเละไมได้เลือก(หน่วยงาน) = หน่วยงาน จะไม่สามารถบันทึกได้ 
+                if (model.RoleId == "42d5797d-0dce-412b-beea-9337f482e9e5" && model.faculty_id == 13 && model.branch_id != 86)
+                {
+                    return Json(new { valid = false, message = "กรุณาตรวจสอบข้อมูลสิทธิ์ มหาวิทยาลัย/คณะ เเละ หน่วยงานใหม่ !!!" });
+                }
+
+                //ถ้าเลือกสิทธิ์เป็นเจ้าหน้าที่หน่วยงานเเล้วไม่ได้เลือก(มหาลัย/คณะ)=มหาลัย เเละได้เลือก(หน่วยงาน) = หน่วยงาน จะไม่สามารถบันทึกได้
+                var branchName = DB.MASTER_BRANCH.Where(w => w.branch_id == model.branch_id).Select(s => s.branch_name).FirstOrDefault();
+                if (model.RoleId == "cddaeb6d-62db-4f03-98e5-8c473a5ff64e" && model.faculty_id != 13 || model.faculty_id == 13 && branchName == "หน่วยงาน")
+                {
+                    return Json(new { valid = false, message = "กรุณาตรวจสอบข้อมูลสิทธิ์ มหาวิทยาลัย/คณะ เเละ หน่วยงานใหม่ !!!" });
+                }
+
                 var ThisUser = await _userManager.FindByIdAsync(model.Id);
 
                 ThisUser.UserName = model.UserName;
@@ -335,7 +395,7 @@ namespace SeniorProject.Controllers
                 ThisUser.prefix_id = model.prefix_id;
                 ThisUser.LastName = model.LastName;
                 ThisUser.PhoneNumber = model.PhoneNumber;
-
+                
                 string GeneratePassword = "";
                 if (model.Password == null)
                 {

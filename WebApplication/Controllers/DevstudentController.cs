@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebApplication.Controllers;
 using WebApplication.Data;
@@ -61,29 +62,6 @@ namespace SeniorProject.Controllers
 
             return View("Index");
         }
-
-        #endregion
-
-        #region ขอรับนักศึกษามาปฎิบัติงาน
-
-
-
-        #endregion
-
-        #region รายชื่อนักศึกษาที่มาสมัครงาน
-
-
-
-        #endregion
-
-        #region เวลาการทำงานของนักศึกษา/ออกรายงาน
-
-
-        #endregion
-
-        #region เอกสารเบิกจ่ายค่าตอบเเทน
-
-
 
         #endregion
 
@@ -272,18 +250,15 @@ namespace SeniorProject.Controllers
         }
 
         //เพิ่มผู้ใช้ระบบ
-        public IActionResult AddUser()
+        public async Task<IActionResult> AddUser()
         {
-            //var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
 
-            //ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.Where(w => w.faculty_id == CurrentUser.faculty_id).ToList(), "faculty_id", "faculty_name");
-            ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.ToList(), "faculty_id", "faculty_name");
-            //ViewBag.branch = new SelectList(DB.MASTER_BRANCH.Where(w => w.faculty_id == CurrentUser.faculty_id).ToList(), "branch_id", "branch_name"); ;
-            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.ToList(), "branch_id", "branch_name"); ;
+            ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.Where(w => w.faculty_id == CurrentUser.faculty_id).ToList(), "faculty_id", "faculty_name");
+            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.Where(w => w.faculty_id == CurrentUser.faculty_id || w.faculty_id == 13).ToList(), "branch_id", "branch_name");
             ViewBag.prefix = new SelectList(DB.MASTER_PREFIX.ToList(), "prefix_id", "prefix_name");
 
-            //ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "นักศึกษา" && w.Name != "ฝ่ายพัฒนานักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงาน").ToList(), "Id", "Name");
-            ViewBag.Role = new SelectList(DB.Roles.ToList(), "Id", "Name");
+            ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "ฝ่ายพัฒนานักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงาน").ToList(), "Id", "Name");
 
             return View("AddUser");
         }
@@ -293,8 +268,17 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> AddUser(AddUserViewModels models, string RoleId)
         {
             string Msg = "";
+            string pattern = @"^(0[6|8|9]{1}[0-9]{8})$";
+            Regex regex = new Regex(pattern);
+
             try
             {
+                var CheckPhone = regex.IsMatch(models.PhoneNumber);
+                if(CheckPhone == false)
+                {
+                    return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่" });
+                }
+
                 var user = new ApplicationUser
                 {
                     FirstName = models.FirstName,
@@ -338,29 +322,31 @@ namespace SeniorProject.Controllers
         }
 
         //เเก้ไขข้อมูลผู้ใช้
-        public IActionResult EditUser(string UserId)
+        public async Task<IActionResult> EditUser(string UserId)
         {
-            var User = DB.Users.Where(w => w.Id == UserId).FirstOrDefault();
-            var GetRoleId = DB.UserRoles.Where(w => w.UserId == User.Id).Select(s => s.RoleId).FirstOrDefault();
-            var GetFaculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == User.faculty_id).Select(s => s.faculty_id).FirstOrDefault();
-            var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == User.branch_id).Select(s => s.branch_id).FirstOrDefault();
-            var GetPrefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == User.prefix_id).Select(s => s.prefix_id).FirstOrDefault();
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
 
-            ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "นักศึกษา" && w.Name != "ฝ่ายพัฒนานักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงาน").ToList(), "Id", "Name",GetRoleId);
-            ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.ToList(), "faculty_id", "faculty_name", GetFaculty);
-            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.ToList(), "branch_id", "branch_name", GetBranch); ;
+            var GetUser = DB.Users.Where(w => w.Id == UserId).FirstOrDefault();
+            var GetRoleId = DB.UserRoles.Where(w => w.UserId == GetUser.Id).Select(s => s.RoleId).FirstOrDefault();
+            var GetFaculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == GetUser.faculty_id).Select(s => s.faculty_id).FirstOrDefault();
+            var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == GetUser.branch_id).Select(s => s.branch_id).FirstOrDefault();
+            var GetPrefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == GetUser.prefix_id).Select(s => s.prefix_id).FirstOrDefault();
+
+            ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "ฝ่ายพัฒนานักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงาน").ToList(), "Id", "Name",GetRoleId);
+            ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.Where(w => w.faculty_id == CurrentUser.faculty_id).ToList(), "faculty_id", "faculty_name", GetFaculty);
+            ViewBag.branch = new SelectList(DB.MASTER_BRANCH.Where(w => w.faculty_id == CurrentUser.faculty_id).ToList(), "branch_id", "branch_name", GetBranch); ;
             ViewBag.prefix = new SelectList(DB.MASTER_PREFIX.ToList(), "prefix_id", "prefix_name", GetPrefix);
 
             var ViewModel = new AddUserViewModels();
-            ViewModel.Id = User.Id;
-            ViewModel.FirstName = User.FirstName;
-            ViewModel.LastName = User.LastName;
-            ViewModel.Password = User.PasswordHash;
-            ViewModel.UserName = User.UserName;
-            ViewModel.PhoneNumber = User.PhoneNumber;
-            ViewModel.prefix_id = User.prefix_id;
-            ViewModel.faculty_id = User.faculty_id;
-            ViewModel.branch_id = User.branch_id;
+            ViewModel.Id = GetUser.Id;
+            ViewModel.FirstName = GetUser.FirstName;
+            ViewModel.LastName = GetUser.LastName;
+            ViewModel.Password = GetUser.PasswordHash;
+            ViewModel.UserName = GetUser.UserName;
+            ViewModel.PhoneNumber = GetUser.PhoneNumber;
+            ViewModel.prefix_id = GetUser.prefix_id;
+            ViewModel.faculty_id = GetUser.faculty_id;
+            ViewModel.branch_id = GetUser.branch_id;
 
             return View("EditUser",ViewModel);
         }
@@ -371,8 +357,17 @@ namespace SeniorProject.Controllers
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             string Msg = "";
+            string pattern = @"^(0[6|8|9]{1}[0-9]{8})$";
+            Regex regex = new Regex(pattern);
+
             try
             {
+                var CheckPhone = regex.IsMatch(model.PhoneNumber);
+                if(CheckPhone == false)
+                {
+                    return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่" });
+                }
+
                 var ThisUser = await _userManager.FindByIdAsync(model.Id);
 
                 ThisUser.UserName = model.UserName;
