@@ -67,10 +67,7 @@ namespace SeniorProject.Controllers
             var Job = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.transaction_job_id).FirstOrDefaultAsync();
             var Register = await DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == Job).Select(s => s.transaction_register_id).CountAsync();
 
-            //จำนวนนักศึกษาที่สมัครงานกับหน่วยงานในคณะ
-            var JobOfficeFaculty = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id && w.type_job_id == 2).Select(s => s.transaction_job_id).FirstOrDefaultAsync();
-            var RegisterOfficeFaculty = await DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobOfficeFaculty).Select(s => s.transaction_register_id).CountAsync();
-            //จำนวนนักศึกษาที่สมัครงานในเเต่ละสาขา
+            //Chart 2
             var Model = new List<dashboard>();
 
             foreach(var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
@@ -78,9 +75,15 @@ namespace SeniorProject.Controllers
                 foreach(var b in GetBranch.Where(w => w.branch_id == j.branch_id))
                 {
                     var data = new dashboard();
-                    if(j.type_job_id != 1 && j.type_job_id != 2)
+                    if(j.type_job_id == 3)
                     {
                         data.branchName = b.branch_name;
+                        data.amount_register = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id).Select(s => s.transaction_register_id).Count();
+                        Model.Add(data);
+                    }
+                    else if(j.type_job_id == 2)
+                    {
+                        data.branchName = "หน่วยงานภายในคณะ";
                         data.amount_register = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id).Select(s => s.transaction_register_id).Count();
                         Model.Add(data);
                     }
@@ -90,9 +93,6 @@ namespace SeniorProject.Controllers
             //Chart 1
             ViewBag.Student = Student;
             ViewBag.Register = Register;
-
-            //Chart 2
-            ViewBag.OfficeFaculty = RegisterOfficeFaculty;
 
             return PartialView("Index", Model);
         }

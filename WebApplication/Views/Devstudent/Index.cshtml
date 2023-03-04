@@ -33,14 +33,14 @@
             </article>
             <article class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                 <div class="jarviswidget" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
-                    <header><h2> <strong> จำนวนนักศึกษาที่สมัครงานทั้งหมดในคณะ</strong></h2></header>
+                    <header><h2> <strong> จำนวนนักศึกษาที่สมัครงานในเเต่ละสาขา/หน่วยงานของคณะ</strong></h2></header>
                     <div>
                         <div class="jarviswidget-editbox"><input class="form-control" type="text"></div>
                         <div class="widget-body">
                             <div class="row">
                                 <div class="col-lg-12 text-align-center">
                                     <h1 style="font-size:29rem">
-                                        
+                                        <canvas id="myChart"></canvas>
                                     </h1>
                                 </div>
                             </div>
@@ -57,7 +57,7 @@
     <script src="~/js/plugin/chartjs/chart.min.js"></script>
     <script type="text/javascript">
         var data = {
-            labels: ["นักศึกษาทั้งหมด", "นักศึกษาที่สมัครงานทั้งหมด"],
+            labels: ["นักศึกษาทั้งหมดของคณะ", "นักศึกษาที่สมัครงานทั้งหมดในคณะ"],
             datasets: [
                 {
                     data: [@ViewBag.Student, @ViewBag.Register],
@@ -74,7 +74,59 @@
         });
     </script>
     <script type="text/javascript">
-
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.Select(s => s.branchName))),
+                datasets: [{
+                    label: 'จำนวนนักศึกษาที่สมัครงาน',
+                    data: @Html.Raw(Json.Serialize(Model.Select(s => s.amount_register))),
+                    backgroundColor: [
+                        'rgba(26, 35, 126, 0.2)',
+                        'rgba(255, 255, 00, 0.2)',
+                        'rgba(142, 68, 173, 0.2)',
+                        'rgba(228, 39, 140, 0.2)',
+                        'rgba(128, 00, 00, 0.2)',
+                        'rgba(50, 197, 244, 0.2)',
+                        'rgba(255, 192, 203, 0.2)',
+                        'rgba(255, 87, 51, 0.2)',
+                        'rgba(128, 139, 150, 0.2)',
+                        'rgba(133, 87, 35, 0.2)',
+                        'rgba(199, 136, 39, 0.2)',
+                        'rgba(252, 3, 3, 0.2)',
+                        'rgba(0, 0, 0, 0.2)',
+                        'rgba(50, 88, 0, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(26, 35, 126, 1)',
+                        'rgba(255, 255, 00, 1)',
+                        'rgba(142, 68, 173, 1)',
+                        'rgba(228, 39, 140, 1)',
+                        'rgba(128, 00, 00, 1)',
+                        'rgba(50, 197, 244, 1)',
+                        'rgba(255, 192, 203, 1)',
+                        'rgba(255, 87, 51, 1)',
+                        'rgba(128, 139, 150, 1)',
+                        'rgba(133, 87, 35, 1)',
+                        'rgba(199, 136, 39, 1)',
+                        'rgba(252, 3, 3, 1)',
+                        'rgba(0, 0, 0, 1)',
+                        'rgba(50, 88, 0, 0.2)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
     </script>
 }
 
