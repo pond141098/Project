@@ -56,11 +56,45 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> Index()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var B = await DB.MASTER_BRANCH.Where(w => w.faculty_id == CurrentUser.faculty_id ).Select(s => s.branch_id).CountAsync();
+            var GetUsers = await DB.Users.FirstOrDefaultAsync();
+            var GetBranch = await DB.MASTER_BRANCH.ToListAsync();
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
 
-            ViewBag.Branch = B;
+            //จำนวนักศึกษาทั้งหมด
+            var RoleStudent = await DB.UserRoles.Where(w => w.UserId == GetUsers.Id && w.RoleId == "e5ce49ea-eaf4-431e-b7c6-50ac72ff505b").Select(s => s.UserId).FirstOrDefaultAsync();
+            var Student = await DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.Id == RoleStudent).Select(s => s.Id).CountAsync();
+            //จำนวนนักศึกษาที่สมัครงานทั้งหมด
+            var Job = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.transaction_job_id).FirstOrDefaultAsync();
+            var Register = await DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == Job).Select(s => s.transaction_register_id).CountAsync();
 
-            return View("Index");
+            //จำนวนนักศึกษาที่สมัครงานกับหน่วยงานในคณะ
+            var JobOfficeFaculty = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id && w.type_job_id == 2).Select(s => s.transaction_job_id).FirstOrDefaultAsync();
+            var RegisterOfficeFaculty = await DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobOfficeFaculty).Select(s => s.transaction_register_id).CountAsync();
+            //จำนวนนักศึกษาที่สมัครงานในเเต่ละสาขา
+            var Model = new List<dashboard>();
+
+            foreach(var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
+            {
+                foreach(var b in GetBranch.Where(w => w.branch_id == j.branch_id))
+                {
+                    var data = new dashboard();
+                    if(j.type_job_id != 1 && j.type_job_id != 2)
+                    {
+                        data.branchName = b.branch_name;
+                        data.amount_register = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id).Select(s => s.transaction_register_id).Count();
+                        Model.Add(data);
+                    }
+                }
+            }
+
+            //Chart 1
+            ViewBag.Student = Student;
+            ViewBag.Register = Register;
+
+            //Chart 2
+            ViewBag.OfficeFaculty = RegisterOfficeFaculty;
+
+            return PartialView("Index", Model);
         }
 
         #endregion

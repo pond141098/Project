@@ -62,7 +62,7 @@ namespace WebApplication.Controllers
             }
             else if(CheckRoles == "d93d333d-1a16-4707-b06e-eb14b89050f0") //กองพัฒนานักศึกษา
             {
-                return RedirectToAction("AllListStudent", "DepartmentDevStudent");
+                return RedirectToAction("Index", "DepartmentDevStudent");
             }
             else if(CheckRoles == "cddaeb6d-62db-4f03-98e5-8c473a5ff64e") //เจ้าหน้าที่หน่วยงาน
             {

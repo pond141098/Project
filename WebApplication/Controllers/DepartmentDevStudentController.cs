@@ -56,6 +56,75 @@ namespace SeniorProject.Controllers
         //แดชบอร์ด
         public IActionResult Index()
         {
+            var Faculty =  DB.MASTER_FACULTY.FirstOrDefault();
+            var Role =  DB.UserRoles.FirstOrDefault();
+            var TypeJob = DB.MASTER_TYPEJOB.FirstOrDefault();
+
+            //นักศึกษาทั้งหมด
+            var Student = DB.Users.Where(w => w.Id == Role.UserId && Role.RoleId == "e5ce49ea-eaf4-431e-b7c6-50ac72ff505b").Select(s => s.UserName).Count();
+            //นักศึกษาที่สมัครงาน
+            var Register = DB.TRANSACTION_REGISTER.Count();
+
+            //จำนวนนักศึกษาที่สมัครงานกับหน่วยงานของมหาลัย
+            var Job = DB.TRANSACTION_JOB.Where(w => w.type_job_id == 1).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterOffice =  DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == Job).Count();
+            //คณะศิลปศาสตร์
+            var JobLib = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 1).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterLib = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobLib).Count();
+            //คณะครุ
+            var JobTech = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 2).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterTech = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobTech).Count();
+            //คณะการเกษตร
+            var JobAgr = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 3).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterAgr = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobAgr).Count();
+            //คณะวิศวะ
+            var JobEngineer = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 4).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterEngineer = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobEngineer).Count();
+            //คณะบริหาร
+            var JobBus = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 5).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterBus = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobBus).Count();
+            //คณะคหกรรม
+            var JobHet = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 6).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterHet = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobHet).Count();
+            //คณะศิลปกรรม
+            var JobFa = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 7).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterFa = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobFa).Count();
+            //คณะสื่อสาร
+            var JobMass = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 8).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterMass = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobMass).Count();
+            //คณะวิทย์
+            var JobSci = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 9).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterSci = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobSci).Count();
+            //คณะสถาปัต
+            var JobArch = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 10).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterArch = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobArch).Count();
+            //คณะเเพทย์
+            var JobIm = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 11).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterIm = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobIm).Count();
+            //คณะเเพทย์
+            var JobNurse = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 12).Select(s => s.transaction_job_id).FirstOrDefault();
+            var RegisterNurse = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobNurse).Count();
+
+
+            //Chart 1
+            ViewBag.Student = Student;
+            ViewBag.Register = Register;
+
+            //Chart 2
+            ViewBag.Office = RegisterOffice;
+            ViewBag.Lib = RegisterLib;
+            ViewBag.Tech = RegisterTech;
+            ViewBag.Agr = RegisterAgr;
+            ViewBag.Engineer = RegisterEngineer;
+            ViewBag.Bus = RegisterBus;
+            ViewBag.Het = RegisterHet;
+            ViewBag.Fa = RegisterFa;
+            ViewBag.Mass = RegisterMass;
+            ViewBag.Sci = RegisterSci;
+            ViewBag.Arch = RegisterArch;
+            ViewBag.Im = RegisterIm;
+            ViewBag.Nurse = RegisterNurse;
+
             return View("Index");
         }
 
@@ -395,7 +464,7 @@ namespace SeniorProject.Controllers
                 ThisUser.prefix_id = model.prefix_id;
                 ThisUser.LastName = model.LastName;
                 ThisUser.PhoneNumber = model.PhoneNumber;
-                
+
                 string GeneratePassword = "";
                 if (model.Password == null)
                 {

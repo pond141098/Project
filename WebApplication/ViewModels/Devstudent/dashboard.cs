@@ -2,7 +2,7 @@
 {
     public class dashboard
     {
-        public string XValue { get; set; }
-        public int YValue { get; set; }
+        public string branchName { get; set; }
+        public int amount_register { get; set; }
     }
 }
