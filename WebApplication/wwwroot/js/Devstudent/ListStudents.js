@@ -12,6 +12,7 @@
 
         }, 200);
     });
+
 });
 
 function Datatable() {

@@ -434,7 +434,7 @@ namespace SeniorProject.Controllers
                     return Json(new { valid = false, message = "วันที่ปิดรับสมัครไม่ถูกต้อง" });
                 }
 
-                Model.type_job_id = 3;
+                Model.type_job_id = 2;
                 Model.faculty_id = CurrentUser.faculty_id;
                 Model.branch_id = CurrentUser.branch_id;
                 Model.create_by = CurrentUser.UserName;
