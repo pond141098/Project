@@ -482,8 +482,6 @@ namespace SeniorProject.Controllers
 
             var Models = new List<HistoryWorking>();
 
-
-
             foreach (var r in GetRegis.Where(w => w.transaction_register_id == id && w.student_id == CurrentUser.UserName))
             {
                 foreach (var j in GetJob.Where(w => w.transaction_job_id == j_id))

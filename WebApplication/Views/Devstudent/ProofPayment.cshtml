@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout2.cshtml";
-    ViewData["Title"] = "";
+    ViewData["Title"] = "เอกสารการจ่ายเงินค่าตอบเเทนการปฎิบัติงาน";
 }
 
 <div id="ribbon">
@@ -10,15 +10,14 @@
         </span>
     </span>
     <ol class="breadcrumb">
-        <li>รายชื่อนักศึกษาที่สมัครงานที่อาจารย์ส่งมา</li>
+        <li>เอกสารการจ่ายเงินค่าตอบเเทนการปฎิบัติงาน</li>
     </ol>
 </div>
+
 <div id="content">
     <section id="widget-grid">
         <div class="row">
             <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margin-bottom-5">
-                <button class="btn btn-success" id="AllApprove"><i class="fa fa-check-circle"></i>  อนุมัติทั้งหมด</button>
-                <a class="btn btn-success" id="ExportExcel" href="@Url.Action("ExportPDF","Report")"><i class="fa fa-file-excel-o"></i> Export Excel</a>
             </article>
         </div>
     </section>
@@ -27,7 +26,7 @@
             <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
                     <header role="heading">
-                        <h2 class="font-md">รายชื่อนักศึกษาที่สมัครงาน</h2>
+                        <h2 class="font-md">เอกสารการจ่ายเงินค่าตอบเเทนการปฎิบัติงาน</h2>
                         <span class="jarviswidget-loader" style="display: none;"><i class="fa fa-refresh fa-spin"></i></span>
                     </header>
                     <div role="contentinfo" style="display: block;">
@@ -45,10 +44,11 @@
 </div>
 
 @section Scripts{
-    <script src="~/js/plugin/datatables/jquery.dataTables.min.js"></script>
-    <script src="~/js/plugin/datatables/dataTables.colVis.min.js"></script>
-    <script src="~/js/plugin/datatables/dataTables.tableTools.min.js"></script>
-    <script src="~/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
-    <script src="~/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
-    <script type="text/javascript" src="~/js/Devstudent/ListStudentFaculty.js"></script>
+        <script src="~/js/plugin/datatables/jquery.dataTables.min.js"></script>
+        <script src="~/js/plugin/datatables/dataTables.colVis.min.js"></script>
+        <script src="~/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+        <script src="~/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+        <script src="~/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+        <script type="text/javascript" src="~/js/Devstudent/SuccessJob.js"></script>
 }
+

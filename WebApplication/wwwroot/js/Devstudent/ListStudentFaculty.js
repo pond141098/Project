@@ -1,17 +1,18 @@
 ﻿$(function () {
     $("#JsonData").html('<img src="/img/loading.gif" width="50">');
-    $.get("/Devstudent/getListStudent", function (JsonResult) {
+    $.get("/Devstudent/getListStudentFaculty", function (JsonResult) {
         setTimeout(function () {
 
             $("#JsonData").html(JsonResult);
             Datatable();
 
             $("#JsonData").on("click", ".check", function () {
-                window.location.href = "/Devstudent/CheckRegister?transaction_register_id=" + $(this).val();
+                window.location.href = "/Devstudent/CheckRegisterFaculty?transaction_register_id=" + $(this).val();
             });
 
         }, 200);
     });
+
 });
 
 function Datatable() {
