@@ -102,7 +102,7 @@ namespace SeniorProject.Controllers
 
             foreach (var r in Gets.Where(w => w.student_id == CurrentUser.UserName))
             {
-                foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id && w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id))
+                foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id))
                 {
                     foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                     {
@@ -460,7 +460,7 @@ namespace SeniorProject.Controllers
 
             foreach (var r in GetRegister.Where(w => w.student_id == CurrentUser.UserName))
             {
-                foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id && w.faculty_id == CurrentUser.faculty_id && w.branch_id == CurrentUser.branch_id))
+                foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id))
                 {
                     foreach (var s in GetStatus.Where(w => w.status_id == r.status_id))
                     {
