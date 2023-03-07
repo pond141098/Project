@@ -28,49 +28,77 @@
                     <div role="contentinfo" style="display: block;">
                         <div class="jarviswidget-editbox"></div>
                         <div class="widget-body">
-                            <table id="JsonTable" class="table table-striped table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th class="text-align-left">ลำดับ</th>
-                                        <th class="text-align-left">วันที่</th>
-                                        <th class="text-align-left">เวลาเข้างาน</th>
-                                        <th class="text-align-left">หลักฐานตอนเริ่มทำงาน</th>
-                                        <th class="text-align-left">สถานที่เข้างาน</th>
-                                        <th class="text-align-left">เวลาออกงาน</th>
-                                        <th class="text-align-left">หลักฐานตอนเลิกทำงาน</th>
-                                        <th class="text-align-left">สถานที่ออกงาน</th>
-                                        <th class="text-align-left">สถานะ</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @{
-                                        int Rows = 1;
-                                        foreach (var Get in Model.OrderBy(f => f.date))
-                                        {
-                                            <tr>
-                                                <td class="text-align-center" width="50">@Rows.</td>
-                                                <td>@Get.date  </td>
-                                                <td>@Get.check_in  </td>
-                                                <td>
-                                                    <button class="btn">@Html.ActionLink("Download","Download2", new { Name = Get.file_in })</button>
-                                                </td>
-                                                <td>
-                                                    <a href="https://www.google.com/maps?q=@Get.laitude_in,@Get.longitude_in" target="_blank">Show location on map</a>
-                                                </td>
-                                                <td>@Get.check_out  </td>
-                                                <td>
-                                                    <button class="btn">@Html.ActionLink("Download","Download3", new { Name = Get.file_out })</button>
-                                                </td>
-                                                <td>
-                                                    <a href="https://www.google.com/maps?q=@Get.laitude_out,@Get.longitude_out" target="_blank">Show location on map</a>
-                                                </td>
-                                                <td>@Get.status  </td>
-                                            </tr>
-                                            Rows++;
+                            <div class="table-responsive">
+                                <table id="JsonTable" class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-align-left">ลำดับ</th>
+                                            <th class="text-align-left">วันที่</th>
+                                            <th class="text-align-left">เวลาเข้างาน</th>
+                                            <th class="text-align-left">หลักฐานตอนเริ่มทำงาน</th>
+                                            <th class="text-align-left">สถานที่เข้างาน</th>
+                                            <th class="text-align-left">เวลาออกงาน</th>
+                                            <th class="text-align-left">หลักฐานตอนเลิกทำงาน</th>
+                                            <th class="text-align-left">สถานที่ออกงาน</th>
+                                            <th class="text-align-left">สถานะ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int Rows = 1;
+                                            foreach (var Get in Model.OrderBy(f => f.date))
+                                            {
+                                                if (Get.file_out == null)
+                                                {
+                                                    <tr>
+                                                        <td class="text-align-center" width="50">@Rows.</td>
+                                                        <td>@Get.date  </td>
+                                                        <td>@Get.check_in  </td>
+                                                        <td>
+                                                            <button class="btn">@Html.ActionLink("Download","Download2", new { Name = Get.file_in })</button>
+                                                        </td>
+                                                        <td>
+                                                            <a href="https://www.google.com/maps?q=@Get.laitude_in,@Get.longitude_in" target="_blank">Show location on map</a>
+                                                        </td>
+                                                        <td>@Get.check_out  </td>
+                                                        <td>
+                                                            ไม่มี
+                                                        </td>
+                                                        <td>
+                                                            <a href="https://www.google.com/maps?q=@Get.laitude_out,@Get.longitude_out" target="_blank">Show location on map</a>
+                                                        </td>
+                                                        <td>@Get.status  </td>
+                                                    </tr>
+                                                    Rows++;
+                                                }
+                                                else if (Get.file_out != null)
+                                                {
+                                                    <tr>
+                                                        <td class="text-align-center" width="50">@Rows.</td>
+                                                        <td>@Get.date  </td>
+                                                        <td>@Get.check_in  </td>
+                                                        <td>
+                                                            <button class="btn">@Html.ActionLink("Download","Download2", new { Name = Get.file_in })</button>
+                                                        </td>
+                                                        <td>
+                                                            <a href="https://www.google.com/maps?q=@Get.laitude_in,@Get.longitude_in" target="_blank">Show location on map</a>
+                                                        </td>
+                                                        <td>@Get.check_out  </td>
+                                                        <td>
+                                                            <button class="btn">@Html.ActionLink("Download","Download3", new { Name = Get.file_out })</button>
+                                                        </td>
+                                                        <td>
+                                                            <a href="https://www.google.com/maps?q=@Get.laitude_out,@Get.longitude_out" target="_blank">Show location on map</a>
+                                                        </td>
+                                                        <td>@Get.status  </td>
+                                                    </tr>
+                                                    Rows++;
+                                                }
+                                            }
                                         }
-                                    }
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
