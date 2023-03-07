@@ -24,6 +24,7 @@ namespace SeniorProject.Data
         public DbSet<MASTER_STATUS_WORKING> MASTER_STATUS_WORKING { get; set; }
         public DbSet<MASTER_PREFIX> MASTER_PREFIX { get; set; }
         public DbSet<MASTER_TYPEJOB> MASTER_TYPEJOB { get; set; }
+        public DbSet<MASTER_TIMEWORKING> MASTER_TIMEWORKING { get; set; }
 
         // รายการต่างๆ
         public DbSet<TRANSACTION_JOB> TRANSACTION_JOB { get; set; }

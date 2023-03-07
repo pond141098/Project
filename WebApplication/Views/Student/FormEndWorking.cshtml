@@ -37,10 +37,12 @@
                 <input type="hidden" asp-for="transaction_register_id">
                 <input type="hidden" asp-for="transaction_working_id">
                 <input type="hidden" asp-for="transaction_job_id">
+                <input type="hidden" asp-for="time_working_id">
                 <input type="hidden" asp-for="start_work">
                 <input type="hidden" asp-for="file_work_start">
                 <input type="hidden" asp-for="longitude_start">
                 <input type="hidden" asp-for="latitude_start">
+                <input type="hidden" asp-for="end_work_correct">
 
                 <input type="hidden" asp-for="longitude_end" id="longitude">
                 <input type="hidden" asp-for="latitude_end" id="latitude">
@@ -62,8 +64,8 @@
 
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function (position) {
-                        $('#longitude').val(position.coords.longitude);
-                        $('#latitude').val(position.coords.latitude);
+                        $('#longitude').val(position.coords.longitude.toFixed(6));
+                        $('#latitude').val(position.coords.latitude.toFixed(6));
 
                         // Submit the form
                         var formData = new FormData(form); // Use the stored form reference

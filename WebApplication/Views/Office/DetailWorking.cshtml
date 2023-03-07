@@ -49,12 +49,16 @@
                                                 <td class="text-align-center" width="50">@Rows.</td>
                                                 <td>@Get.date  </td>
                                                 <td>@Get.check_in  </td>
-                                                <td>@Get.file_in <button class="btn">@Html.ActionLink("Download","Download2", new { Name = Get.file_in })</button></td>
+                                                <td>
+                                                    <button class="btn">@Html.ActionLink("Download","Download2", new { Name = Get.file_in })</button>
+                                                </td>
                                                 <td>
                                                     <a href="https://www.google.com/maps?q=@Get.laitude_in,@Get.longitude_in" target="_blank">Show location on map</a>
                                                 </td>
                                                 <td>@Get.check_out  </td>
-                                                <td>@Get.file_out <button class="btn">@Html.ActionLink("Download","Download3", new { Name = Get.file_out })</button></td>
+                                                <td>
+                                                    <button class="btn">@Html.ActionLink("Download","Download3", new { Name = Get.file_out })</button>
+                                                </td>
                                                 <td>
                                                     <a href="https://www.google.com/maps?q=@Get.laitude_out,@Get.longitude_out" target="_blank">Show location on map</a>
                                                 </td>

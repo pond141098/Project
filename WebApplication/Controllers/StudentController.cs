@@ -561,6 +561,7 @@ namespace SeniorProject.Controllers
         //ฟอร์มลงเวลาการเริ่มทำงาน
         public IActionResult FormStartWorking(int transaction_register_id, int transaction_job_id)
         {
+            ViewBag.TimeWorking = new SelectList(DB.MASTER_TIMEWORKING, "time_working_id", "time_working_name");
             ViewBag.rid = transaction_register_id;
             ViewBag.jid = transaction_job_id;
 
@@ -576,11 +577,12 @@ namespace SeniorProject.Controllers
             var GetRegis = await DB.TRANSACTION_REGISTER.FirstOrDefaultAsync();
             var GetJob = await DB.TRANSACTION_JOB.FirstOrDefaultAsync();
             var GetWork = await DB.TRANSACTION_WORKING.FirstOrDefaultAsync();
-
-            DateTime CurrentDate = DateTime.Now.Date;
+            var GetPrefix = await DB.MASTER_PREFIX.Where(w => w.prefix_id == CurrentUser.prefix_id).Select(s => s.prefix_name).FirstOrDefaultAsync();
 
             try
             {
+                var Owner = GetPrefix+" "+CurrentUser.FirstName+" "+CurrentUser.LastName;//ชื่อ-นามสกุลนักศึกษา
+
                 //ถ้ามีรายการงานเท่ากับจำนวนวันที่ต้องทำงาน ต้องไม่สามารถบันทึกได้
                 var amount = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == Model.transaction_job_id).Select(s => s.amount_date).FirstOrDefault();
                 var check2 = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id && w.transaction_job_id == Model.transaction_job_id).Select(s => s.transaction_working_id).Count();
@@ -590,8 +592,8 @@ namespace SeniorProject.Controllers
                     return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้วในวันนี้" });
                 }
 
-                //ถ้าผู้ใช้ระบบได้ทำการลงเวลาเข้างานไปเเล้วในวันนี้ จะไม่สามารถลงเวลาในงานอื่นๆ ได้อีก = ให้ทำการลงเวลาทำงานได้เเค่วันละ1ครั้ง
-                var check = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id && w.transaction_job_id == Model.transaction_job_id && w.start_work.Date == CurrentDate).Select(s => s.transaction_working_id).Count() > 0;
+                //ถ้าผู้ใช้ระบบได้ทำการลงเวลาเข้างานไปเเล้วในวันนี้ จะไม่สามารถลงเวลาในงานอื่นๆ ได้อีก = ให้ทำการลงเวลาทำงานได้เเค่วันละ1ครั้ง/งาน
+                var check = DB.TRANSACTION_WORKING.Where(w => w.name == Owner && w.start_work.Date == DateTime.Now.Date).Select(s => s.transaction_working_id).Count() > 0;
 
                 if (check == true)
                 {
@@ -608,14 +610,42 @@ namespace SeniorProject.Controllers
                     await file_start.CopyToAsync(fileStream);
                 }
 
-                Model.start_work = DateTime.Now;
-                Model.end_work = DateTime.Now;
-                Model.status_working_id = 2;
-                Model.status_id = 10;
-                Model.file_work_start = UniqueFileName;
-                DB.TRANSACTION_WORKING.Add(Model);
-                await DB.SaveChangesAsync();
-
+                if(Model.time_working_id == 1)
+                {
+                    Model.name = Owner;
+                    Model.start_work = DateTime.Now;
+                    Model.end_work = DateTime.Now;
+                    Model.status_working_id = 2;
+                    Model.status_id = 10;
+                    Model.file_work_start = UniqueFileName;
+                    Model.end_work_correct = DateTime.Now.AddHours(3);
+                    DB.TRANSACTION_WORKING.Add(Model);
+                    await DB.SaveChangesAsync();
+                }
+                else if(Model.time_working_id == 2)
+                {
+                    Model.name = Owner;
+                    Model.start_work = DateTime.Now;
+                    Model.end_work = DateTime.Now;
+                    Model.status_working_id = 2;
+                    Model.status_id = 10;
+                    Model.file_work_start = UniqueFileName;
+                    Model.end_work_correct = DateTime.Now.AddHours(3).AddMinutes(30); 
+                    DB.TRANSACTION_WORKING.Add(Model);
+                    await DB.SaveChangesAsync();
+                }
+                else if(Model.time_working_id == 3)
+                {
+                    Model.name = Owner;
+                    Model.start_work = DateTime.Now;
+                    Model.end_work = DateTime.Now;
+                    Model.status_working_id = 2;
+                    Model.status_id = 10;
+                    Model.file_work_start = UniqueFileName;
+                    Model.end_work_correct = DateTime.Now.AddHours(8);
+                    DB.TRANSACTION_WORKING.Add(Model);
+                    await DB.SaveChangesAsync();
+                }
             }
             catch (Exception Error)
             {
@@ -670,6 +700,8 @@ namespace SeniorProject.Controllers
                 Get.longitude_end = Model.longitude_end;
                 Get.transaction_job_id = Model.transaction_job_id;
                 Get.transaction_register_id = Model.transaction_register_id;
+                Get.time_working_id = Model.time_working_id;
+                Get.end_work_correct = Model.end_work_correct;
                 DB.TRANSACTION_WORKING.Update(Get);
                 await DB.SaveChangesAsync();
 

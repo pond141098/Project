@@ -16,9 +16,15 @@
 
                 <div class="form-group">
                     <br>
+                    <label for="exampleFormControlSelect1" style="font-size:20px">ประเภทช่วงเวลาที่ต้องการทำงาน</label>
+                    @Html.DropDownList("time_working_id", (IEnumerable<SelectListItem>)ViewBag.TimeWorking, new { @class = "form-control" })
+                </div>
+                
+                <div class="form-group">
+                    <br>
                     <label for="exampleFormControlSelect1" style="font-size:20px">ไฟล์งานที่นักศึกษาได้ปฎิบัติ หรือ ภาพถ่าย ณ ตอนที่กำลังจะปฎิบัติงาน</label>
                     <div class="custom-file">
-                        <input asp-for="file_work_start" class="form-control custom-file-input" type="file" name="file_start" required/>
+                        <input asp-for="file_work_start" class="form-control custom-file-input" type="file" name="file_start" required />
                     </div>
                 </div>
 
