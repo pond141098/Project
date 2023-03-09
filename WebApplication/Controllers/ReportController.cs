@@ -23,11 +23,19 @@ using WebApplication.Controllers;
 using WebApplication.Data;
 using WebApplication.Models;
 using Windows.System;
+using FontFamily = iTextSharp.text.Font.FontFamily;
 using Font = iTextSharp.text.Font;
 using Image = iTextSharp.text.Image;
 using Rectangle = iTextSharp.text.Rectangle;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using Windows.UI.Xaml.Documents;
+using Paragraph = iTextSharp.text.Paragraph;
+using Microsoft.Net.Http.Headers;
+using Org.BouncyCastle.Asn1.X509;
+using static Uno.UI.FeatureConfiguration;
+using Windows.UI.Xaml;
+using Uno.UI.Xaml;
 
 namespace SeniorProject.Controllers
 {
@@ -64,150 +72,178 @@ namespace SeniorProject.Controllers
         #region PDF
 
         [HttpGet]
-        public async Task<IActionResult> ExportPDF()
+        public async Task<IActionResult> ExportPDF(string strHeader)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            //var ComLicenses = DB.COM_LICENSE.Where(w => w.CustomerId == CurrentUser.CustomerId);
+
             MemoryStream workStream = new MemoryStream();
-            string Msg = string.Empty;
-            try
-            {
-                BaseFont bf = BaseFont.CreateFont(_environment.WebRootPath + "//fonts/cordia.TTF", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                iTextSharp.text.Document pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 10, 10, 10, 10);
-                pdfDoc.SetPageSize(iTextSharp.text.PageSize.A4);
-                Font FontNormal = new Font(bf, 10);
-                Font FontNormalBold = new Font(bf, 10, Font.BOLD);
-                Font FontMedium = new Font(bf, 14);
-                Font FontBig = new Font(bf, 16);
-                Font FontBigBold = new Font(bf, 16, Font.BOLD);
-                iTextSharp.text.Document document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 10, 10, 10, 10);
-                PdfWriter.GetInstance(document, workStream).CloseStream = false;
+            BaseFont bf = BaseFont.CreateFont(_environment.WebRootPath + "//fonts/THSarabun.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            //iTextSharp.text.Document pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 0f, 0f, 0f, 0f);
+            //pdfDoc.SetPageSize(iTextSharp.text.PageSize.A4);
+            Font FontNormal = new Font(bf, 14);
+            Font FontNormalBold = new Font(bf, 14, Font.BOLD);
+            Font FontMedium = new Font(bf, 14);
+            Font FontBig = new Font(bf, 16);
+            Font FontBigBold = new Font(bf, 16, Font.BOLD);
+            iTextSharp.text.Document doc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 20f, 0f, 0f, 20f);
+            doc.SetPageSize(iTextSharp.text.PageSize.A4);
+            PdfWriter.GetInstance(doc, workStream).CloseStream = false;
 
-                string imagePath = Path.Combine(_environment.WebRootPath.ToString(), "img/kodelogo.jpg");
-                Image img = Image.GetInstance(imagePath);
-                img.Alignment = Element.ALIGN_LEFT;
-                img.SetAbsolutePosition(60f, 790f);
-                img.ScaleToFit(45f, 70f);
+            doc.Open();
+            
+            // Create a new table
+            PdfPTable table = new PdfPTable(7);
+            table.SetWidths(new float[] {300f, 600f, 200f, 200f, 200f, 200f, 500f });
+            table.HorizontalAlignment = Element.ALIGN_LEFT;
+            
+            //Header
+            Paragraph title = new Paragraph("ใบลงเวลาปฏิบัติงานของนักศึกษา", FontNormalBold);
+            title.Alignment = Element.ALIGN_CENTER; 
+            doc.Add(title);
+            title = new Paragraph("โครงการสนับสนุนการหารายได้พิเศษระหว่างเรียนของนักศึกษา", FontNormalBold);
+            title.Alignment = Element.ALIGN_CENTER;
+            doc.Add(title);
+            title = new Paragraph("หน่วยงาน ........................................................................................ มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี", FontNormalBold);
+            title.Alignment = Element.ALIGN_CENTER;
+            doc.Add(title);
+            title = new Paragraph("ชื่อผู้ปฏิบัติงาน ...................................................................................................................", FontNormalBold);
+            title.Alignment = Element.ALIGN_CENTER;
+            doc.Add(title);
+            title = new Paragraph("ประจำเดือน................................................................. พ.ศ...............", FontNormalBold);
+            title.Alignment = Element.ALIGN_CENTER;
+            doc.Add(title);
+            doc.Add(new Phrase(""));
 
-                document.Open();
+            // Add cells to the table
+            PdfPCell cell = new PdfPCell(new Phrase("วัน เดือน ปี", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("รายละเอียดการปฏิบัติงาน", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("ลายมือชื่อ", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("เวลามา", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("ลายมือชื่อ", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("เวลากลับ", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("ปฏิบัติงานจำนวน", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            table.AddCell(new Phrase("1", FontNormal));
+            table.AddCell(new Phrase("2", FontNormal));
+            table.AddCell(new Phrase("3", FontNormal));
+            table.AddCell(new Phrase("4", FontNormal));
+            table.AddCell(new Phrase("5", FontNormal));
+            table.AddCell(new Phrase("6", FontNormal));
+            table.AddCell(new Phrase("7", FontNormal));
+            doc.Add(table);
 
-                PdfPTable Tabless = new PdfPTable(6);
-                Tabless.TotalWidth = 530f;
-                Tabless.HorizontalAlignment = 1;
-                Tabless.SpacingAfter = 0;
-                Tabless.DefaultCell.Border = Rectangle.NO_BORDER;
-                Tabless.HeaderRows = 6;
-                float[] ColWidthss = new float[6];
-                ColWidthss[0] = 40f;
-                ColWidthss[1] = 170f;
-                ColWidthss[2] = 80f;
-                ColWidthss[3] = 80f;
-                ColWidthss[4] = 80f;
-                ColWidthss[5] = 80f;
-                Tabless.SetWidths(ColWidthss);
+            //SignName
+            PdfPTable SignName = new PdfPTable(4);
+            SignName.SetWidths(new float[] { 100f, 100f, 850f, 500f });
+            SignName.HorizontalAlignment = Element.ALIGN_LEFT;
 
-                PdfPCell TableCellss = new PdfPCell(img);
-                TableCellss.Colspan = 6;
-                TableCellss.Border = Rectangle.NO_BORDER;
-                Tabless.AddCell(TableCellss);
+            PdfPCell SN = new PdfPCell(new Phrase("",FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 2;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("(ลงชื่อ)", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 2;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("............................................................................................................", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 1;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("ผู้ควบคุมการปฏิบัติงาน", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 3;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 3;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 3;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("(..........................................................................................................)", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 3;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 3;
+            SignName.AddCell(SN);
+            doc.Add(SignName);
 
-                TableCellss = new PdfPCell(new Phrase("License Management Report", FontBig));
-                TableCellss.HorizontalAlignment = Element.ALIGN_CENTER;
-                TableCellss.VerticalAlignment = Element.ALIGN_CENTER;
-                TableCellss.Border = Rectangle.NO_BORDER;
-                TableCellss.Colspan = 6;
-                Tabless.AddCell(TableCellss);
+            //FooterTable
+            PdfPTable FooterTable = new PdfPTable(2);
+            FooterTable.SetWidths(new float[] { 100f, 900f});
+            FooterTable.HorizontalAlignment = Element.ALIGN_LEFT;
 
-                TableCellss = new PdfPCell(new Phrase("Issue Date " , FontNormal));
-                TableCellss.HorizontalAlignment = Element.ALIGN_RIGHT;
-                TableCellss.VerticalAlignment = Element.ALIGN_RIGHT;
-                TableCellss.Border = Rectangle.NO_BORDER;
-                TableCellss.Colspan = 6;
-                Tabless.AddCell(TableCellss);
+            PdfPCell celltext = new PdfPCell(new Phrase("หมายเหตุ",FontNormalBold));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("ให้นักศึกษาลงลายมือชื่อและเวลาการปฏิบัติงานด้วยลายมือชื่อตนเองทุกครั้ง โดยให้นับเวลาการปฏิบัติงานดังนี้",FontNormal));
+            celltext.Border = Rectangle.NO_BORDER;
+            celltext.HorizontalAlignment = 3;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("", FontNormal));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("1. ให้นักศึกษาบันทึกรายละเอียดการปฏิบัติงานของนักศึกษาในแต่ละวันโดยละเอียด", FontNormal));
+            celltext.Border = Rectangle.NO_BORDER;
+            celltext.HorizontalAlignment = 3;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("", FontNormal));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("2. ให้ผู้ควบคุมการปฏิบัติงานที่ได้รับอนุมัติลงลายมือชื่อเพื่อยืนยันการปฏิบัติงานของนักศึกษา", FontNormal));
+            celltext.Border = Rectangle.NO_BORDER;
+            celltext.HorizontalAlignment = 3;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("", FontNormal));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("3. นักศึกษาปฏิบัติงานเต็มวัน จำนวน 7 ชั่วโมง ไม่รวมเวลาหยุดพัก ให้ได้รับค่าตอบแทน 300 บาท", FontNormal));
+            celltext.Border = Rectangle.NO_BORDER;
+            celltext.HorizontalAlignment = 3;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("", FontNormal));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("4. นักศึกษาปฏิบัติงานครึ่งวัน จำนวน 3 ชั่วโมงครึ่ง ให้ได้รับค่าตอบแทน 150 บาท", FontNormal));
+            celltext.Border = Rectangle.NO_BORDER;
+            celltext.HorizontalAlignment = 3;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("", FontNormal));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            doc.Add(FooterTable);
+            doc.Add(new Phrase("                5. นักศึกษาปฏิบัติงานไม่เข้าตาม ข้อ1 และ 2 ให้ได้รับค่าตอบแทนชั่วโมงละ 40 บาท เศษของชั่วโมงให้ปัดทิ้งไม่นำมานับ",FontNormal));
 
-                TableCellss = new PdfPCell(new Phrase(" ", FontNormal));
-                TableCellss.HorizontalAlignment = Element.ALIGN_RIGHT;
-                TableCellss.VerticalAlignment = Element.ALIGN_RIGHT;
-                TableCellss.Border = Rectangle.NO_BORDER;
-                TableCellss.Colspan = 6;
-                Tabless.AddCell(TableCellss);
+            doc.Close();
 
-                /* table  header */
+            byte[] byteInfo = workStream.ToArray();
+            workStream.Write(byteInfo, 0, byteInfo.Length);
+            workStream.Position = 0;
 
-                TableCellss = new PdfPCell(new Phrase("NO.", FontNormal));
-                TableCellss.HorizontalAlignment = Element.ALIGN_CENTER;
-                TableCellss.VerticalAlignment = Element.ALIGN_CENTER;
-                TableCellss.Border = Rectangle.TOP_BORDER | Rectangle.BOTTOM_BORDER;
-                Tabless.AddCell(TableCellss);
-
-                TableCellss = new PdfPCell(new Phrase("Name", FontNormal));
-                TableCellss.HorizontalAlignment = Element.ALIGN_LEFT;
-                TableCellss.VerticalAlignment = Element.ALIGN_LEFT;
-                TableCellss.Border = Rectangle.TOP_BORDER | Rectangle.BOTTOM_BORDER;
-                Tabless.AddCell(TableCellss);
-
-                TableCellss = new PdfPCell(new Phrase("Partial product Key", FontNormal));
-                TableCellss.HorizontalAlignment = Element.ALIGN_LEFT;
-                TableCellss.VerticalAlignment = Element.ALIGN_LEFT;
-                TableCellss.Border = Rectangle.TOP_BORDER | Rectangle.BOTTOM_BORDER;
-                Tabless.AddCell(TableCellss);
-
-                TableCellss = new PdfPCell(new Phrase("Used/Total", FontNormal));
-                TableCellss.HorizontalAlignment = Element.ALIGN_LEFT;
-                TableCellss.VerticalAlignment = Element.ALIGN_LEFT;
-                TableCellss.Border = Rectangle.TOP_BORDER | Rectangle.BOTTOM_BORDER;
-                Tabless.AddCell(TableCellss);
-
-                TableCellss = new PdfPCell(new Phrase("Start Date", FontNormal));
-                TableCellss.HorizontalAlignment = Element.ALIGN_CENTER;
-                TableCellss.VerticalAlignment = Element.ALIGN_CENTER;
-                TableCellss.Border = Rectangle.TOP_BORDER | Rectangle.BOTTOM_BORDER;
-                Tabless.AddCell(TableCellss);
-
-                TableCellss = new PdfPCell(new Phrase("Expiry Date", FontNormal));
-                TableCellss.HorizontalAlignment = Element.ALIGN_CENTER;
-                TableCellss.VerticalAlignment = Element.ALIGN_CENTER;
-                TableCellss.Border = Rectangle.TOP_BORDER | Rectangle.BOTTOM_BORDER;
-                Tabless.AddCell(TableCellss);
-
-
-                /* data row */
-
-                int CountFirstRow = 1;
-                //var ComLicense = DB.COM_LICENSE.Where(w => w.CustomerId == CurrentUser.CustomerId);
-                var Gets = DB.TRANSACTION_WORKING;
-                foreach (var Get in Gets)
-                {
-                    //int CountItem = ComLicenses.Where(w => w.PartialProductKey == Get.PartialproductKey).Count();
-
-                    TableCellss = new PdfPCell(new Phrase(CountFirstRow.ToString(), FontNormal));
-                    TableCellss.HorizontalAlignment = Element.ALIGN_CENTER;
-                    TableCellss.VerticalAlignment = Element.ALIGN_CENTER;
-                    TableCellss.Border = Rectangle.NO_BORDER;
-                    Tabless.AddCell(TableCellss);
-
-                    TableCellss = new PdfPCell(new Phrase(Get.detail_working, FontNormal));
-                    TableCellss.HorizontalAlignment = Element.ALIGN_LEFT;
-                    TableCellss.VerticalAlignment = Element.ALIGN_CENTER;
-                    TableCellss.Border = Rectangle.NO_BORDER;
-                    Tabless.AddCell(TableCellss);
-
-                    CountFirstRow++;
-                }
-
-
-                document.Add(Tabless);
-
-                document.Close();
-                byte[] byteInfo = workStream.ToArray();
-                workStream.Write(byteInfo, 0, byteInfo.Length);
-                workStream.Position = 0;
-            }
-            catch (Exception error)
-            {
-                string msg = "Error is : " + error.Message;
-            }
-            return new FileStreamResult(workStream, "application/pdf");
+            return File(workStream, "application/pdf");
+            //"ExportPDF.pdf"
         }
 
         #endregion
