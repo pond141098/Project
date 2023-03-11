@@ -149,7 +149,7 @@ namespace SeniorProject.Controllers
                 var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == model.transaction_register_id).FirstOrDefault();
                 var CheckPhone = regex.IsMatch(model.tel_no);
 
-                if(CheckPhone == false)
+                if (CheckPhone == false)
                 {
                     return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่" });
                 }
@@ -255,7 +255,7 @@ namespace SeniorProject.Controllers
             //การ join table โดยนำค่าที่ต้องการมาเเสดง มาใส่ใน ViewsModels เเล้วไปเเสดงในหน้า Views
             var model = new List<ListJob>();
 
-            foreach (var j in  DB.TRANSACTION_JOB)
+            foreach (var j in DB.TRANSACTION_JOB)
             {
                 foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                 {
@@ -351,10 +351,10 @@ namespace SeniorProject.Controllers
                 if (ModelState.IsValid)
                 {
                     var CheckPhone = regex.IsMatch(Model.tel_no);
-                    if(CheckPhone == false)
+                    if (CheckPhone == false)
                     {
                         return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่" });
-                    } 
+                    }
 
                     if (Model.banktype_id == 7 && Model.bank_no.Length < 12 || Model.bank_no.Length > 15)
                     {
@@ -376,7 +376,7 @@ namespace SeniorProject.Controllers
                     var Owner = DB.Users.Where(w => w.UserName == GetOwnerJob).Select(s => s.Id).FirstOrDefault();
                     var GetRole = DB.UserRoles.Where(w => w.UserId == Owner).Select(s => s.RoleId).FirstOrDefault();
 
-                    if(GetRole == "42d5797d-0dce-412b-beea-9337f482e9e5" || GetRole == "cddaeb6d-62db-4f03-98e5-8c473a5ff64e" )
+                    if (GetRole == "42d5797d-0dce-412b-beea-9337f482e9e5" || GetRole == "cddaeb6d-62db-4f03-98e5-8c473a5ff64e")
                     {
                         //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
                         var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
@@ -403,7 +403,7 @@ namespace SeniorProject.Controllers
                         DB.TRANSACTION_REGISTER.Add(Model);
                         await DB.SaveChangesAsync();
                     }
-                    else if(GetRole == "cfed75aa-4322-4f0a-ab5e-ea44e48d76e2" || GetRole == "34cdaea1-7b6d-4a1e-9c97-3542403bcb09")
+                    else if (GetRole == "cfed75aa-4322-4f0a-ab5e-ea44e48d76e2" || GetRole == "34cdaea1-7b6d-4a1e-9c97-3542403bcb09")
                     {
                         //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
                         var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
@@ -578,71 +578,164 @@ namespace SeniorProject.Controllers
             var GetJob = await DB.TRANSACTION_JOB.FirstOrDefaultAsync();
             var GetWork = await DB.TRANSACTION_WORKING.FirstOrDefaultAsync();
             var GetPrefix = await DB.MASTER_PREFIX.Where(w => w.prefix_id == CurrentUser.prefix_id).Select(s => s.prefix_name).FirstOrDefaultAsync();
+            var Owner = GetPrefix + " " + CurrentUser.FirstName + " " + CurrentUser.LastName;//ชื่อ-นามสกุลนักศึกษา
 
             try
             {
-                var Owner = GetPrefix+" "+CurrentUser.FirstName+" "+CurrentUser.LastName;//ชื่อ-นามสกุลนักศึกษา
+                TimeSpan StartTime = new TimeSpan(8, 30, 0);
+                TimeSpan EndTime = new TimeSpan(17, 00, 0);
+                TimeSpan StartLunchBreak = new TimeSpan(12, 00, 0);
+                TimeSpan EndLunchBreak = new TimeSpan(13, 00, 0);
+                TimeSpan StartDinner = new TimeSpan(18, 00, 0);
+                TimeSpan EndDinner = new TimeSpan(19, 00, 0);
 
                 //ถ้ามีรายการงานเท่ากับจำนวนวันที่ต้องทำงาน ต้องไม่สามารถบันทึกได้
                 var amount = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == Model.transaction_job_id).Select(s => s.amount_date).FirstOrDefault();
                 var check2 = DB.TRANSACTION_WORKING.Where(w => w.transaction_register_id == Model.transaction_register_id && w.transaction_job_id == Model.transaction_job_id).Select(s => s.transaction_working_id).Count();
-
                 if (check2 >= amount)
                 {
-                    return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้วในวันนี้" });
+                    return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากทำงานครบเรียบร้อยเเล้ว" });
                 }
 
                 //ถ้าผู้ใช้ระบบได้ทำการลงเวลาเข้างานไปเเล้วในวันนี้ จะไม่สามารถลงเวลาในงานอื่นๆ ได้อีก = ให้ทำการลงเวลาทำงานได้เเค่วันละ1ครั้ง/งาน
                 var check = DB.TRANSACTION_WORKING.Where(w => w.name == Owner && w.start_work.Date == DateTime.Now.Date).Select(s => s.transaction_working_id).Count() > 0;
-
                 if (check == true)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้วในวันนี้" });
                 }
 
-                //อัพโหลดไฟล์ในการเริ่มทำงาน
-                var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_start_working/");
-                string file = ContentDispositionHeaderValue.Parse(file_start.ContentDisposition).FileName.Trim('"');
-                string UniqueFileName = file.ToString();
-
-                using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
-                {
-                    await file_start.CopyToAsync(fileStream);
-                }
-
-                if(Model.time_working_id == 1)
+                if (Model.time_working_id == 1)
                 {
                     Model.name = Owner;
                     Model.start_work = DateTime.Now;
+
+                    if (Model.start_work.TimeOfDay < StartTime || Model.start_work.TimeOfDay > EndTime)
+                    {
+                        return Json(new { valid = false, message = "ยังไม่สามารถลงเวลางานได้ จะลงเวลาเข้างานได้ช่วงเวลา 8.30 - 17.00" });
+                    }
+
+                    if (Model.start_work.TimeOfDay >= StartLunchBreak && Model.start_work.TimeOfDay <= EndLunchBreak)
+                    {
+                        return Json(new { valid = false, message = "ไมาสารมารถลงเวลาเข้างานได้ เพราะเป็นช่วงพักกลางวัน" });
+                    }
+
                     Model.end_work = DateTime.Now;
                     Model.status_working_id = 2;
                     Model.status_id = 10;
+                    
+                    if (Model.start_work.TimeOfDay < StartLunchBreak && Model.start_work.AddHours(3).TimeOfDay > StartLunchBreak)//ลงเวลาคาบเกี่ยวกับช่วงพักกลางวัน
+                    {
+                        Model.end_work_correct = DateTime.Now.AddHours(4);
+                    }
+                    else if (Model.start_work.TimeOfDay > EndLunchBreak && Model.start_work.AddHours(3).TimeOfDay > StartDinner)//ลงเวลาคาบเกี่ยวกับช่วงพักตอนเย็น
+                    {
+                        Model.end_work_correct = DateTime.Now.AddHours(4);
+                    }
+                    else 
+                    {
+                        Model.end_work_correct = DateTime.Now.AddHours(3);
+                    }
+
+                    //อัพโหลดไฟล์ในการเริ่มทำงาน
+                    var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_start_working/");
+                    string file = ContentDispositionHeaderValue.Parse(file_start.ContentDisposition).FileName.Trim('"');
+                    string UniqueFileName = file.ToString();
+
+                    using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
+                    {
+                        await file_start.CopyToAsync(fileStream);
+                    }
+
                     Model.file_work_start = UniqueFileName;
-                    Model.end_work_correct = DateTime.Now.AddHours(3);
+                    DB.TRANSACTION_WORKING.Add(Model);
+                    await DB.SaveChangesAsync();
+
+                }
+                else if (Model.time_working_id == 2)
+                {
+                    Model.name = Owner;
+                    Model.start_work = DateTime.Now;
+
+                    if (Model.start_work.TimeOfDay < StartTime || Model.start_work.TimeOfDay > EndTime)
+                    {
+                        return Json(new { valid = false, message = "ยังไม่สามารถลงเวลางานได้ จะลงเวลาเข้างานได้ช่วงเวลา 8.30 - 17.00" });
+                    }
+
+                    if (Model.start_work.TimeOfDay >= StartLunchBreak && Model.start_work.TimeOfDay <= EndLunchBreak)
+                    {
+                        return Json(new { valid = false, message = "ไมาสารมารถลงเวลาเข้างานได้ เพราะเป็นช่วงพักกลางวัน" });
+                    }
+
+                    Model.end_work = DateTime.Now;
+                    Model.status_working_id = 2;
+                    Model.status_id = 10;
+
+                    if (Model.start_work.TimeOfDay < StartLunchBreak && Model.start_work.AddHours(3).AddMinutes(30).TimeOfDay > StartLunchBreak)//ลงเวลาคาบเกี่ยวกับช่วงพักกลางวัน
+                    {
+                        Model.end_work_correct = DateTime.Now.AddHours(4).AddMinutes(30);
+                    }
+                    else if (Model.start_work.TimeOfDay > EndLunchBreak && Model.start_work.AddHours(3).AddMinutes(30).TimeOfDay > StartDinner)//ลงเวลาคาบเกี่ยวกับช่วงพักตอนเย็น
+                    {
+                        Model.end_work_correct = DateTime.Now.AddHours(4).AddMinutes(30);
+                    }
+                    else
+                    {
+                        Model.end_work_correct = DateTime.Now.AddHours(3).AddMinutes(30);
+                    }
+
+                    //อัพโหลดไฟล์ในการเริ่มทำงาน
+                    var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_start_working/");
+                    string file = ContentDispositionHeaderValue.Parse(file_start.ContentDisposition).FileName.Trim('"');
+                    string UniqueFileName = file.ToString();
+
+                    using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
+                    {
+                        await file_start.CopyToAsync(fileStream);
+                    }
+
+                    Model.file_work_start = UniqueFileName;
                     DB.TRANSACTION_WORKING.Add(Model);
                     await DB.SaveChangesAsync();
                 }
-                else if(Model.time_working_id == 2)
+                else if (Model.time_working_id == 3)
                 {
                     Model.name = Owner;
                     Model.start_work = DateTime.Now;
+
+                    if (Model.start_work.TimeOfDay < StartTime || Model.start_work.TimeOfDay > EndTime)
+                    {
+                        return Json(new { valid = false, message = "ยังไม่สามารถลงเวลางานได้ จะลงเวลาเข้างานได้ช่วงเวลา 8.30 - 17.00" });
+                    }
+
+                    if (Model.start_work.TimeOfDay >= StartLunchBreak && Model.start_work.TimeOfDay <= EndLunchBreak)
+                    {
+                        return Json(new { valid = false, message = "ไมาสารมารถลงเวลาเข้างานได้ เพราะเป็นช่วงพักกลางวัน" });
+                    }
+
                     Model.end_work = DateTime.Now;
                     Model.status_working_id = 2;
                     Model.status_id = 10;
+
+                    if (Model.start_work.TimeOfDay < StartLunchBreak && Model.start_work.AddHours(7).TimeOfDay > StartLunchBreak && Model.start_work.AddHours(8).TimeOfDay > StartDinner)//ลงเวลาคาบเกี่ยวกับช่วงพักกลางวัน
+                    {
+                        Model.end_work_correct = DateTime.Now.AddHours(9);
+                    }
+                    else
+                    {
+                        Model.end_work_correct = DateTime.Now.AddHours(8);
+                    }
+
+                    //อัพโหลดไฟล์ในการเริ่มทำงาน
+                    var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_start_working/");
+                    string file = ContentDispositionHeaderValue.Parse(file_start.ContentDisposition).FileName.Trim('"');
+                    string UniqueFileName = file.ToString();
+
+                    using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
+                    {
+                        await file_start.CopyToAsync(fileStream);
+                    }
+
                     Model.file_work_start = UniqueFileName;
-                    Model.end_work_correct = DateTime.Now.AddHours(3).AddMinutes(30); 
-                    DB.TRANSACTION_WORKING.Add(Model);
-                    await DB.SaveChangesAsync();
-                }
-                else if(Model.time_working_id == 3)
-                {
-                    Model.name = Owner;
-                    Model.start_work = DateTime.Now;
-                    Model.end_work = DateTime.Now;
-                    Model.status_working_id = 2;
-                    Model.status_id = 10;
-                    Model.file_work_start = UniqueFileName;
-                    Model.end_work_correct = DateTime.Now.AddHours(8);
                     DB.TRANSACTION_WORKING.Add(Model);
                     await DB.SaveChangesAsync();
                 }
@@ -671,12 +764,42 @@ namespace SeniorProject.Controllers
 
             try
             {
+                TimeSpan StartLunch = new TimeSpan(12,00,0);
+                TimeSpan EndLunch = new TimeSpan(13,00,0);
+                TimeSpan StartDinner = new TimeSpan(18, 00, 0);
+                TimeSpan EndDinner = new TimeSpan(19, 00, 0);
+
                 var Get = await DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == Model.transaction_working_id).FirstOrDefaultAsync();
 
                 if (Get.status_working_id == 3)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถลงเวลาออกงานได้เนื่องจากสถานะงานเป็น ทำงานสำเร็จ" });
                 }
+
+                Get.detail_working = Model.detail_working;
+                Get.start_work = Model.start_work;
+                Get.end_work = DateTime.Now;
+
+                if(Get.end_work.TimeOfDay >= StartLunch && Get.end_work.TimeOfDay <= EndLunch)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถออกงานได้เนื่องจากเป็นช่วงเวลาพักกลางวัน" });
+                }
+
+                if (Get.end_work.TimeOfDay >= StartDinner && Get.end_work.TimeOfDay <= EndDinner)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถออกงานได้เนื่องจากเป็นช่วงเวลาพักตอนเย็น" });
+                }
+
+                Get.file_work_start = Model.file_work_start;
+                Get.status_working_id = 3;
+                Get.latitude_start = Model.latitude_start;
+                Get.longitude_start = Model.longitude_start;
+                Get.latitude_end = Model.latitude_end;
+                Get.longitude_end = Model.longitude_end;
+                Get.transaction_job_id = Model.transaction_job_id;
+                Get.transaction_register_id = Model.transaction_register_id;
+                Get.time_working_id = Model.time_working_id;
+                Get.end_work_correct = Model.end_work_correct;
 
                 //อัพโหลดไฟล์สิ้นสุดงาน
                 var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/file_end_working/");
@@ -687,21 +810,7 @@ namespace SeniorProject.Controllers
                 {
                     await file_end.CopyToAsync(fileStream);
                 }
-
-                Get.detail_working = Model.detail_working;
-                Get.start_work = Model.start_work;
-                Get.end_work = DateTime.Now;
-                Get.file_work_start = Model.file_work_start;
                 Get.file_work_end = UniqueFileName;
-                Get.status_working_id = 3;
-                Get.latitude_start = Model.latitude_start;
-                Get.longitude_start = Model.longitude_start;
-                Get.latitude_end = Model.latitude_end;
-                Get.longitude_end = Model.longitude_end;
-                Get.transaction_job_id = Model.transaction_job_id;
-                Get.transaction_register_id = Model.transaction_register_id;
-                Get.time_working_id = Model.time_working_id;
-                Get.end_work_correct = Model.end_work_correct;
                 DB.TRANSACTION_WORKING.Update(Get);
                 await DB.SaveChangesAsync();
 

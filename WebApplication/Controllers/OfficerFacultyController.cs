@@ -409,7 +409,7 @@ namespace SeniorProject.Controllers
 
                     if (s.status_working_id == 2)
                     {
-                        data.Id = wk.transaction_working_id;
+                        data.transaction_working_id = wk.transaction_working_id;
                         data.date = d;
                         data.check_in = time_in;
                         data.check_out = "00:00:00";
@@ -424,7 +424,7 @@ namespace SeniorProject.Controllers
                     }
                     else if (s.status_working_id == 3)
                     {
-                        data.Id = wk.transaction_working_id;
+                        data.transaction_working_id = wk.transaction_working_id;
                         data.date = d;
                         data.check_in = time_in;
                         data.check_out = time_out;
@@ -458,6 +458,41 @@ namespace SeniorProject.Controllers
             byte[] bytes = System.IO.File.ReadAllBytes(path);
             return File(bytes, "application/octet-stream");
         }
+
+        public IActionResult Pass(int id)
+        {
+            try
+            {
+                var GetWorking =  DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == id).FirstOrDefault();
+
+                GetWorking.status_id = 1;
+                DB.TRANSACTION_WORKING.Update(GetWorking);
+                DB.SaveChangesAsync();
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error });
+            }
+            return Json(new { valid = true, message = "ผ่าน" });
+        }
+
+        public IActionResult Failed(int id)
+        {
+            try
+            {
+                var GetWorking = DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == id).FirstOrDefault();
+
+                GetWorking.status_id = 2;
+                DB.TRANSACTION_WORKING.Update(GetWorking);
+                DB.SaveChangesAsync();
+            }
+            catch (Exception Error)
+            {
+                return Json(new { valid = false, message = Error });
+            }
+            return Json(new { valid = true, message = "ไม่ผ่าน" });
+        }
+
         #endregion
 
         #region เอกสารเบิกจ่ายค่าตอบเเทน

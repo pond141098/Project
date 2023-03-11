@@ -4,7 +4,7 @@ namespace SeniorProject.ViewModels.OfficerFaculty
 {
     public class DetailWorkingF
     {
-        public int Id { get; set; }
+        public int transaction_working_id { get; set; }
         public string date { get; set; }
         public string check_in { get; set; }
         public string check_out { get; set; }

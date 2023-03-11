@@ -41,6 +41,7 @@
                                             <th class="text-align-left">หลักฐานตอนเลิกทำงาน</th>
                                             <th class="text-align-left">สถานที่ออกงาน</th>
                                             <th class="text-align-left">สถานะ</th>
+                                            <th class="text-align-left">ตัวดำเนินการ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -48,7 +49,7 @@
                                             int Rows = 1;
                                             foreach (var Get in Model.OrderBy(f => f.date))
                                             {
-                                                if(Get.file_out == null)
+                                                if (Get.file_out == null)
                                                 {
                                                     <tr>
                                                         <td class="text-align-center" width="50">@Rows.</td>
@@ -68,10 +69,14 @@
                                                             <a href="https://www.google.com/maps?q=@Get.laitude_out,@Get.longitude_out" target="_blank">Show location on map</a>
                                                         </td>
                                                         <td>@Get.status  </td>
+                                                        <td>
+                                                            <a class="btn btn-success btn-xs pass" id="@Get.Id" onclick="Pass('@Get.Id')" value="Pass"><i class="fa fa-check-circle"></i> ผ่าน</a>
+                                                            <a class="btn btn-danger btn-xs fail" id="@Get.Id" onclick="Fail('@Get.Id')" value="Fail"><i class="fa fa-ban"></i> ไม่ผ่าน</a>
+                                                        </td>
                                                     </tr>
                                                     Rows++;
                                                 }
-                                                else if(Get.file_out != null)
+                                                else if (Get.file_out != null)
                                                 {
                                                     <tr>
                                                         <td class="text-align-center" width="50">@Rows.</td>
@@ -91,6 +96,10 @@
                                                             <a href="https://www.google.com/maps?q=@Get.laitude_out,@Get.longitude_out" target="_blank">Show location on map</a>
                                                         </td>
                                                         <td>@Get.status  </td>
+                                                        <td>
+                                                            <a class="btn btn-success btn-xs pass" id="@Get.Id" onclick="Pass('@Get.Id')" value="Pass"><i class="fa fa-check-circle"></i> ผ่าน</a>
+                                                            <a class="btn btn-danger btn-xs fail" id="@Get.Id" onclick="Fail('@Get.Id')" value="Fail"><i class="fa fa-ban"></i> ไม่ผ่าน</a>
+                                                        </td>
                                                     </tr>
                                                     Rows++;
                                                 }
@@ -113,4 +122,87 @@
     <script src="~/js/plugin/datatables/dataTables.tableTools.min.js"></script>
     <script src="~/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
     <script src="~/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+    <script type="text/javascript">
+        function Pass(id) {
+            $.SmartMessageBox({
+                title: "Information",
+                content: "ต้องการให้งานที่ทำผ่านใช่ไหม?",
+                buttons: "[ไม่][ใช่]"
+            }, function (ButtonPressed) {
+                if (ButtonPressed == "ใช่") {
+                    $.ajax({
+                        url: '/Teacher/Pass',
+                        type: 'POST',
+                        data: { "id": id },
+                        success: function (response) {
+                            if (response.valid == true) {
+                                $.smallBox({
+                                    title: response.message,
+                                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                                    color: "#296191",
+                                    iconSmall: "fa fa-thumbs-up bounce animated",
+                                    timeout: 1000
+                                });
+                                setTimeout(function () {
+                                    window.location.href = "/Teacher/ListStudentWorking";
+                                }, 1000)
+                            } else {
+                                $.smallBox({
+                                    title: response.message,
+                                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                                    color: "#FB0404",
+                                    iconSmall: "fa fa-thumbs-up bounce animated",
+                                    timeout: 1000
+                                });
+                            }
+                        }
+                    });
+                }
+                if (ButtonPressed == "ไม่") {
+
+                }
+            })
+        }
+
+        function Fail(id) {
+            $.SmartMessageBox({
+                title: "Information",
+                content: "ต้องการให้งานที่ทำไม่ผ่านใช่ไหม?",
+                buttons: "[ไม่][ใช่]"
+            }, function (ButtonPressed) {
+                if (ButtonPressed == "ใช่") {
+                    $.ajax({
+                        url: '/Teacher/Failed',
+                        type: 'POST',
+                        data: { "id": id },
+                        success: function (response) {
+                            if (response.valid == true) {
+                                $.smallBox({
+                                    title: response.message,
+                                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                                    color: "#296191",
+                                    iconSmall: "fa fa-thumbs-up bounce animated",
+                                    timeout: 1000
+                                });
+                                setTimeout(function () {
+                                    window.location.href = "/Teacher/ListStudentWorking";
+                                }, 1000)
+                            } else {
+                                $.smallBox({
+                                    title: response.message,
+                                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                                    color: "#FB0404",
+                                    iconSmall: "fa fa-thumbs-up bounce animated",
+                                    timeout: 1000
+                                });
+                            }
+                        }
+                    });
+                }
+                if (ButtonPressed == "ไม่") {
+
+                }
+            })
+        }
+    </script>
 }
