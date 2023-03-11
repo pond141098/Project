@@ -410,18 +410,21 @@ namespace SeniorProject.Controllers
                 {
                     var data = new DetailWorking();
                     string d = wk.start_work.ToString("yyyy-MM-dd");
-                    string time_in = wk.start_work.ToString("HH:mm:ss");
-                    string time_out = wk.end_work.ToString("HH:mm:ss");
+                    string time_in = wk.start_work.ToString("HH:mm");
+                    string time_out = wk.end_work.ToString("HH:mm");
+                    string time_out_correct = wk.end_work_correct.ToString("HH:mm");
 
                     if (s.status_working_id == 2)
                     {
                         data.Id = wk.transaction_working_id;
                         data.date = d;
                         data.check_in = time_in;
-                        data.check_out = "00:00:00";
+                        data.check_out = "00:00";
+                        data.check_out_correct = time_out_correct;
                         data.file_in = wk.file_work_start;
                         data.file_out = wk.file_work_end;
-                        data.status = s.status_working_name;
+                        data.status = DB.MASTER_STATUS.Where(w => w.status_id == wk.status_id).Select(s => s.status_name).FirstOrDefault();
+                        data.status_of_working = s.status_working_name;
                         data.laitude_in = wk.latitude_start;
                         data.longitude_in = wk.longitude_start;
                         data.laitude_out = wk.latitude_end;
@@ -434,9 +437,11 @@ namespace SeniorProject.Controllers
                         data.date = d;
                         data.check_in = time_in;
                         data.check_out = time_out;
+                        data.check_out_correct = time_out_correct;
                         data.file_in = wk.file_work_start;
                         data.file_out = wk.file_work_end;
-                        data.status = s.status_working_name;
+                        data.status = DB.MASTER_STATUS.Where(w => w.status_id == wk.status_id).Select(s => s.status_name).FirstOrDefault();
+                        data.status_of_working = s.status_working_name;
                         data.laitude_in = wk.latitude_start;
                         data.longitude_in = wk.longitude_start;
                         data.laitude_out = wk.latitude_end;
