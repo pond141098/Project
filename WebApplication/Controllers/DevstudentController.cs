@@ -56,32 +56,31 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> Index()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var GetUsers = await DB.Users.FirstOrDefaultAsync();
             var GetBranch = await DB.MASTER_BRANCH.ToListAsync();
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
 
-            //จำนวนักศึกษาทั้งหมด
-            var RoleStudent = await DB.UserRoles.Where(w => w.UserId == GetUsers.Id && w.RoleId == "e5ce49ea-eaf4-431e-b7c6-50ac72ff505b").Select(s => s.UserId).FirstOrDefaultAsync();
-            var Student = await DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.Id == RoleStudent).Select(s => s.Id).CountAsync();
-            //จำนวนนักศึกษาที่สมัครงานทั้งหมด
-            var Job = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.transaction_job_id).FirstOrDefaultAsync();
-            var Register = await DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == Job).Select(s => s.transaction_register_id).CountAsync();
-
+            //Chart 1
+            string faculty = CurrentUser.faculty_id.ToString();
+            var Student = DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.UserName.Substring(6,1) == faculty).Select(s => s.Id).Count();
+            var Register = DB.TRANSACTION_REGISTER.Where(w => w.student_id.Substring(6, 1) == faculty).Select(s => s.transaction_register_id).Count();
+            ViewBag.Student = Student;
+            ViewBag.Register = Register;
+            
             //Chart 2
             var Model = new List<dashboard>();
 
-            foreach(var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
+            foreach (var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
             {
-                foreach(var b in GetBranch.Where(w => w.branch_id == j.branch_id))
+                foreach (var b in GetBranch.Where(w => w.branch_id == j.branch_id))
                 {
                     var data = new dashboard();
-                    if(j.type_job_id == 3)
+                    if (j.type_job_id == 3)
                     {
                         data.branchName = b.branch_name;
                         data.amount_register = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id).Select(s => s.transaction_register_id).Count();
                         Model.Add(data);
                     }
-                    else if(j.type_job_id == 2)
+                    else if (j.type_job_id == 2)
                     {
                         data.branchName = "หน่วยงานภายในคณะ";
                         data.amount_register = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id).Select(s => s.transaction_register_id).Count();
@@ -89,10 +88,6 @@ namespace SeniorProject.Controllers
                     }
                 }
             }
-
-            //Chart 1
-            ViewBag.Student = Student;
-            ViewBag.Register = Register;
 
             return PartialView("Index", Model);
         }
@@ -117,13 +112,13 @@ namespace SeniorProject.Controllers
             var GetPrefix = await DB.MASTER_PREFIX.ToListAsync();
             var Models = new List<ListStudentRegisterFaculty>();
 
-            foreach(var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
+            foreach (var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
             {
-                foreach(var r in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
+                foreach (var r in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
                 {
-                    foreach(var b in GetBranch.Where(w => w.branch_id == j.branch_id))
+                    foreach (var b in GetBranch.Where(w => w.branch_id == j.branch_id))
                     {
-                        foreach(var s in GetStatus.Where(w => w.status_id == r.status_id))
+                        foreach (var s in GetStatus.Where(w => w.status_id == r.status_id))
                         {
                             var Model = new ListStudentRegisterFaculty();
                             if (s.status_id == 9 || s.status_id == 7 || s.status_id == 6 || s.status_id == 8 || s.status_id == 5)
@@ -758,7 +753,7 @@ namespace SeniorProject.Controllers
             var Prefix = await DB.MASTER_PREFIX.ToListAsync();
             var Faculty = await DB.MASTER_FACULTY.ToListAsync();
             var Branch = await DB.MASTER_BRANCH.ToListAsync();
-            
+
 
             var ViewModels = new List<UserViewModels>();
             var GetUsers = DB.Users.ToList();
@@ -807,7 +802,7 @@ namespace SeniorProject.Controllers
             try
             {
                 var CheckPhone = regex.IsMatch(models.PhoneNumber);
-                if(CheckPhone == false)
+                if (CheckPhone == false)
                 {
                     return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่" });
                 }
@@ -865,7 +860,7 @@ namespace SeniorProject.Controllers
             var GetBranch = DB.MASTER_BRANCH.Where(w => w.branch_id == GetUser.branch_id).Select(s => s.branch_id).FirstOrDefault();
             var GetPrefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == GetUser.prefix_id).Select(s => s.prefix_id).FirstOrDefault();
 
-            ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "ฝ่ายพัฒนานักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงาน").ToList(), "Id", "Name",GetRoleId);
+            ViewBag.Role = new SelectList(DB.Roles.Where(w => w.Name != "กองพัฒนานักศึกษา" && w.Name != "ฝ่ายพัฒนานักศึกษา" && w.Name != "เจ้าหน้าที่หน่วยงาน").ToList(), "Id", "Name", GetRoleId);
             ViewBag.faculty = new SelectList(DB.MASTER_FACULTY.Where(w => w.faculty_id == CurrentUser.faculty_id).ToList(), "faculty_id", "faculty_name", GetFaculty);
             ViewBag.branch = new SelectList(DB.MASTER_BRANCH.Where(w => w.faculty_id == CurrentUser.faculty_id).ToList(), "branch_id", "branch_name", GetBranch); ;
             ViewBag.prefix = new SelectList(DB.MASTER_PREFIX.ToList(), "prefix_id", "prefix_name", GetPrefix);
@@ -881,12 +876,12 @@ namespace SeniorProject.Controllers
             ViewModel.faculty_id = GetUser.faculty_id;
             ViewModel.branch_id = GetUser.branch_id;
 
-            return View("EditUser",ViewModel);
+            return View("EditUser", ViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditUser(AddUserViewModels model,string OldPassword)
+        public async Task<IActionResult> EditUser(AddUserViewModels model, string OldPassword)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             string Msg = "";
@@ -896,7 +891,7 @@ namespace SeniorProject.Controllers
             try
             {
                 var CheckPhone = regex.IsMatch(model.PhoneNumber);
-                if(CheckPhone == false)
+                if (CheckPhone == false)
                 {
                     return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่" });
                 }

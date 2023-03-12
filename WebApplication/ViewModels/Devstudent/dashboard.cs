@@ -5,4 +5,5 @@
         public string branchName { get; set; }
         public int amount_register { get; set; }
     }
+
 }

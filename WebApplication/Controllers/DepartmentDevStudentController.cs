@@ -61,9 +61,9 @@ namespace SeniorProject.Controllers
             var TypeJob = DB.MASTER_TYPEJOB.FirstOrDefault();
 
             //นักศึกษาทั้งหมด
-            var Student = DB.Users.Where(w => w.Id == Role.UserId && Role.RoleId == "e5ce49ea-eaf4-431e-b7c6-50ac72ff505b").Select(s => s.UserName).Count();
+            var Student = DB.UserRoles.Where(w => w.RoleId == "e5ce49ea-eaf4-431e-b7c6-50ac72ff505b").Select(s => s.UserId).Count();
             //นักศึกษาที่สมัครงาน
-            var Register = DB.TRANSACTION_REGISTER.Count();
+            var Register = DB.TRANSACTION_REGISTER.Select(s => s.transaction_register_id).Count();
 
             //จำนวนนักศึกษาที่สมัครงานกับหน่วยงานของมหาลัย
             var Job = DB.TRANSACTION_JOB.Where(w => w.type_job_id == 1).Select(s => s.transaction_job_id).FirstOrDefault();
