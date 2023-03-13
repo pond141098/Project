@@ -351,24 +351,33 @@ namespace SeniorProject.Controllers
                 if (ModelState.IsValid)
                 {
                     var CheckPhone = regex.IsMatch(Model.tel_no);
+                    var CheckBank = regex.IsMatch(Model.bank_no);
+
                     if (CheckPhone == false)
                     {
                         return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่" });
                     }
 
-                    if (Model.banktype_id == 7 && Model.bank_no.Length < 12 || Model.bank_no.Length > 15)
+                    if(CheckBank == true)
                     {
-                        return Json(new { valid = false, message = "เลขที่บัญชีธนาคารออมสินไม่ถูกต้อง" });
-                    }
+                        if (Model.banktype_id == 7 && Model.bank_no.Length < 12 || Model.bank_no.Length > 15)
+                        {
+                            return Json(new { valid = false, message = "เลขที่บัญชีธนาคารออมสินไม่ถูกต้อง" });
+                        }
 
-                    if (Model.banktype_id == 8 || Model.banktype_id == 9 && Model.bank_no.Length < 12)
-                    {
-                        return Json(new { valid = false, message = "เลขที่บัญชีธนาคาร ธอส. หรือ ธกส. ไม่ถูกต้อง" });
-                    }
+                        if (Model.banktype_id == 8 || Model.banktype_id == 9 && Model.bank_no.Length < 12)
+                        {
+                            return Json(new { valid = false, message = "เลขที่บัญชีธนาคาร ธอส. หรือ ธกส. ไม่ถูกต้อง" });
+                        }
 
-                    if (Model.banktype_id != 7 && Model.banktype_id != 8 && Model.banktype_id != 9 && Model.bank_no.Length < 10)
+                        if (Model.banktype_id != 7 && Model.banktype_id != 8 && Model.banktype_id != 9 && Model.bank_no.Length < 10)
+                        {
+                            return Json(new { valid = false, message = "เลขที่บัญชีธนาคารไม่ถูกต้อง" });
+                        }
+                    }
+                    else if(CheckBank == false)
                     {
-                        return Json(new { valid = false, message = "เลขที่บัญชีธนาคารไม่ถูกต้อง" });
+                        return Json(new { valid = false, message = "กรุณากรอกเลขบัญชีใหม่" });
                     }
 
                     //ถ้าเจ้าของงานเป็นหัวหน้าฝ่ายพัฒนานักศึกษาให้สถานะของการสมัครงานเป็น รอส่งกองพัฒนานักศึกษา
@@ -602,6 +611,13 @@ namespace SeniorProject.Controllers
                 if (check == true)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้วในวันนี้" });
+                }
+
+                //ถ้ามีงานที่ทำเเล้วไม่ได้กดออกจากงาน จะไม่สมารถเริ่มงานในวันนี้ได้
+                var check_end_work = DB.TRANSACTION_WORKING.Where(w => w.name == Owner).Select(s => s.status_working_id).FirstOrDefault();
+                if(check_end_work == 2)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากคุณยังไม่ได้ออกจากงาน" });
                 }
 
                 if (Model.time_working_id == 1)
