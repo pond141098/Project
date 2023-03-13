@@ -654,6 +654,16 @@ namespace SeniorProject.Controllers
             {
                 var GetWorking = DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == id).FirstOrDefault();
 
+                if (GetWorking.status_working_id == 2)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถเปลี่ยนผลการตรวจสอบเป็นผ่านได้" });
+                }
+
+                if (GetWorking.status_id == 1)
+                {
+                    return Json(new { valid = false, message = "คุณได้ทำการให้งานนี้ผ่านไปเเล้ว" });
+                }
+
                 GetWorking.status_id = 1;
                 DB.TRANSACTION_WORKING.Update(GetWorking);
                 DB.SaveChangesAsync();
@@ -662,7 +672,7 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error });
             }
-            return Json(new { valid = true, message = "ผ่าน" });
+            return Json(new { valid = true, message = "เปลี่ยนผลการตรวจสอบเป็นผ่านสำเร็จ" });
         }
 
         public IActionResult Failed(int id)
@@ -670,6 +680,16 @@ namespace SeniorProject.Controllers
             try
             {
                 var GetWorking = DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == id).FirstOrDefault();
+
+                if (GetWorking.status_working_id == 2)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถเปลี่ยนผลการตรวจสอบเป็นไม่ผ่านได้" });
+                }
+
+                if (GetWorking.status_id == 2)
+                {
+                    return Json(new { valid = false, message = "คุณได้ทำการให้งานนี้ไม่ผ่านไปเเล้ว" });
+                }
 
                 GetWorking.status_id = 2;
                 DB.TRANSACTION_WORKING.Update(GetWorking);
@@ -679,7 +699,7 @@ namespace SeniorProject.Controllers
             {
                 return Json(new { valid = false, message = Error });
             }
-            return Json(new { valid = true, message = "ไม่ผ่าน" });
+            return Json(new { valid = true, message = "เปลี่ยนผลการตรวจสอบเป็นไม่ผ่านสำเร็จ" });
         }
 
         #endregion

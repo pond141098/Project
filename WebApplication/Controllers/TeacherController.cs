@@ -476,6 +476,16 @@ namespace SeniorProject.Controllers
             {
                 var GetWorking = DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == id).FirstOrDefault();
 
+                if (GetWorking.status_working_id == 2)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถเปลี่ยนผลการตรวจสอบเป็นผ่านได้" });
+                }
+
+                if (GetWorking.status_id == 1)
+                {
+                    return Json(new { valid = false, message = "คุณได้ทำการให้งานนี้ผ่านไปเเล้ว" });
+                }
+
                 GetWorking.status_id = 1;
                 DB.TRANSACTION_WORKING.Update(GetWorking);
                 DB.SaveChangesAsync();
@@ -492,6 +502,16 @@ namespace SeniorProject.Controllers
             try
             {
                 var GetWorking = DB.TRANSACTION_WORKING.Where(w => w.transaction_working_id == id).FirstOrDefault();
+
+                if (GetWorking.status_working_id == 2)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถเปลี่ยนผลการตรวจสอบเป็นไม่ผ่านได้" });
+                }
+
+                if (GetWorking.status_id == 2)
+                {
+                    return Json(new { valid = false, message = "คุณได้ทำการให้งานนี้ไม่ผ่านไปเเล้ว" });
+                }
 
                 GetWorking.status_id = 2;
                 DB.TRANSACTION_WORKING.Update(GetWorking);

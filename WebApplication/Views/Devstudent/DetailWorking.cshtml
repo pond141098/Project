@@ -34,12 +34,12 @@
                                         <tr>
                                             <th class="text-align-left">ลำดับ</th>
                                             <th class="text-align-left">วันที่</th>
-                                            <th class="text-align-left">เวลาเข้างาน / ออกงาน</th>
+                                            <th class="text-align-left">เวลาเข้างาน - ออกงาน</th>
                                             <th class="text-align-left">เวลาออกงานควรจะออก</th>
                                             <th class="text-align-left">หลักฐานตอนเริ่มทำงาน/ออกงาน</th>
                                             <th class="text-align-left">สถานที่เข้างาน/ออกงาน</th>
                                             <th class="text-align-left">สถานะการทำงาน</th>
-                                            <th class="text-align-left">สถานะ</th>
+                                            <th class="text-align-left">ผลการตรวจสอบ</th>
                                             <th class="text-align-left">ตัวดำเนินการ</th>
                                         </tr>
                                     </thead>
@@ -53,7 +53,7 @@
                                                     <tr>
                                                         <td class="text-align-center" width="50">@Rows.</td>
                                                         <td>@Get.date  </td>
-                                                        <td>@Get.check_in / @Get.check_out</td>
+                                                        <td>@Get.check_in - @Get.check_out</td>
                                                         <td>@Get.check_out_correct</td>
                                                         <td>
                                                             <button class="btn">@Html.ActionLink("File-In","Download2", new { Name = Get.file_in })</button>
@@ -77,7 +77,7 @@
                                                     <tr>
                                                         <td class="text-align-center" width="50">@Rows.</td>
                                                         <td>@Get.date  </td>
-                                                        <td>@Get.check_in / @Get.check_out </td>
+                                                        <td>@Get.check_in - @Get.check_out </td>
                                                         <td>@Get.check_out_correct</td>
                                                         <td>
                                                             <button class="btn">@Html.ActionLink("File-In","Download2", new { Name = Get.file_in })</button>
