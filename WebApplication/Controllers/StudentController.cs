@@ -358,7 +358,7 @@ namespace SeniorProject.Controllers
                         return Json(new { valid = false, message = "กรุณากรอกเบอร์โทรศัพท์ใหม่" });
                     }
 
-                    if(CheckBank == true)
+                    if(CheckBank != true)
                     {
                         return Json(new { valid = false, message = "กรุณากรอกเลขบัญชีใหม่" });
                     }
