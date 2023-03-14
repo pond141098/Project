@@ -90,8 +90,6 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">ไฟล์สำเนาสมุดบัญชีธนาคาร</label>
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="bank_file"  readonly />
-                                                    <br>
                                                     <button class="btn btn-primary" type="button" style="color:whitesmoke"><i class="fa fa-arrow-circle-down"></i>@Html.ActionLink(" Download", "Download2", new { Name = Model.bank_file })</button>
                                                 </div>
                                             </div>
@@ -106,6 +104,7 @@
                                             </div>
                                         </fieldset>
 
+                                        <input type="hidden" asp-for="bank_file"  />
                                         <input type="hidden" asp-for="transaction_register_id"/>
                                         <input type="hidden" asp-for="transaction_job_id" />
                                         <input type="hidden" asp-for="banktype_id" />

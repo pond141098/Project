@@ -26,7 +26,7 @@ namespace SeniorProject.Models
         public decimal latitude_start { get; set;}
         public decimal longitude_end { get; set; }
         public decimal latitude_end { get; set;}
-        public string name { get; set; }
+        public string UserId { get; set; }
         public int time_working_id { get; set; }
         public DateTime end_work_correct { get; set; }
     }

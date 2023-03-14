@@ -101,7 +101,7 @@ namespace SeniorProject.Controllers
             //คณะเเพทย์
             var JobIm = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 11).Select(s => s.transaction_job_id).FirstOrDefault();
             var RegisterIm = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobIm).Count();
-            //คณะเเพทย์
+            //คณะพยาบาล
             var JobNurse = DB.TRANSACTION_JOB.Where(w => w.faculty_id == 12).Select(s => s.transaction_job_id).FirstOrDefault();
             var RegisterNurse = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == JobNurse).Count();
 

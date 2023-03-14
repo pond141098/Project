@@ -345,13 +345,14 @@ namespace SeniorProject.Controllers
             var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
             string pattern = @"^(0[6|8|9]{1}[0-9]{8})$";
             Regex regex = new Regex(pattern);
+            Regex regexBank = new Regex(@"^\d+$");
 
             try
             {
                 if (ModelState.IsValid)
                 {
                     var CheckPhone = regex.IsMatch(Model.tel_no);
-                    var CheckBank = regex.IsMatch(Model.bank_no);
+                    var CheckBank = regexBank.IsMatch(Model.bank_no);
 
                     if (CheckPhone == false)
                     {
@@ -360,24 +361,22 @@ namespace SeniorProject.Controllers
 
                     if(CheckBank == true)
                     {
-                        if (Model.banktype_id == 7 && Model.bank_no.Length < 12 || Model.bank_no.Length > 15)
-                        {
-                            return Json(new { valid = false, message = "เลขที่บัญชีธนาคารออมสินไม่ถูกต้อง" });
-                        }
-
-                        if (Model.banktype_id == 8 || Model.banktype_id == 9 && Model.bank_no.Length < 12)
-                        {
-                            return Json(new { valid = false, message = "เลขที่บัญชีธนาคาร ธอส. หรือ ธกส. ไม่ถูกต้อง" });
-                        }
-
-                        if (Model.banktype_id != 7 && Model.banktype_id != 8 && Model.banktype_id != 9 && Model.bank_no.Length < 10)
-                        {
-                            return Json(new { valid = false, message = "เลขที่บัญชีธนาคารไม่ถูกต้อง" });
-                        }
-                    }
-                    else if(CheckBank == false)
-                    {
                         return Json(new { valid = false, message = "กรุณากรอกเลขบัญชีใหม่" });
+                    }
+
+                    if (Model.banktype_id == 7 && Model.bank_no.Length < 12 || Model.bank_no.Length > 15)
+                    {
+                        return Json(new { valid = false, message = "เลขที่บัญชีธนาคารออมสินไม่ถูกต้อง" });
+                    }
+
+                    if (Model.banktype_id == 8 || Model.banktype_id == 9 && Model.bank_no.Length < 12)
+                    {
+                        return Json(new { valid = false, message = "เลขที่บัญชีธนาคาร ธอส. หรือ ธกส. ไม่ถูกต้อง" });
+                    }
+
+                    if (Model.banktype_id != 7 && Model.banktype_id != 8 && Model.banktype_id != 9 && Model.bank_no.Length < 10)
+                    {
+                        return Json(new { valid = false, message = "เลขที่บัญชีธนาคารไม่ถูกต้อง" });
                     }
 
                     //ถ้าเจ้าของงานเป็นหัวหน้าฝ่ายพัฒนานักศึกษาให้สถานะของการสมัครงานเป็น รอส่งกองพัฒนานักศึกษา
@@ -586,8 +585,6 @@ namespace SeniorProject.Controllers
             var GetRegis = await DB.TRANSACTION_REGISTER.FirstOrDefaultAsync();
             var GetJob = await DB.TRANSACTION_JOB.FirstOrDefaultAsync();
             var GetWork = await DB.TRANSACTION_WORKING.FirstOrDefaultAsync();
-            var GetPrefix = await DB.MASTER_PREFIX.Where(w => w.prefix_id == CurrentUser.prefix_id).Select(s => s.prefix_name).FirstOrDefaultAsync();
-            var Owner = GetPrefix + " " + CurrentUser.FirstName + " " + CurrentUser.LastName;//ชื่อ-นามสกุลนักศึกษา
 
             try
             {
@@ -607,22 +604,22 @@ namespace SeniorProject.Controllers
                 }
 
                 //ถ้าผู้ใช้ระบบได้ทำการลงเวลาเข้างานไปเเล้วในวันนี้ จะไม่สามารถลงเวลาในงานอื่นๆ ได้อีก = ให้ทำการลงเวลาทำงานได้เเค่วันละ1ครั้ง/งาน
-                var check = DB.TRANSACTION_WORKING.Where(w => w.name == Owner && w.start_work.Date == DateTime.Now.Date).Select(s => s.transaction_working_id).Count() > 0;
+                var check = DB.TRANSACTION_WORKING.Where(w => w.UserId == CurrentUser.Id && w.start_work.Date == DateTime.Now.Date).Select(s => s.transaction_working_id).Count() > 0;
                 if (check == true)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากลงเวลาเข้างานไปเเล้วในวันนี้" });
                 }
 
                 //ถ้ามีงานที่ทำเเล้วไม่ได้กดออกจากงาน จะไม่สมารถเริ่มงานในวันนี้ได้
-                var check_end_work = DB.TRANSACTION_WORKING.Where(w => w.name == Owner).Select(s => s.status_working_id).FirstOrDefault();
-                if(check_end_work == 2)
+                var check_end_work = DB.TRANSACTION_WORKING.Where(w => w.UserId == CurrentUser.Id).Select(s => s.status_working_id).FirstOrDefault();
+                if (check_end_work == 2)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากคุณยังไม่ได้ออกจากงาน" });
                 }
 
                 if (Model.time_working_id == 1)
                 {
-                    Model.name = Owner;
+                    Model.UserId = CurrentUser.Id;
                     Model.start_work = DateTime.Now;
 
                     if (Model.start_work.TimeOfDay < StartTime || Model.start_work.TimeOfDay > EndTime)
@@ -632,13 +629,13 @@ namespace SeniorProject.Controllers
 
                     if (Model.start_work.TimeOfDay >= StartLunchBreak && Model.start_work.TimeOfDay <= EndLunchBreak)
                     {
-                        return Json(new { valid = false, message = "ไมาสารมารถลงเวลาเข้างานได้ เพราะเป็นช่วงพักกลางวัน" });
+                        return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เพราะเป็นช่วงพักกลางวัน" });
                     }
 
                     Model.end_work = DateTime.Now;
                     Model.status_working_id = 2;
                     Model.status_id = 10;
-                    
+
                     if (Model.start_work.TimeOfDay < StartLunchBreak && Model.start_work.AddHours(3).TimeOfDay > StartLunchBreak)//ลงเวลาคาบเกี่ยวกับช่วงพักกลางวัน
                     {
                         Model.end_work_correct = DateTime.Now.AddHours(4);
@@ -647,7 +644,7 @@ namespace SeniorProject.Controllers
                     {
                         Model.end_work_correct = DateTime.Now.AddHours(4);
                     }
-                    else 
+                    else
                     {
                         Model.end_work_correct = DateTime.Now.AddHours(3);
                     }
@@ -669,7 +666,7 @@ namespace SeniorProject.Controllers
                 }
                 else if (Model.time_working_id == 2)
                 {
-                    Model.name = Owner;
+                    Model.UserId = CurrentUser.Id;
                     Model.start_work = DateTime.Now;
 
                     if (Model.start_work.TimeOfDay < StartTime || Model.start_work.TimeOfDay > EndTime)
@@ -679,7 +676,7 @@ namespace SeniorProject.Controllers
 
                     if (Model.start_work.TimeOfDay >= StartLunchBreak && Model.start_work.TimeOfDay <= EndLunchBreak)
                     {
-                        return Json(new { valid = false, message = "ไมาสารมารถลงเวลาเข้างานได้ เพราะเป็นช่วงพักกลางวัน" });
+                        return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เพราะเป็นช่วงพักกลางวัน" });
                     }
 
                     Model.end_work = DateTime.Now;
@@ -715,7 +712,7 @@ namespace SeniorProject.Controllers
                 }
                 else if (Model.time_working_id == 3)
                 {
-                    Model.name = Owner;
+                    Model.UserId = CurrentUser.Id;
                     Model.start_work = DateTime.Now;
 
                     if (Model.start_work.TimeOfDay < StartTime || Model.start_work.TimeOfDay > EndTime)
@@ -725,7 +722,7 @@ namespace SeniorProject.Controllers
 
                     if (Model.start_work.TimeOfDay >= StartLunchBreak && Model.start_work.TimeOfDay <= EndLunchBreak)
                     {
-                        return Json(new { valid = false, message = "ไมาสารมารถลงเวลาเข้างานได้ เพราะเป็นช่วงพักกลางวัน" });
+                        return Json(new { valid = false, message = "ไม่สารมารถลงเวลาเข้างานได้ เพราะเป็นช่วงพักกลางวัน" });
                     }
 
                     Model.end_work = DateTime.Now;
@@ -780,8 +777,8 @@ namespace SeniorProject.Controllers
 
             try
             {
-                TimeSpan StartLunch = new TimeSpan(12,00,0);
-                TimeSpan EndLunch = new TimeSpan(13,00,0);
+                TimeSpan StartLunch = new TimeSpan(12, 00, 0);
+                TimeSpan EndLunch = new TimeSpan(13, 00, 0);
                 TimeSpan StartDinner = new TimeSpan(18, 00, 0);
                 TimeSpan EndDinner = new TimeSpan(19, 00, 0);
 
@@ -796,7 +793,7 @@ namespace SeniorProject.Controllers
                 Get.start_work = Model.start_work;
                 Get.end_work = DateTime.Now;
 
-                if(Get.end_work.TimeOfDay >= StartLunch && Get.end_work.TimeOfDay <= EndLunch)
+                if (Get.end_work.TimeOfDay >= StartLunch && Get.end_work.TimeOfDay <= EndLunch)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถออกงานได้เนื่องจากเป็นช่วงเวลาพักกลางวัน" });
                 }
