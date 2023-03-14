@@ -273,8 +273,6 @@ namespace SeniorProject.Controllers
                     foreach (var Get in Gets)
                     {
                         worksheet.Cells["A" + StartRow].Value = CountFirstRow.ToString();
-                        worksheet.Cells["B" + StartRow].Value = Get.fullname;
-
                         worksheet.Cells["A" + StartRow + ":F" + StartRow].Style.Border.Top.Style = ExcelBorderStyle.Thin;
                         worksheet.Cells["A" + StartRow + ":F" + StartRow].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         worksheet.Cells["A" + StartRow + ":F" + StartRow].Style.Border.Left.Style = ExcelBorderStyle.Thin;

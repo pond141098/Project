@@ -151,16 +151,21 @@ namespace SeniorProject.Controllers
             {
                 foreach (var f in GetFaculty.Where(w => w.faculty_id == j.faculty_id))
                 {
-                    foreach (var data in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
+                    foreach (var r in GetPerson.Where(w => w.transaction_job_id == j.transaction_job_id))
                     {
-                        foreach (var item in GetStatus.Where(w => w.status_id == data.status_id))
+                        foreach (var item in GetStatus.Where(w => w.status_id == r.status_id))
                         {
                             if (item.status_id == 7 || item.status_id == 6 || item.status_id == 5)
                             {
                                 var Model = new AllListStudentRegister();
-                                Model.id = data.transaction_register_id;
-                                Model.student_name = data.fullname;
-                                Model.student_id = data.student_id;
+                                var P = DB.Users.Where(w => w.Id == r.UserId).Select(s => s.prefix_id).FirstOrDefault();
+                                var FirstName = DB.Users.Where(w => w.Id == r.UserId).Select(s => s.FirstName).FirstOrDefault();
+                                var LastName = DB.Users.Where(w => w.Id == r.UserId).Select(s => s.LastName).FirstOrDefault();
+                                var Prefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == P).Select(s => s.prefix_name).FirstOrDefault();
+
+                                Model.id = r.transaction_register_id;
+                                Model.student_name = Prefix + "" + FirstName + "" + LastName;
+                                Model.student_id = DB.Users.Where(w => w.Id == r.UserId).Select(s => s.UserName).FirstOrDefault();
                                 Model.faculty_name = f.faculty_name;
                                 Model.status_name = item.status_name;
                                 Model.job_name = j.job_name;
@@ -186,8 +191,16 @@ namespace SeniorProject.Controllers
         {
             var Get = DB.TRANSACTION_REGISTER.Where(w => w.transaction_register_id == transaction_register_id).FirstOrDefault();
             var GetBank = DB.MASTER_BANK.ToList();
+            var r = DB.TRANSACTION_REGISTER.FirstOrDefault();
+            var P = DB.Users.Where(w => w.Id == r.UserId).Select(s => s.prefix_id).FirstOrDefault();
+            var FirstName = DB.Users.Where(w => w.Id == r.UserId).Select(s => s.FirstName).FirstOrDefault();
+            var LastName = DB.Users.Where(w => w.Id == r.UserId).Select(s => s.LastName).FirstOrDefault();
+            var Prefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == P).Select(s => s.prefix_name).FirstOrDefault();
+            var S_id = DB.Users.Where(w => w.Id == r.UserId).Select(s => s.UserName).FirstOrDefault();
 
             ViewBag.bank = GetBank.Where(w => w.banktype_id == Get.banktype_id).Select(s => s.banktype_name).FirstOrDefault();
+            ViewBag.Name = Prefix + "" + FirstName + "" + LastName;
+            ViewBag.StudentId = S_id;
             return View("CheckRegisterAll", Get);
         }
 
@@ -205,8 +218,7 @@ namespace SeniorProject.Controllers
                     return Json(new { valid = false, message = "ไม่สามารถอนุมัติได้ !!!" });
                 }
 
-                Get.fullname = model.fullname;
-                Get.student_id = model.student_id;
+                Get.UserId = model.UserId;
                 Get.bank_file = model.bank_file;
                 Get.bank_no = model.bank_no;
                 Get.bank_store = model.bank_store;
@@ -238,8 +250,7 @@ namespace SeniorProject.Controllers
                     return Json(new { valid = false, message = "ไม่สามารถไม่อนุมัติได้ !!!" });
                 }
 
-                Get.fullname = model.fullname;
-                Get.student_id = model.student_id;
+                Get.UserId = model.UserId;
                 Get.bank_file = model.bank_file;
                 Get.bank_no = model.bank_no;
                 Get.bank_store = model.bank_store;

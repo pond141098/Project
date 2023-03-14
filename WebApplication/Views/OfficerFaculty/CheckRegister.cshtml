@@ -36,7 +36,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">ชื่อนักศึกษา</label>
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="fullname"  readonly/>
+                                                    <p class="form-control " style="background-color:#eeeeee">@ViewBag.Name</p>
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -45,7 +45,7 @@
                                             <div class="form-group">
                                                 <label class="col-lg-3 control-label">รหัสนักศึกษา</label>
                                                 <div class="col-lg-9">
-                                                    <input type="text" class="form-control" asp-for="student_id"  readonly />
+                                                    <p class="form-control " style="background-color:#eeeeee">@ViewBag.StudentId</p>
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -109,6 +109,7 @@
                                         <input type="hidden" asp-for="transaction_job_id" />
                                         <input type="hidden" asp-for="banktype_id" />
                                         <input type="hidden" asp-for="status_id" />
+                                        <input type="hidden" asp-for="UserId" />
 
                                         <div class="form-actions">
                                             <div class="row">

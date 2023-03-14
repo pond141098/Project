@@ -100,7 +100,7 @@ namespace SeniorProject.Controllers
             var GetPlace = await DB.MASTER_PLACE.ToListAsync();
             var Model = new List<HistoryRegister>();
 
-            foreach (var r in Gets.Where(w => w.student_id == CurrentUser.UserName))
+            foreach (var r in Gets.Where(w => w.UserId == CurrentUser.Id))
             {
                 foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id))
                 {
@@ -187,10 +187,9 @@ namespace SeniorProject.Controllers
                 Get.banktype_id = model.banktype_id;
                 Get.bank_no = model.bank_no;
                 Get.bank_store = model.bank_store;
-                Get.fullname = model.fullname;
                 Get.register_date = model.register_date;
                 Get.status_id = model.status_id;
-                Get.student_id = model.student_id;
+                Get.UserId = model.UserId;
                 Get.transaction_job_id = model.transaction_job_id;
                 Get.notapprove_date = model.notapprove_date;
                 Get.approve_date = model.approve_date;
@@ -264,7 +263,7 @@ namespace SeniorProject.Controllers
                         foreach (var pr in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
                         {
                             var Model = new ListJob();
-                            var Check = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id && CurrentUser.UserName == w.student_id).Count() < 1;
+                            var Check = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id && CurrentUser.Id == w.UserId).Count() < 1;
                             var regis = DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == j.transaction_job_id).Select(s => s.transaction_register_id).Count();
 
                             //ถ้าวันที่ปิดรับสมัครเท่ากับหรือมากกว่าวันที่ปัจจุบัน เเละ ถ้าในตารางการสมัครงานมี ไอดีงาน เเละ ไอดีผู้สมัครอยู่เเล้วเป็นจริง ให้ทำกรบันทึกข้อมูลลง Viewmodel
@@ -406,8 +405,7 @@ namespace SeniorProject.Controllers
                         Model.status_id = 9;
                         Model.bank_file = UniqueFileName;
                         Model.register_date = DateTime.Now;
-                        Model.fullname = CurrentUser.FirstName + " " + CurrentUser.LastName;
-                        Model.student_id = CurrentUser.UserName;
+                        Model.UserId = CurrentUser.Id;
                         DB.TRANSACTION_REGISTER.Add(Model);
                         await DB.SaveChangesAsync();
                     }
@@ -433,8 +431,7 @@ namespace SeniorProject.Controllers
                         Model.status_id = 8;
                         Model.bank_file = UniqueFileName;
                         Model.register_date = DateTime.Now;
-                        Model.fullname = CurrentUser.FirstName + " " + CurrentUser.LastName;
-                        Model.student_id = CurrentUser.UserName;
+                        Model.UserId = CurrentUser.Id;
                         DB.TRANSACTION_REGISTER.Add(Model);
                         await DB.SaveChangesAsync();
                     }
@@ -466,7 +463,7 @@ namespace SeniorProject.Controllers
             var models = new List<ListJobApprove>();
 
 
-            foreach (var r in GetRegister.Where(w => w.student_id == CurrentUser.UserName))
+            foreach (var r in GetRegister.Where(w => w.UserId == CurrentUser.Id))
             {
                 foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id))
                 {
@@ -525,7 +522,7 @@ namespace SeniorProject.Controllers
 
             var Models = new List<HistoryWorking>();
 
-            foreach (var r in GetRegis.Where(w => w.transaction_register_id == id && w.student_id == CurrentUser.UserName))
+            foreach (var r in GetRegis.Where(w => w.transaction_register_id == id && w.UserId == CurrentUser.Id))
             {
                 foreach (var j in GetJob.Where(w => w.transaction_job_id == j_id))
                 {
@@ -847,8 +844,7 @@ namespace SeniorProject.Controllers
 
             var Models = new List<HistoryWorking>();
 
-
-            foreach (var r in GetRegis.Where(w => w.student_id == CurrentUser.UserName))
+            foreach (var r in GetRegis.Where(w => w.UserId == CurrentUser.Id))
             {
                 foreach (var j in GetJob.Where(w => w.transaction_job_id == r.transaction_job_id))
                 {
@@ -884,8 +880,6 @@ namespace SeniorProject.Controllers
 
                 }
             }
-
-
             return PartialView("HistoryWorking", Models);
         }
 
