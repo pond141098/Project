@@ -26,6 +26,8 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime.Workdays;
 
 namespace SeniorProject.Controllers
 {
@@ -584,8 +586,6 @@ namespace SeniorProject.Controllers
 
                 }
             }
-
-
             return PartialView("ListWorking", Models);
         }
 
@@ -638,6 +638,11 @@ namespace SeniorProject.Controllers
                 if (check_end_work == 2)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถลงเวลาเข้างานได้ เนื่องจากคุณยังไม่ได้ออกจากงาน" });
+                }
+
+                if(DateTime.Today.DayOfWeek == DayOfWeek.Sunday || DateTime.Today.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถลงเวลางานได้เนื่องจากเป็นวันหยุดเสาร์-อาทิตย์" });
                 }
 
                 if (Model.time_working_id == 1)

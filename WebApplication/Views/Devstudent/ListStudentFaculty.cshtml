@@ -17,7 +17,7 @@
     <section id="widget-grid">
         <div class="row">
             <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margin-bottom-5">
-                <button class="btn btn-success" id="AllApprove"><i class="fa fa-check-circle"></i>  อนุมัติทั้งหมด</button>
+                <a class="btn btn-success AllApprove" id="@ViewBag.id" onclick="AllApprove('@ViewBag.id')" value="AllApprove"><i class="fa fa-check-circle"></i>  อนุมัติทั้งหมด</a>
                 <a class="btn btn-success" id="ExportExcel" href="@Url.Action("ExportPDF","Report")"><i class="fa fa-file-excel-o"></i> Export Excel</a>
             </article>
         </div>
@@ -51,4 +51,45 @@
     <script src="~/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
     <script src="~/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
     <script type="text/javascript" src="~/js/Devstudent/ListStudentFaculty.js"></script>
+    <script type="text/javascript">
+        function AllApprove(id) {
+            $.SmartMessageBox({
+                title: "ต้องการอนุมัติรายการสมัครงานของนักศึกษาทั้งหมดใช่หรือไม่ ?",
+                buttons: "[ไม่][ใช่]"
+            }, function (ButtonPressed) {
+                if (ButtonPressed == "ใช่") {
+                    $.ajax({
+                        url: '/DepartmentDevStudent/AllApprove',
+                        type: 'POST',
+                        data: { "id": id },
+                        success: function (response) {
+                            if (response.valid == true) {
+                                $.smallBox({
+                                    title: response.message,
+                                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                                    color: "#296191",
+                                    iconSmall: "fa fa-thumbs-up bounce animated",
+                                    timeout: 1000
+                                });
+                                setTimeout(function () {
+                                    window.location.href = "/DepartmentDevStudent/AllListStudent";
+                                }, 1000)
+                            } else {
+                                $.smallBox({
+                                    title: response.message,
+                                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                                    color: "#FB0404",
+                                    iconSmall: "fa fa-thumbs-up bounce animated",
+                                    timeout: 1000
+                                });
+                            }
+                        }
+                    });
+                }
+                if (ButtonPressed == "ไม่") {
+
+                }
+            })
+        }
+    </script>
 }

@@ -98,8 +98,12 @@ namespace SeniorProject.Controllers
         #region รายชื่อนักศึกษาที่อาจารย์/เจ้าหน้าที่ในคณะส่งมา
 
         //ข้อมูลนศ.ที่สมัครงาน
-        public IActionResult ListStudentFaculty()
+        public async Task<IActionResult> ListStudentFaculty()
         {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var Id = await DB.TRANSACTION_REGISTER.Where(w => w.status_id == 9).Select(s => s.transaction_register_id).FirstOrDefaultAsync();
+            ViewBag.id = Id;
+
             return View("ListStudentFaculty");
         }
 
@@ -235,19 +239,39 @@ namespace SeniorProject.Controllers
             return Json(new { valid = true, message = "ไม่อนุมัติสำเร็จ" });
         }
 
-        //อนุมัติทั้งหมด
-        public async Task<IActionResult> AllApprove()
+        //อนุมัตินักศึกษาที่สมัครงานทั้งหมด
+        public async Task<IActionResult> AllApprove(int id)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+
             try
             {
+                var latestId = await DB.TRANSACTION_REGISTER.MaxAsync(x => x.transaction_register_id);
+                var job = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.transaction_job_id).FirstOrDefaultAsync();
 
+                for (int i = id; i <= latestId; i++)
+                {
+                    var data = await DB.TRANSACTION_REGISTER.FindAsync(i);
+
+                    if (data.status_id != 9)
+                    {
+                        continue;
+                    }
+
+                    if (data.status_id == 9)
+                    {
+                        data.status_id = 7;
+                        DB.TRANSACTION_REGISTER.Update(data);
+                    }
+                }
+
+                await DB.SaveChangesAsync();
             }
-            catch (Exception Error)
+            catch (Exception error)
             {
-                return Json(new { valid = false, message = Error });
+                return Json(new { valid = false, message = error });
             }
-            return Json(new { valid = true, message = "อนุมัติเรียบร้อย" });
+            return Json(new { valid = true, message = "อนุมัติการสมัครงานทั้งหมดสำเร็จ" });
         }
 
         #endregion

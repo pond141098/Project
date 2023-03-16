@@ -134,6 +134,9 @@ namespace SeniorProject.Controllers
         //ข้อมมูลนศ.ที่สมัครงาน
         public IActionResult AllListStudent()
         {
+            var Id = DB.TRANSACTION_REGISTER.Where(w => w.status_id == 7).Select(s => s.transaction_register_id).FirstOrDefault();
+            ViewBag.id = Id;
+
             return View("AllListStudent");
         }
         public async Task<IActionResult> getAllListStudent()
@@ -266,6 +269,40 @@ namespace SeniorProject.Controllers
             }
             return Json(new { valid = true, message = "ไม่อนุมัติสำเร็จ" });
         }
+
+        //อนุมัตินักศึกษาที่สมัครงานทั้งหมด
+        public async Task<IActionResult> AllApprove(int id)
+        {
+            try
+            {
+                var latestId = await DB.TRANSACTION_REGISTER.MaxAsync(x => x.transaction_register_id);
+
+                for (int i = id; i <= latestId; i++)
+                {
+                    var data = await DB.TRANSACTION_REGISTER.FindAsync(i);
+
+                    if (data.status_id != 7)
+                    {
+                        continue;
+                    }
+
+                    if (data.status_id == 7)
+                    {
+                        data.status_id = 5;
+                        DB.TRANSACTION_REGISTER.Update(data);
+                    }
+                }
+
+                await DB.SaveChangesAsync();
+            }
+            catch (Exception error)
+            {
+                return Json(new { valid = false, message = error });
+            }
+            return Json(new { valid = true, message = "อนุมัติการสมัครงานทั้งหมดสำเร็จ" });
+        }
+
+
         #endregion
 
         #region รายชื่อนักศึกษาที่สมัครงาน
