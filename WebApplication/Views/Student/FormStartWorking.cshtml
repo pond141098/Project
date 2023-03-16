@@ -15,6 +15,13 @@
                   enctype="multipart/form-data">
 
                 <div class="form-group">
+                    <h3>หมายเหตุ</h3>
+                    <p>เต็มวัน จำนวนเวลาทำงานจะเท่ากับ 7 ชั่วโมง ไม่รวมเวลาหยุดพักเเละได้รับค่าตอบแทน 300 บาท</p>
+                    <p>ครึ่งวัน จำนวนเวลาทำงานจะเท่ากับ 3 ชั่วโมงครึ่ง ไม่รวมเวลาหยุดพักเเละให้ได้รับค่าตอบแทน 150 บาท</p>
+                    <p>ชั่วโมง จำนวนเวลาทำงานจะไม่เกิน 3 ชั่วโมงครึ่ง ไม่รวมเวลาหยุดพักเเละได้รับค่าตอบเเทนชั่มโมงละ 40 บาท เศษของชั่วโมงให้ปัดทิ้งไม่นำมานับ</p>
+                    <p>**เวลาพักเเบ่งเป็น 2 ช่วงเวลา**</p>
+                    <p>**พักกลางวัน 12.00 - 13.00 **</p>
+                    <p>**พักตอนเย็น 18.00 - 19.00 **</p>
                     <br>
                     <label for="exampleFormControlSelect1" style="font-size:20px">ประเภทช่วงเวลาที่ต้องการทำงาน</label>
                     @Html.DropDownList("time_working_id", (IEnumerable<SelectListItem>)ViewBag.TimeWorking, new { @class = "form-control" })
@@ -95,36 +102,5 @@
                 return false;
             });
         });
-        //$(document).ready(function () {
-        //    $('form').submit(function (event) {
-        //        event.preventDefault();
-        //        var formData = new FormData($(this)[0]);
-        //        $.ajax({
-        //            url: $(this).attr('action'),
-        //            type: 'POST',
-        //            data: formData,
-        //            async: false,
-        //            cache: false,
-        //            contentType: false,
-        //            processData: false,
-        //            success: function (response) {
-        //                if (response.valid == true) {
-        //                    sweetAlert({
-        //                        title: response.message
-        //                    });
-        //                    setTimeout(function () {
-        //                        window.location.href = "/Student/HistoryWorking";
-        //                    }, 2000)
-        //                } else {
-        //                    sweetAlert({
-        //                        title: response.message,
-        //                        timeout: 3000
-        //                    });
-        //                }
-        //            }
-        //        });
-        //        return false;
-        //    });
-        //});
     </script>
 }

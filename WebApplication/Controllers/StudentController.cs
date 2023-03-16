@@ -383,7 +383,7 @@ namespace SeniorProject.Controllers
                     var Owner = DB.Users.Where(w => w.UserName == GetOwnerJob).Select(s => s.Id).FirstOrDefault();
                     var GetRole = DB.UserRoles.Where(w => w.UserId == Owner).Select(s => s.RoleId).FirstOrDefault();
 
-                    if (GetRole == "42d5797d-0dce-412b-beea-9337f482e9e5" || GetRole == "cddaeb6d-62db-4f03-98e5-8c473a5ff64e")
+                    if (GetRole == "42d5797d-0dce-412b-beea-9337f482e9e5" || GetRole == "cddaeb6d-62db-4f03-98e5-8c473a5ff64e")//อาจารย์เเละเจ้าหน้าที่ในคณะ
                     {
                         //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
                         var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
@@ -409,7 +409,7 @@ namespace SeniorProject.Controllers
                         DB.TRANSACTION_REGISTER.Add(Model);
                         await DB.SaveChangesAsync();
                     }
-                    else if (GetRole == "cfed75aa-4322-4f0a-ab5e-ea44e48d76e2" || GetRole == "34cdaea1-7b6d-4a1e-9c97-3542403bcb09")
+                    else if (GetRole == "cfed75aa-4322-4f0a-ab5e-ea44e48d76e2" || GetRole == "34cdaea1-7b6d-4a1e-9c97-3542403bcb09")//ฝ่ายพัฒนานักศึกษาเเละเจ้าหน้าที่หน่วยงาน
                     {
                         //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
                         var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
@@ -429,6 +429,32 @@ namespace SeniorProject.Controllers
                         }
 
                         Model.status_id = 8;
+                        Model.bank_file = UniqueFileName;
+                        Model.register_date = DateTime.Now;
+                        Model.UserId = CurrentUser.Id;
+                        DB.TRANSACTION_REGISTER.Add(Model);
+                        await DB.SaveChangesAsync();
+                    }
+                    else if(GetRole == "d93d333d-1a16-4707-b06e-eb14b89050f0")//กองพัฒนานักศึกษา
+                    {
+                        //อัพโหลดไฟล์สำเนาบัญชีธนาคาร
+                        var Uploads = Path.Combine(_environment.WebRootPath.ToString(), "uploads/bookbank/");
+                        string file = ContentDispositionHeaderValue.Parse(bank_file.ContentDisposition).FileName.Trim('"');
+                        string fileExtension = Path.GetExtension(file);
+                        string UniqueFileName = file.ToString();
+
+                        //เช็คนามสกุลไฟล์
+                        if (fileExtension.ToLower() != ".pdf")
+                        {
+                            return Json(new { valid = false, message = "โปรดอัปโหลดไฟล์ที่เป็น PDF" });
+                        }
+
+                        using (var fileStream = new FileStream(Path.Combine(Uploads, UniqueFileName), FileMode.Create))
+                        {
+                            await bank_file.CopyToAsync(fileStream);
+                        }
+
+                        Model.status_id = 7;
                         Model.bank_file = UniqueFileName;
                         Model.register_date = DateTime.Now;
                         Model.UserId = CurrentUser.Id;
@@ -798,6 +824,11 @@ namespace SeniorProject.Controllers
                 if (Get.end_work.TimeOfDay >= StartDinner && Get.end_work.TimeOfDay <= EndDinner)
                 {
                     return Json(new { valid = false, message = "ไม่สามารถออกงานได้เนื่องจากเป็นช่วงเวลาพักตอนเย็น" });
+                }
+
+                if(Get.end_work <= Get.end_work_correct)
+                {
+                    return Json(new { valid = false, message = "ไม่สามารถออกงานได้ เนื่องจากยังไม่ถึงเวลาออกงาน" });
                 }
 
                 Get.file_work_start = Model.file_work_start;
