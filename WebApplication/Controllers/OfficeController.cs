@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SeniorProject.Data;
 using SeniorProject.Models;
-using SeniorProject.ViewModels.DepartmentDevStudent;
 using SeniorProject.ViewModels.Office;
 using System;
 using System.Collections.Generic;
