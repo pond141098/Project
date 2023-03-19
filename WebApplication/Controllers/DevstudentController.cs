@@ -63,10 +63,23 @@ namespace SeniorProject.Controllers
 
             //Chart 1
             string faculty = CurrentUser.faculty_id.ToString();
-            var Student = DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.UserName.Substring(6, 1) == faculty).Select(s => s.Id).Count();
-            var Register = DB.TRANSACTION_REGISTER.Where(w => w.UserId.Substring(6, 1) == faculty).Select(s => s.transaction_register_id).Count();
-            ViewBag.Student = Student;
-            ViewBag.Register = Register;
+            int f = faculty.Count();
+            if(f == 1)
+            {
+                string fa = "0" + faculty;
+                var Register = DB.TRANSACTION_REGISTER.Where(w => w.UserId.Substring(5, 2) == fa).Select(s => s.transaction_register_id).Count();
+                var Student = DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.UserName.Substring(5, 2) == fa).Select(s => s.Id).Count();
+                ViewBag.Register = Register;
+                ViewBag.Student = Student;
+            }
+            else
+            {
+                string fa = faculty;
+                var Register = DB.TRANSACTION_REGISTER.Where(w => w.UserId.Substring(5, 2) == fa).Select(s => s.transaction_register_id).Count();
+                var Student = DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.UserName.Substring(5, 2) == fa).Select(s => s.Id).Count();
+                ViewBag.Register = Register;
+                ViewBag.Student = Student;
+            }
 
             //Chart 2
             var Model = new List<dashboard>();
@@ -101,8 +114,10 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> ListStudentFaculty()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Id = await DB.TRANSACTION_REGISTER.Where(w => w.status_id == 9).Select(s => s.transaction_register_id).FirstOrDefaultAsync();
-            ViewBag.id = Id;
+            var Job = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.transaction_job_id).FirstOrDefaultAsync();
+            var Id = await DB.TRANSACTION_REGISTER.Where(w => w.status_id == 9 && w.transaction_job_id == Job).Select(s => s.transaction_register_id).FirstOrDefaultAsync();
+            ViewBag.id = Job;
+            ViewBag.Register = Id;
 
             return View("ListStudentFaculty");
         }
@@ -240,31 +255,38 @@ namespace SeniorProject.Controllers
         }
 
         //อนุมัตินักศึกษาที่สมัครงานทั้งหมด
-        public async Task<IActionResult> AllApprove(int id)
+        public async Task<IActionResult> AllApprove(int id,int Register)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
 
             try
             {
-                var latestId = await DB.TRANSACTION_REGISTER.MaxAsync(x => x.transaction_register_id);
-                var job = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.transaction_job_id).FirstOrDefaultAsync();
+                
+                var lastJob = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id).MaxAsync(x => x.transaction_job_id);
+                //var job = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.transaction_job_id).FirstOrDefaultAsync();
 
-                for (int i = id; i <= latestId; i++)
+                for (int i = id; i <= lastJob; i++)
                 {
-                    var data = await DB.TRANSACTION_REGISTER.FindAsync(i);
+                    var job = await DB.TRANSACTION_JOB.FindAsync(i);
+                    var data = await DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == i).FirstOrDefaultAsync();
+                    var regsiter = await DB.TRANSACTION_REGISTER.Where(w => w.transaction_job_id == i).Select(s => s.transaction_register_id).FirstOrDefaultAsync();
+                    var latestId = await DB.TRANSACTION_REGISTER.MaxAsync(x => x.transaction_register_id);
 
-                    if (data.status_id != 9)
+                    for (int r = regsiter; r < latestId ; r++)
                     {
-                        continue;
-                    }
+                        if (data.status_id != 9 && job.faculty_id != CurrentUser.faculty_id && data.transaction_job_id != i)
+                        {
+                            continue;
+                        }
 
-                    if (data.status_id == 9)
-                    {
-                        data.status_id = 7;
-                        DB.TRANSACTION_REGISTER.Update(data);
+                        if (data.status_id == 9 && job.faculty_id == CurrentUser.faculty_id && data.transaction_job_id == i)
+                        {
+                            data.status_id = 7;
+                            DB.TRANSACTION_REGISTER.Update(data);
+                        }
                     }
+                    
                 }
-
                 await DB.SaveChangesAsync();
             }
             catch (Exception error)
