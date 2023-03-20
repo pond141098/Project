@@ -1,6 +1,6 @@
 ﻿namespace SeniorProject.ViewModels.Devstudent
 {
-    public class dashboard
+    public class chart2
     {
         public string branchName { get; set; }
         public int amount_register { get; set; }

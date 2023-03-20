@@ -62,33 +62,43 @@ namespace SeniorProject.Controllers
             var GetU = await DB.Users.ToListAsync();
 
             //Chart 1
+            var Models = new List<chart1>();
+            foreach (var u in GetU.Where(w => w.faculty_id == CurrentUser.faculty_id))
+            {
+                foreach (var r in GetRegister.Where(w => w.UserId == u.Id))
+                {
+                    var data = new chart1();
+                    data.amount = r.transaction_register_id;
+                    data.name = DB.Users.Where(w => w.Id == r.UserId).Select(s => s.FirstName + " " + s.LastName).FirstOrDefault();
+                    Models.Add(data);
+                }
+            }
+            ViewBag.Register = Models.Select(s => s.amount).Count();
+
             string faculty = CurrentUser.faculty_id.ToString();
             int f = faculty.Count();
             if(f == 1)
             {
                 string fa = "0" + faculty;
-                var Register = DB.TRANSACTION_REGISTER.Where(w => w.UserId.Substring(5, 2) == fa).Select(s => s.transaction_register_id).Count();
                 var Student = DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.UserName.Substring(5, 2) == fa).Select(s => s.Id).Count();
-                ViewBag.Register = Register;
                 ViewBag.Student = Student;
             }
             else
             {
                 string fa = faculty;
-                var Register = DB.TRANSACTION_REGISTER.Where(w => w.UserId.Substring(5, 2) == fa).Select(s => s.transaction_register_id).Count();
                 var Student = DB.Users.Where(w => w.faculty_id == CurrentUser.faculty_id && w.UserName.Substring(5, 2) == fa).Select(s => s.Id).Count();
-                ViewBag.Register = Register;
                 ViewBag.Student = Student;
             }
 
+
             //Chart 2
-            var Model = new List<dashboard>();
+            var Model = new List<chart2>();
 
             foreach (var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
             {
                 foreach (var b in GetBranch.Where(w => w.branch_id == j.branch_id))
                 {
-                    var data = new dashboard();
+                    var data = new chart2();
                     if (j.type_job_id == 3)
                     {
                         data.branchName = b.branch_name;
@@ -103,6 +113,7 @@ namespace SeniorProject.Controllers
                     }
                 }
             }
+
             return PartialView("Index", Model);
         }
 
