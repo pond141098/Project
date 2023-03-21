@@ -1,18 +1,22 @@
 ﻿$(function () {
-    $("#JsonData").html('<img src="/img/loading.gif" width="50">');
-    $.get("/DepartmentDevStudent/getAllListStudent", function (JsonResult) {
-        setTimeout(function () {
+    $("#faculty_id").select2();
+    var Select = $("#faculty_id");
+    Select.change(function () {
+        $("#JsonData").html('<img src="/img/loading.gif" width="50">');
+        $.get("/DepartmentDevStudent/getAllListStudent", { "faculty_id": $(this).val() }, function (JsonResult) {
+            setTimeout(function () {
 
-            $("#JsonData").html(JsonResult);
-            Datatable();
+                $("#JsonData").html(JsonResult);
+                Datatable();
 
-            $("#JsonData").on("click", ".check", function () {
-                window.location.href = "/DepartmentDevStudent/CheckRegisterAll?transaction_register_id=" + $(this).val();
-            });
+                $("#JsonData").on("click", ".check", function () {
+                    window.location.href = "/DepartmentDevStudent/CheckRegisterAll?transaction_register_id=" + $(this).val();
+                });
 
-        }, 200);
+            }, 200);
+        });
     });
-
+    $("#faculty_id").val($("#faculty_id").val()).change();
 });
 
 function Datatable() {

@@ -17,6 +17,7 @@
     <section id="widget-grid">
         <div class="row">
             <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margin-bottom-5">
+                @Html.DropDownList("faculty_id", (IEnumerable<SelectListItem>)ViewBag.Faculty, new { @style = "width:25%" })
                 <a class="btn btn-success AllApprove" id="@ViewBag.id" onclick="AllApprove('@ViewBag.id')" value="AllApprove"><i class="fa fa-check-circle"></i>  อนุมัติทั้งหมด</a>
                 <button class="btn btn-primary" id="ExportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
             </article>
@@ -50,6 +51,7 @@
     <script src="~/js/plugin/datatables/dataTables.tableTools.min.js"></script>
     <script src="~/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
     <script src="~/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+    <script src="~/js/plugin/select2/select2.min.js"></script>
     <script type="text/javascript" src="~/js/DepartmentDevStudent/AllListStudent.js" ></script>
     <script type="text/javascript">
         function AllApprove(id) {

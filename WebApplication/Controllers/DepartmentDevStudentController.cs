@@ -136,10 +136,11 @@ namespace SeniorProject.Controllers
         {
             var Id = DB.TRANSACTION_REGISTER.Where(w => w.status_id == 7).Select(s => s.transaction_register_id).FirstOrDefault();
             ViewBag.id = Id;
+            ViewBag.Faculty = new SelectList(DB.MASTER_FACULTY.OrderBy(o => o.faculty_id).ToList(), "faculty_id", "faculty_name"); 
 
             return View("AllListStudent");
         }
-        public async Task<IActionResult> getAllListStudent()
+        public async Task<IActionResult> getAllListStudent(int faculty_id)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
@@ -149,7 +150,7 @@ namespace SeniorProject.Controllers
             var Gets = await DB.Users.ToListAsync();
             var Models = new List<AllListStudentRegister>();
 
-            foreach (var j in GetJob)
+            foreach (var j in GetJob.Where(w => w.faculty_id == faculty_id))
             {
                 foreach (var f in GetFaculty.Where(w => w.faculty_id == j.faculty_id))
                 {
@@ -169,6 +170,7 @@ namespace SeniorProject.Controllers
                                 Model.student_name = Prefix + "" + FirstName + "" + LastName;
                                 Model.student_id = DB.Users.Where(w => w.Id == r.UserId).Select(s => s.UserName).FirstOrDefault();
                                 Model.faculty_name = f.faculty_name;
+                                Model.faculty_id = f.faculty_id;
                                 Model.status_name = item.status_name;
                                 Model.job_name = j.job_name;
                                 Models.Add(Model);

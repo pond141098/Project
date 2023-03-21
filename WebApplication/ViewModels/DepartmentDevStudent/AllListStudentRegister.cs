@@ -11,5 +11,6 @@ namespace SeniorProject.ViewModels.DepartmentDevStudent
         public DateTime register_date { get; set; }
         public string status_name { get; set; }
         public string faculty_name { get; set; }
+        public int faculty_id { get; set; }
     }
 }
