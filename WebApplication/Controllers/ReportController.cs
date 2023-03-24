@@ -90,15 +90,15 @@ namespace SeniorProject.Controllers
             PdfWriter.GetInstance(doc, workStream).CloseStream = false;
 
             doc.Open();
-            
+
             // Create a new table
             PdfPTable table = new PdfPTable(7);
-            table.SetWidths(new float[] {300f, 600f, 200f, 200f, 200f, 200f, 500f });
+            table.SetWidths(new float[] { 300, 600, 200, 200, 200, 200, 500 });
             table.HorizontalAlignment = Element.ALIGN_LEFT;
-            
+
             //Header
             Paragraph title = new Paragraph("ใบลงเวลาปฏิบัติงานของนักศึกษา", FontNormalBold);
-            title.Alignment = Element.ALIGN_CENTER; 
+            title.Alignment = Element.ALIGN_CENTER;
             doc.Add(title);
             title = new Paragraph("โครงการสนับสนุนการหารายได้พิเศษระหว่างเรียนของนักศึกษา", FontNormalBold);
             title.Alignment = Element.ALIGN_CENTER;
@@ -150,7 +150,7 @@ namespace SeniorProject.Controllers
             SignName.SetWidths(new float[] { 100f, 100f, 850f, 500f });
             SignName.HorizontalAlignment = Element.ALIGN_LEFT;
 
-            PdfPCell SN = new PdfPCell(new Phrase("",FontNormal));
+            PdfPCell SN = new PdfPCell(new Phrase("", FontNormal));
             SN.Border = Rectangle.NO_BORDER;
             SN.HorizontalAlignment = 2;
             SignName.AddCell(SN);
@@ -186,14 +186,14 @@ namespace SeniorProject.Controllers
 
             //FooterTable
             PdfPTable FooterTable = new PdfPTable(2);
-            FooterTable.SetWidths(new float[] { 100f, 900f});
+            FooterTable.SetWidths(new float[] { 100f, 900f });
             FooterTable.HorizontalAlignment = Element.ALIGN_LEFT;
 
-            PdfPCell celltext = new PdfPCell(new Phrase("หมายเหตุ",FontNormalBold));
+            PdfPCell celltext = new PdfPCell(new Phrase("หมายเหตุ", FontNormalBold));
             celltext.HorizontalAlignment = 3;
             celltext.Border = Rectangle.NO_BORDER;
             FooterTable.AddCell(celltext);
-            celltext = new PdfPCell(new Phrase("ให้นักศึกษาลงลายมือชื่อและเวลาการปฏิบัติงานด้วยลายมือชื่อตนเองทุกครั้ง โดยให้นับเวลาการปฏิบัติงานดังนี้",FontNormal));
+            celltext = new PdfPCell(new Phrase("ให้นักศึกษาลงลายมือชื่อและเวลาการปฏิบัติงานด้วยลายมือชื่อตนเองทุกครั้ง โดยให้นับเวลาการปฏิบัติงานดังนี้", FontNormal));
             celltext.Border = Rectangle.NO_BORDER;
             celltext.HorizontalAlignment = 3;
             FooterTable.AddCell(celltext);
@@ -234,7 +234,7 @@ namespace SeniorProject.Controllers
             celltext.Border = Rectangle.NO_BORDER;
             FooterTable.AddCell(celltext);
             doc.Add(FooterTable);
-            doc.Add(new Phrase("                5. นักศึกษาปฏิบัติงานไม่เข้าตาม ข้อ1 และ 2 ให้ได้รับค่าตอบแทนชั่วโมงละ 40 บาท เศษของชั่วโมงให้ปัดทิ้งไม่นำมานับ",FontNormal));
+            doc.Add(new Phrase("                5. นักศึกษาปฏิบัติงานไม่เข้าตาม ข้อ1 และ 2 ให้ได้รับค่าตอบแทนชั่วโมงละ 40 บาท เศษของชั่วโมงให้ปัดทิ้งไม่นำมานับ", FontNormal));
 
             doc.Close();
 
@@ -248,53 +248,137 @@ namespace SeniorProject.Controllers
 
         #endregion
 
-        #region Excel
+        //#region Excel
 
-        [HttpGet]
-        public async Task<IActionResult> ExportExcel()
+        //[HttpGet]
+        //public async Task<IActionResult> ExportExcel()
+        //{
+        //    string msg = "";
+        //    var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+        //    //var ComLicenses = DB.COM_LICENSE.Where(w => w.CustomerId == CurrentUser.CustomerId);
+        //    try
+        //    {
+        //        var templateFilePath = Path.Combine(_environment.WebRootPath.ToString(), "excels/assets/template.xlsx");
+        //        FileInfo templateFile = new FileInfo(templateFilePath);
+        //        var newFilePath = Path.Combine(_environment.WebRootPath.ToString(), "excels/assets/new/template.xlsx");
+        //        FileInfo newFile = new FileInfo(newFilePath);
+
+        //        using (ExcelPackage package = new ExcelPackage(newFile, templateFile))
+        //        {
+        //            ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+
+        //            int StartRow = 3;
+        //            int CountFirstRow = 1;
+        //            var Gets = DB.TRANSACTION_REGISTER;
+        //            foreach (var Get in Gets)
+        //            {
+        //                worksheet.Cells["A" + StartRow].Value = CountFirstRow.ToString();
+        //                worksheet.Cells["A" + StartRow + ":F" + StartRow].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+        //                worksheet.Cells["A" + StartRow + ":F" + StartRow].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+        //                worksheet.Cells["A" + StartRow + ":F" + StartRow].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+        //                worksheet.Cells["A" + StartRow + ":F" + StartRow].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+        //                StartRow++;
+        //                CountFirstRow++;
+        //            }
+
+        //            package.Save();
+        //        }
+
+        //        var mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        //        return new FileStreamResult(new FileStream(newFilePath, FileMode.Open), mimeType);
+        //    }
+        //    catch (Exception error)
+        //    {
+        //        msg = "Error is : " + error.Message;
+        //        return Json(new { valid = false, message = msg });
+        //    }
+        //}
+
+        //#endregion
+
+        public IActionResult ExampleExcel()
         {
-            string msg = "";
-            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            //var ComLicenses = DB.COM_LICENSE.Where(w => w.CustomerId == CurrentUser.CustomerId);
-            try
+            // Set the license context
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            // Create a new ExcelPackage
+            using (ExcelPackage excelPackage = new ExcelPackage())
             {
-                var templateFilePath = Path.Combine(_environment.WebRootPath.ToString(), "excels/assets/template.xlsx");
-                FileInfo templateFile = new FileInfo(templateFilePath);
-                var newFilePath = Path.Combine(_environment.WebRootPath.ToString(), "excels/assets/new/template.xlsx");
-                FileInfo newFile = new FileInfo(newFilePath);
+                // Create a new worksheet
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("MySheet");
 
-                using (ExcelPackage package = new ExcelPackage(newFile, templateFile))
-                {
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                // Add some data to the worksheet
+                worksheet.Cells["A1:O1"].Merge = true ;
+                worksheet.Cells["A1"].Value = "โครงการสนับสนุนการหารายได้พิเศษระหว่างเรียนของนักศึกษา ปีงบประมาณ";
+                worksheet.Cells["A1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
-                    int StartRow = 3;
-                    int CountFirstRow = 1;
-                    var Gets = DB.TRANSACTION_REGISTER;
-                    foreach (var Get in Gets)
-                    {
-                        worksheet.Cells["A" + StartRow].Value = CountFirstRow.ToString();
-                        worksheet.Cells["A" + StartRow + ":F" + StartRow].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                        worksheet.Cells["A" + StartRow + ":F" + StartRow].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                        worksheet.Cells["A" + StartRow + ":F" + StartRow].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                        worksheet.Cells["A" + StartRow + ":F" + StartRow].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                        StartRow++;
-                        CountFirstRow++;
-                    }
+                worksheet.Cells["A2:A3"].Merge = true;
+                worksheet.Cells["A2"].Value = "ที่";
+                worksheet.Cells["A2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
-                    package.Save();
-                }
+                worksheet.Cells["B2:B3"].Merge = true;
+                worksheet.Cells["B2"].Value = "ชื่อหน่วยงาน (คณะ/วิทยาลัย/กอง/สำนักงาน)";
+                worksheet.Cells["B2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
-                var mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                return new FileStreamResult(new FileStream(newFilePath, FileMode.Open), mimeType);
-            }
-            catch (Exception error)
-            {
-                msg = "Error is : " + error.Message;
-                return Json(new { valid = false, message = msg });
+                worksheet.Cells["C2:C3"].Merge = true;
+                worksheet.Cells["C2"].Value = "ลักษณะงานที่ปฎิบัติ (โปรดใส่ให้ชัดเจนเพื่อการพิจารณางบประมาณ)";
+                worksheet.Cells["C2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["D2:I2"].Merge = true;
+                worksheet.Cells["D2"].Value = "ข้อมูลนักศึกษาปฎิบัติงาน (หากไม่มี นศ. ไม่ต้องระบุส่วนนี้ แต่ให้ใส่จำนวนที่ต้องการ ในช่องลำดับที่)";
+                worksheet.Cells["D2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["D3"].Value = "ลำดับที่";
+                worksheet.Cells["D3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["E3:F3"].Merge = true;
+                worksheet.Cells["E3"].Value = "ชื่อ - สกุล";
+                worksheet.Cells["E3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["G3"].Value = "คณะ";
+                worksheet.Cells["G3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["H3"].Value = "รหัสนักศึกษา";
+                worksheet.Cells["H3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["I3"].Value = "โทรศัพท์ (จำเป็น)";
+                worksheet.Cells["I3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["J2:L2"].Merge = true;
+                worksheet.Cells["J2"].Value = "ชื่อผู้ควบคุมการปฎิบัติงาน";
+                worksheet.Cells["J2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["J3:K3"].Merge = true;
+                worksheet.Cells["J3"].Value = "ชื่อ - สกุล";
+                worksheet.Cells["J3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["L3"].Value = "โทรศัพท์";
+                worksheet.Cells["L3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["M2:O2"].Merge = true;
+                worksheet.Cells["M2"].Value = "ข้อมูลบัญชีนักศึกษา(ชื่อ นศ. เป็นเจ้าของ บช.)";
+                worksheet.Cells["M2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["M3"].Value = "ธนาคาร";
+                worksheet.Cells["M3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["N3"].Value = "ชื่อสาขาธนาคาร";
+                worksheet.Cells["N3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                worksheet.Cells["O3"].Value = "เลขที่บัญชี (ไม่ต้องมีขีด/ไม่ต้องวรรค)";
+                worksheet.Cells["O3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                // Save the ExcelPackage to a MemoryStream
+                var stream = new System.IO.MemoryStream();
+                excelPackage.SaveAs(stream);
+
+                // Return the MemoryStream as a FileStreamResult
+                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "MyExcelFile.xlsx");
             }
         }
 
-        #endregion
 
     }
 }
+
