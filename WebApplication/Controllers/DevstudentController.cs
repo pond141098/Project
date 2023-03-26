@@ -127,8 +127,11 @@ namespace SeniorProject.Controllers
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var Job = await DB.TRANSACTION_JOB.Where(w => w.faculty_id == CurrentUser.faculty_id).Select(s => s.transaction_job_id).FirstOrDefaultAsync();
             var Id = await DB.TRANSACTION_REGISTER.Where(w => w.status_id == 9 && w.transaction_job_id == Job).Select(s => s.transaction_register_id).FirstOrDefaultAsync();
+            var status = await DB.TRANSACTION_REGISTER.Where(w => w.status_id == 9).Select(s => s.status_id).FirstOrDefaultAsync();
+
             ViewBag.id = Job;
             ViewBag.Register = Id;
+            ViewBag.Status = status;    
 
             return View("ListStudentFaculty");
         }
@@ -477,7 +480,7 @@ namespace SeniorProject.Controllers
         public async Task<IActionResult> getJob()
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-            var Gets = DB.TRANSACTION_JOB.Where(w => w.create_by == CurrentUser.UserName).ToList();
+            var Gets = DB.TRANSACTION_JOB.Where(w => w.create_by == CurrentUser.Id).ToList();
 
             return PartialView("getJob", Gets);
         }
@@ -512,7 +515,7 @@ namespace SeniorProject.Controllers
                 Model.type_job_id = 2;
                 Model.faculty_id = CurrentUser.faculty_id;
                 Model.branch_id = CurrentUser.branch_id;
-                Model.create_by = CurrentUser.UserName;
+                Model.create_by = CurrentUser.Id;
                 Model.update_date = DateTime.Now;
                 Model.create_date = DateTime.Now;
                 DB.TRANSACTION_JOB.Add(Model);
@@ -559,7 +562,7 @@ namespace SeniorProject.Controllers
                 Get.faculty_id = CurrentUser.faculty_id;
                 Get.branch_id = CurrentUser.branch_id;
                 Get.update_date = DateTime.Now;
-                Get.create_by = CurrentUser.UserName;
+                Get.create_by = CurrentUser.Id;
                 Get.create_date = Model.create_date;
                 Get.type_job_id = Model.type_job_id;
                 DB.TRANSACTION_JOB.Update(Get);

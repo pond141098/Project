@@ -260,7 +260,7 @@ namespace SeniorProject.Controllers
             {
                 foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                 {
-                    foreach (var u in GetUser.Where(w => w.UserName == j.create_by))
+                    foreach (var u in GetUser.Where(w => w.Id == j.create_by))
                     {
                         foreach (var pr in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
                         {
@@ -382,7 +382,7 @@ namespace SeniorProject.Controllers
 
                     //ถ้าเจ้าของงานเป็นหัวหน้าฝ่ายพัฒนานักศึกษาให้สถานะของการสมัครงานเป็น รอส่งกองพัฒนานักศึกษา
                     var GetOwnerJob = DB.TRANSACTION_JOB.Where(w => w.transaction_job_id == Model.transaction_job_id).Select(s => s.create_by).FirstOrDefault();
-                    var Owner = DB.Users.Where(w => w.UserName == GetOwnerJob).Select(s => s.Id).FirstOrDefault();
+                    var Owner = DB.Users.Where(w => w.Id == GetOwnerJob).Select(s => s.Id).FirstOrDefault();
                     var GetRole = DB.UserRoles.Where(w => w.UserId == Owner).Select(s => s.RoleId).FirstOrDefault();
 
                     if (GetRole == "42d5797d-0dce-412b-beea-9337f482e9e5" || GetRole == "cddaeb6d-62db-4f03-98e5-8c473a5ff64e")//อาจารย์เเละเจ้าหน้าที่ในคณะ
