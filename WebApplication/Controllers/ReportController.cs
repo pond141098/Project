@@ -259,7 +259,7 @@ namespace SeniorProject.Controllers
 
             if (status_id == 0)
             {
-                return Json(new { valid = false, message = "ไม่สามารถออกเอกสารได้" });
+                return Json(new { valid = false, message = "ไม่สามารถออกเอกสารได้ เนื่องจากไม่มีรายชื่อนักศึกษา" });
             }
 
             var Model = new List<Register>();
@@ -404,15 +404,8 @@ namespace SeniorProject.Controllers
                 worksheet.Cells["O3"].Value = "เลขที่บัญชี (ไม่ต้องมีขีด/ไม่ต้องวรรค)";
                 worksheet.Cells["O3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
-                var r_min = Model.Min(n => n.Row);
-                var r_max = Model.Max(x => x.Row);
                 var Data = Model.ToList();
                 int cel = 4;
-
-                if (r_min == 0 && r_max == 0)
-                {
-                    return Json(new { valid = false, message = "ไม่สามารถออก Excel ได้!!!" });
-                }
 
                 foreach (var d in Data)
                 {

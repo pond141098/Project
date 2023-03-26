@@ -18,7 +18,8 @@
         <div class="row">
             <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margin-bottom-5">
                 <a class="btn btn-success AllApprove" id="@ViewBag.id" onclick="AllApprove('@ViewBag.id','@ViewBag.Register')" value="AllApprove"><i class="fa fa-check-circle"></i>  อนุมัติทั้งหมด</a>
-                <a class="btn btn-success" id="ExportExcel" href="@Url.Action("ExampleExcel","Report",new { status_id = ViewBag.Status})"><i class="fa fa-file-excel-o"></i> Export Excel</a>
+                <a class="btn btn-success Excel" id="@ViewBag.Status" onclick="Excel('@ViewBag.Status')" value="Excel"><i class="fa fa-file-excel-o"></i> Export Excel</a>
+                @*<a class="btn btn-success" id="ExportExcel" href="@Url.Action("ExampleExcel","Report",new { status_id = ViewBag.Status})"><i class="fa fa-file-excel-o"></i> Export Excel</a>*@
             </article>
         </div>
     </section>
@@ -74,6 +75,44 @@
                                 setTimeout(function () {
                                     window.location.href = "/Devstudent/ListStudentFaculty";
                                 }, 1000)
+                            } else {
+                                $.smallBox({
+                                    title: response.message,
+                                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                                    color: "#FB0404",
+                                    iconSmall: "fa fa-thumbs-up bounce animated",
+                                    timeout: 1000
+                                });
+                            }
+                        }
+                    });
+                }
+                if (ButtonPressed == "ไม่") {
+
+                }
+            })
+        }
+    </script>
+    <script type="text/javascript">
+        function Excel(id) {
+            $.SmartMessageBox({
+                title: "ต้องการดาวน์โหลดเอกสารรายชื่อนักศึกษาที่สมัครงานทั้งหมดใช่หรือไม่ ?",
+                buttons: "[ไม่][ใช่]"
+            }, function (ButtonPressed) {
+                if (ButtonPressed == "ใช่") {
+                    $.ajax({
+                        url: '/Report/ExampleExcel',
+                        type: 'POST',
+                        data: { "id": id},
+                        success: function (response) {
+                            if (response.valid == true) {
+                                $.smallBox({
+                                    title: response.message,
+                                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                                    color: "#296191",
+                                    iconSmall: "fa fa-thumbs-up bounce animated",
+                                    timeout: 1000
+                                });
                             } else {
                                 $.smallBox({
                                     title: response.message,
