@@ -404,7 +404,7 @@ namespace SeniorProject.Controllers
                             await bank_file.CopyToAsync(fileStream);
                         }
 
-                        Model.status_id = 9;
+                        Model.status_id = 9; //รอส่งผ่ายพัฒนานักศึกษา
                         Model.bank_file = UniqueFileName;
                         Model.register_date = DateTime.Now;
                         Model.UserId = CurrentUser.Id;
@@ -430,7 +430,7 @@ namespace SeniorProject.Controllers
                             await bank_file.CopyToAsync(fileStream);
                         }
 
-                        Model.status_id = 8;
+                        Model.status_id = 8; //รอส่งกองพัฒนานักศึกษา
                         Model.bank_file = UniqueFileName;
                         Model.register_date = DateTime.Now;
                         Model.UserId = CurrentUser.Id;
@@ -456,7 +456,7 @@ namespace SeniorProject.Controllers
                             await bank_file.CopyToAsync(fileStream);
                         }
 
-                        Model.status_id = 7;
+                        Model.status_id = 7; //รออนุมัติ
                         Model.bank_file = UniqueFileName;
                         Model.register_date = DateTime.Now;
                         Model.UserId = CurrentUser.Id;
