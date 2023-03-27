@@ -249,15 +249,15 @@ namespace SeniorProject.Controllers
 
         #endregion
 
-        #region Excel
-        public async Task<IActionResult> ExampleExcel(int status_id)
+        #region รายชื่อนักศึกษาที่มาสมัครงาน(Excel)
+        public async Task<IActionResult> ExampleExcel(int Status)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
             var GetUser = await DB.Users.ToListAsync();
 
-            if (status_id == 0)
+            if (Status == 0)
             {
                 return Json(new { valid = false, message = "ไม่สามารถออกเอกสารได้ เนื่องจากไม่มีรายชื่อนักศึกษา" });
             }
@@ -267,7 +267,7 @@ namespace SeniorProject.Controllers
 
             foreach (var j in GetJob.Where(w => w.faculty_id == CurrentUser.faculty_id))
             {
-                foreach (var r in GetRegister.Where(w => w.status_id == status_id && w.transaction_job_id == j.transaction_job_id))
+                foreach (var r in GetRegister.Where(w => w.status_id == Status && w.transaction_job_id == j.transaction_job_id))
                 {
                     foreach (var u in GetUser.Where(w => w.Id == r.UserId))
                     {
@@ -475,8 +475,8 @@ namespace SeniorProject.Controllers
                 excelPackage.SaveAs(stream);
 
                 // Return the MemoryStream as a FileStreamResult
-                //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "รายชื่อนักศึกษาที่สมัครงานภายในคณะ/หน่วยงาน.xlsx");
+                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "รายชื่อนักศึกษาที่สมัครงานภายในคณะ/หน่วยงาน.xlsx");
             }
         }
 

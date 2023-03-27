@@ -18,8 +18,15 @@
         <div class="row">
             <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margin-bottom-5">
                 <a class="btn btn-success AllApprove" id="@ViewBag.id" onclick="AllApprove('@ViewBag.id','@ViewBag.Register')" value="AllApprove"><i class="fa fa-check-circle"></i>  อนุมัติทั้งหมด</a>
-                <a class="btn btn-success Excel" id="@ViewBag.Status" onclick="Excel('@ViewBag.Status')" value="Excel"><i class="fa fa-file-excel-o"></i> Export Excel</a>
-                @*<a class="btn btn-success" id="ExportExcel" href="@Url.Action("ExampleExcel","Report",new { status_id = ViewBag.Status})"><i class="fa fa-file-excel-o"></i> Export Excel</a>*@
+                @*<a class="btn btn-success Excel" id="@ViewBag.Status" onclick="Excel('@ViewBag.Status')" value="Excel"><i class="fa fa-file-excel-o"></i> Export Excel</a>*@
+                @if(ViewBag.Status == 9)
+                {
+                    <a class="btn btn-success" id="ExportExcel" href="@Url.Action("ExampleExcel","Report",new { Status = ViewBag.Status})"><i class="fa fa-file-excel-o"></i> Export Excel</a>
+                }
+                else
+                {
+                    
+                }
             </article>
         </div>
     </section>
@@ -53,7 +60,7 @@
     <script src="~/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
     <script type="text/javascript" src="~/js/Devstudent/ListStudentFaculty.js"></script>
     <script type="text/javascript">
-        function AllApprove(id,Register) {
+        function AllApprove(id, Register) {
             $.SmartMessageBox({
                 title: "ต้องการอนุมัติรายการสมัครงานของนักศึกษาทั้งหมดใช่หรือไม่ ?",
                 buttons: "[ไม่][ใช่]"
@@ -62,7 +69,7 @@
                     $.ajax({
                         url: '/Devstudent/AllApprove',
                         type: 'POST',
-                        data: { "id": id ,"Register": Register},
+                        data: { "id": id, "Register": Register },
                         success: function (response) {
                             if (response.valid == true) {
                                 $.smallBox({
