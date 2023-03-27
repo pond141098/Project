@@ -94,7 +94,7 @@
         }
     </script>
     <script type="text/javascript">
-        function Excel(id) {
+        function Excel(Status) {
             $.SmartMessageBox({
                 title: "ต้องการดาวน์โหลดเอกสารรายชื่อนักศึกษาที่สมัครงานทั้งหมดใช่หรือไม่ ?",
                 buttons: "[ไม่][ใช่]"
@@ -103,7 +103,7 @@
                     $.ajax({
                         url: '/Report/ExampleExcel',
                         type: 'POST',
-                        data: { "id": id},
+                        data: { "Status": Status },
                         success: function (response) {
                             if (response.valid == true) {
                                 $.smallBox({
