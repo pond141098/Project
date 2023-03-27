@@ -499,7 +499,7 @@ namespace SeniorProject.Controllers
                     {
                         foreach (var p in GetPlace.Where(w => w.place_id == j.place_id))
                         {
-                            foreach (var u in GetUser.Where(w => w.UserName == j.create_by))
+                            foreach (var u in GetUser.Where(w => w.Id == j.create_by))
                             {
                                 foreach (var pre in GetPrefix.Where(w => w.prefix_id == u.prefix_id))
                                 {
