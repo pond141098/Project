@@ -37,6 +37,7 @@ using static Uno.UI.FeatureConfiguration;
 using Windows.UI.Xaml;
 using Uno.UI.Xaml;
 using SeniorProject.ViewModels.Report;
+using Windows.Globalization.DateTimeFormatting;
 
 namespace SeniorProject.Controllers
 {
@@ -70,12 +71,296 @@ namespace SeniorProject.Controllers
             return View();
         }
 
-        #region PDF
+        #region ลงเวลาการปฎิบัติงาน(PDF)
 
         [HttpGet]
-        public async Task<IActionResult> ExportPDF(string strHeader)
+        public async Task<IActionResult> TransactionWorking(string strHeader,int id)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var GetWorking = await DB.TRANSACTION_WORKING.ToListAsync();
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetUser = await DB.Users.ToListAsync();
+
+            var Model = new List<Working>();
+
+            foreach(var wk in GetWorking.Where(w => w.transaction_register_id == id))
+            {
+                foreach(var j in GetJob.Where(w => w.transaction_job_id == wk.transaction_job_id))
+                {
+                    foreach(var U in GetUser.Where(w => w.Id == wk.UserId))
+                    {
+                        var Data = new Working();
+                        var Prefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == U.prefix_id).Select(s => s.prefix_name).FirstOrDefault();
+                        var GetOwnerPrefix = DB.Users.Where(w => w.Id == j.create_by).Select(s => s.prefix_id).FirstOrDefault();
+                        var GetOwner = DB.Users.Where(w => w.Id == j.create_by).Select(s => s.Id).FirstOrDefault();
+                        var P = DB.MASTER_PREFIX.Where(w => w.prefix_id == GetOwnerPrefix).Select(s => s.prefix_name).FirstOrDefault();
+                        var FirstName = DB.Users.Where(w => w.Id == GetOwner).Select(s => s.FirstName).FirstOrDefault();
+                        var LastName = DB.Users.Where(w => w.Id == GetOwner).Select(s => s.LastName).FirstOrDefault();
+
+                        Data.Id = wk.transaction_working_id;
+                        Data.faculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == j.faculty_id).Select(s => s.faculty_name).FirstOrDefault();
+                        Data.student_name = Prefix+""+U.FirstName +" "+ U.LastName;
+                        Data.month = wk.start_work.ToString("MMMM", new System.Globalization.CultureInfo("th-TH"));
+                        Data.year = wk.start_work.ToString("yyyy", new System.Globalization.CultureInfo("th-TH"));
+                        Data.dmy = wk.start_work.ToString("d/M/yyyy");
+                        Data.detail_working = wk.detail_working;
+                        Data.sign_name_start = U.FirstName;
+                        Data.time_in = wk.start_work.ToString();
+                        Data.sign_name_end = U.FirstName;
+                        Data.time_out = wk.start_work.ToString();
+                        if(wk.time_working_id == 1)
+                        {
+                            int h = 1;
+                            Data.hours_work = h;
+                            h++;
+                        }
+                        else if(wk.time_working_id == 2)
+                        {
+                            int hd = 1;
+                            Data.hours_work = hd;
+                            hd++;
+                        }
+                        else if(wk.time_working_id == 3)
+                        {
+                            int f = 1;
+                            Data.hours_work = f;
+                            f++;
+                        }
+                        Data.sign_owner_job = P + "" + FirstName + " " + LastName;
+                        Model.Add(Data);
+                    }
+                }
+            }
+
+            MemoryStream workStream = new MemoryStream();
+            BaseFont bf = BaseFont.CreateFont(_environment.WebRootPath + "//fonts/THSarabun.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            //iTextSharp.text.Document pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 0f, 0f, 0f, 0f);
+            //pdfDoc.SetPageSize(iTextSharp.text.PageSize.A4);
+            Font FontNormal = new Font(bf, 14);
+            Font FontNormalBold = new Font(bf, 14, Font.BOLD);
+            Font FontMedium = new Font(bf, 14);
+            Font FontBig = new Font(bf, 16);
+            Font FontBigBold = new Font(bf, 16, Font.BOLD);
+            iTextSharp.text.Document doc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 20f, 0f, 0f, 20f);
+            doc.SetPageSize(iTextSharp.text.PageSize.A4);
+            PdfWriter.GetInstance(doc, workStream).CloseStream = false;
+
+            doc.Open();
+
+            // Create a new table
+            PdfPTable table = new PdfPTable(7);
+            table.SetWidths(new float[] { 300, 600, 200, 200, 200, 200, 500 });
+            table.HorizontalAlignment = Element.ALIGN_LEFT;
+
+            //Header
+            Paragraph title = new Paragraph("ใบลงเวลาปฏิบัติงานของนักศึกษา", FontNormalBold);
+            title.Alignment = Element.ALIGN_CENTER;
+            doc.Add(title);
+            title = new Paragraph("โครงการสนับสนุนการหารายได้พิเศษระหว่างเรียนของนักศึกษา", FontNormalBold);
+            title.Alignment = Element.ALIGN_CENTER;
+            doc.Add(title);
+            title = new Paragraph("หน่วยงาน ........................................................................................ มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี", FontNormalBold);
+            title.Alignment = Element.ALIGN_CENTER;
+            doc.Add(title);
+            title = new Paragraph("ชื่อผู้ปฏิบัติงาน ...................................................................................................................", FontNormalBold);
+            title.Alignment = Element.ALIGN_CENTER;
+            doc.Add(title);
+            title = new Paragraph("ประจำเดือน................................................................. พ.ศ...............", FontNormalBold);
+            title.Alignment = Element.ALIGN_CENTER;
+            doc.Add(title);
+            doc.Add(new Phrase(""));
+
+            // Add cells to the table
+            PdfPCell cell = new PdfPCell(new Phrase("วัน เดือน ปี", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("รายละเอียดการปฏิบัติงาน", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("ลายมือชื่อ", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("เวลามา", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("ลายมือชื่อ", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("เวลากลับ", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            cell = new PdfPCell(new Phrase("ปฏิบัติงานจำนวน", FontNormal));
+            cell.HorizontalAlignment = 1;
+            table.AddCell(cell);
+            table.AddCell(new Phrase("1", FontNormal));
+            table.AddCell(new Phrase("2", FontNormal));
+            table.AddCell(new Phrase("3", FontNormal));
+            table.AddCell(new Phrase("4", FontNormal));
+            table.AddCell(new Phrase("5", FontNormal));
+            table.AddCell(new Phrase("6", FontNormal));
+            table.AddCell(new Phrase("7", FontNormal));
+            doc.Add(table);
+
+            //SignName
+            PdfPTable SignName = new PdfPTable(4);
+            SignName.SetWidths(new float[] { 100f, 100f, 850f, 500f });
+            SignName.HorizontalAlignment = Element.ALIGN_LEFT;
+
+            PdfPCell SN = new PdfPCell(new Phrase("", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 2;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("(ลงชื่อ)", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 2;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("............................................................................................................", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 1;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("ผู้ควบคุมการปฏิบัติงาน", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 3;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 3;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 3;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("(..........................................................................................................)", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 3;
+            SignName.AddCell(SN);
+            SN = new PdfPCell(new Phrase("", FontNormal));
+            SN.Border = Rectangle.NO_BORDER;
+            SN.HorizontalAlignment = 3;
+            SignName.AddCell(SN);
+            doc.Add(SignName);
+
+            //FooterTable
+            PdfPTable FooterTable = new PdfPTable(2);
+            FooterTable.SetWidths(new float[] { 100f, 900f });
+            FooterTable.HorizontalAlignment = Element.ALIGN_LEFT;
+
+            PdfPCell celltext = new PdfPCell(new Phrase("หมายเหตุ", FontNormalBold));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("ให้นักศึกษาลงลายมือชื่อและเวลาการปฏิบัติงานด้วยลายมือชื่อตนเองทุกครั้ง โดยให้นับเวลาการปฏิบัติงานดังนี้", FontNormal));
+            celltext.Border = Rectangle.NO_BORDER;
+            celltext.HorizontalAlignment = 3;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("", FontNormal));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("1. ให้นักศึกษาบันทึกรายละเอียดการปฏิบัติงานของนักศึกษาในแต่ละวันโดยละเอียด", FontNormal));
+            celltext.Border = Rectangle.NO_BORDER;
+            celltext.HorizontalAlignment = 3;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("", FontNormal));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("2. ให้ผู้ควบคุมการปฏิบัติงานที่ได้รับอนุมัติลงลายมือชื่อเพื่อยืนยันการปฏิบัติงานของนักศึกษา", FontNormal));
+            celltext.Border = Rectangle.NO_BORDER;
+            celltext.HorizontalAlignment = 3;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("", FontNormal));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("3. นักศึกษาปฏิบัติงานเต็มวัน จำนวน 7 ชั่วโมง ไม่รวมเวลาหยุดพัก ให้ได้รับค่าตอบแทน 300 บาท", FontNormal));
+            celltext.Border = Rectangle.NO_BORDER;
+            celltext.HorizontalAlignment = 3;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("", FontNormal));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("4. นักศึกษาปฏิบัติงานครึ่งวัน จำนวน 3 ชั่วโมงครึ่ง ให้ได้รับค่าตอบแทน 150 บาท", FontNormal));
+            celltext.Border = Rectangle.NO_BORDER;
+            celltext.HorizontalAlignment = 3;
+            FooterTable.AddCell(celltext);
+            celltext = new PdfPCell(new Phrase("", FontNormal));
+            celltext.HorizontalAlignment = 3;
+            celltext.Border = Rectangle.NO_BORDER;
+            FooterTable.AddCell(celltext);
+            doc.Add(FooterTable);
+            doc.Add(new Phrase("                5. นักศึกษาปฏิบัติงานไม่เข้าตาม ข้อ1 และ 2 ให้ได้รับค่าตอบแทนชั่วโมงละ 40 บาท เศษของชั่วโมงให้ปัดทิ้งไม่นำมานับ", FontNormal));
+
+            doc.Close();
+
+            byte[] byteInfo = workStream.ToArray();
+            workStream.Write(byteInfo, 0, byteInfo.Length);
+            workStream.Position = 0;
+
+            return File(workStream, "application/pdf");
+            //"ExportPDF.pdf"
+        }
+
+        #endregion
+
+        #region เบิกจ่ายค่าตอบเเทน(PDF)
+
+        [HttpGet]
+        public async Task<IActionResult> TransactionPayment(string strHeader,int id)
+        {
+            var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
+            var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
+            var GetWork = await DB.TRANSACTION_WORKING.ToListAsync();
+            var GetUsers = await DB.Users.ToListAsync();
+
+            var Model = new List<Payment>();
+            int row = 1;
+
+            foreach (var j in GetJob.Where(w => w.transaction_job_id == id))
+            {
+                foreach(var r in GetRegister.Where(w => w.transaction_job_id == j.transaction_job_id))
+                {
+                    foreach(var wk in GetWork.Where(w => w.transaction_register_id == r.transaction_register_id))
+                    {
+                        foreach(var u in GetUsers.Where(w => w.Id == wk.UserId))
+                        {
+                            var Data = new Payment();
+                            var Prefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == u.prefix_id).Select(s => s.prefix_name).FirstOrDefault();
+
+                            Data.Id = j.transaction_job_id;
+                            Data.Faculty = DB.MASTER_FACULTY.Where(w => w.faculty_id == j.faculty_id).Select(s => s.faculty_name).FirstOrDefault();
+                            Data.Province = "ปทุมธานี";
+                            Data.DMY = wk.start_work;
+                            Data.Row = row;
+                            Data.FullName = Prefix+""+u.FirstName+" "+u.LastName;
+                            Data.date_work = wk.start_work.ToString("d");
+                            if(wk.time_working_id == 1)
+                            {
+                                int h = 1;
+                                Data.hour_work = h;
+                                h++;
+                            }
+                            else if(wk.time_working_id == 2)
+                            {
+                                int hd = 1;
+                                Data.half_day_work = hd;
+                                hd++;
+                            }
+                            else if(wk.time_working_id == 3)
+                            {
+                                int f = 1;
+                                Data.full_day_work = f;
+                                f++;
+                            }
+
+                            Model.Add(Data);
+                            row++;
+                        }
+                    }
+                }
+            }
 
             MemoryStream workStream = new MemoryStream();
             BaseFont bf = BaseFont.CreateFont(_environment.WebRootPath + "//fonts/THSarabun.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);

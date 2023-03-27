@@ -616,7 +616,7 @@ namespace SeniorProject.Controllers
 
             var Models = new List<ListWorking>();
 
-            foreach (var j in GetJob.Where(w => w.create_by == CurrentUser.UserName))
+            foreach (var j in GetJob.Where(w => w.create_by == CurrentUser.Id))
             {
                 foreach (var r in GetRegis.Where(w => w.transaction_job_id == j.transaction_job_id && w.status_id == 5))
                 {
