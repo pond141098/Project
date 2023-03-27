@@ -160,7 +160,7 @@ namespace SeniorProject.Controllers
                             var LastName = DB.Users.Where(w => w.Id == r.UserId).Select(s => s.LastName).FirstOrDefault();
                             var Prefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == P).Select(s => s.prefix_name).FirstOrDefault();
 
-                            if (s.status_id == 9 || s.status_id == 7 || s.status_id == 6 || s.status_id == 8 || s.status_id == 5)
+                            if (s.status_id == 9 || s.status_id == 7 || s.status_id == 6 || s.status_id == 5)
                             {
                                 Model.id = r.transaction_register_id;
                                 Model.job_name = j.job_name;
