@@ -74,7 +74,7 @@ namespace SeniorProject.Controllers
         #region ลงเวลาการปฎิบัติงาน(PDF)
 
         [HttpGet]
-        public async Task<IActionResult> TransactionWorking(string strHeader,int id)
+        public async Task<IActionResult> TransactionWorking(int id)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetWorking = await DB.TRANSACTION_WORKING.ToListAsync();
@@ -107,7 +107,16 @@ namespace SeniorProject.Controllers
                         Data.sign_name_start = U.FirstName;
                         Data.time_in = wk.start_work.ToString();
                         Data.sign_name_end = U.FirstName;
-                        Data.time_out = wk.start_work.ToString();
+
+                        if(wk.end_work > wk.end_work_correct)
+                        {
+                            Data.time_out = wk.end_work_correct.ToString("t");
+                        }
+                        else if(wk.end_work < wk.end_work_correct)
+                        {
+                            Data.time_out = wk.end_work.ToString("t");
+                        }
+
                         if(wk.time_working_id == 1)
                         {
                             int h = 1;
@@ -126,6 +135,7 @@ namespace SeniorProject.Controllers
                             Data.hours_work = f;
                             f++;
                         }
+
                         Data.sign_owner_job = P + "" + FirstName + " " + LastName;
                         Model.Add(Data);
                     }
@@ -307,7 +317,7 @@ namespace SeniorProject.Controllers
         #region เบิกจ่ายค่าตอบเเทน(PDF)
 
         [HttpGet]
-        public async Task<IActionResult> TransactionPayment(string strHeader,int id)
+        public async Task<IActionResult> TransactionPayment(int id)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
@@ -336,6 +346,7 @@ namespace SeniorProject.Controllers
                             Data.Row = row;
                             Data.FullName = Prefix+""+u.FirstName+" "+u.LastName;
                             Data.date_work = wk.start_work.ToString("d");
+
                             if(wk.time_working_id == 1)
                             {
                                 int h = 1;
@@ -371,8 +382,8 @@ namespace SeniorProject.Controllers
             Font FontMedium = new Font(bf, 14);
             Font FontBig = new Font(bf, 16);
             Font FontBigBold = new Font(bf, 16, Font.BOLD);
-            iTextSharp.text.Document doc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 20f, 0f, 0f, 20f);
-            doc.SetPageSize(iTextSharp.text.PageSize.A4);
+            iTextSharp.text.Document doc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4.Rotate(), 20f, 20f, 20f, 20f);
+            doc.SetPageSize(iTextSharp.text.PageSize.A4.Rotate());
             PdfWriter.GetInstance(doc, workStream).CloseStream = false;
 
             doc.Open();
@@ -383,144 +394,15 @@ namespace SeniorProject.Controllers
             table.HorizontalAlignment = Element.ALIGN_LEFT;
 
             //Header
-            Paragraph title = new Paragraph("ใบลงเวลาปฏิบัติงานของนักศึกษา", FontNormalBold);
+            Paragraph title = new Paragraph("หลักฐานการจ่ายเงินค่าตอบแทนการปฏิบัติงานของนักศึกษา", FontNormalBold);
             title.Alignment = Element.ALIGN_CENTER;
             doc.Add(title);
             title = new Paragraph("โครงการสนับสนุนการหารายได้พิเศษระหว่างเรียนของนักศึกษา", FontNormalBold);
             title.Alignment = Element.ALIGN_CENTER;
             doc.Add(title);
-            title = new Paragraph("หน่วยงาน ........................................................................................ มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี", FontNormalBold);
-            title.Alignment = Element.ALIGN_CENTER;
-            doc.Add(title);
-            title = new Paragraph("ชื่อผู้ปฏิบัติงาน ...................................................................................................................", FontNormalBold);
-            title.Alignment = Element.ALIGN_CENTER;
-            doc.Add(title);
-            title = new Paragraph("ประจำเดือน................................................................. พ.ศ...............", FontNormalBold);
-            title.Alignment = Element.ALIGN_CENTER;
-            doc.Add(title);
             doc.Add(new Phrase(""));
 
-            // Add cells to the table
-            PdfPCell cell = new PdfPCell(new Phrase("วัน เดือน ปี", FontNormal));
-            cell.HorizontalAlignment = 1;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Phrase("รายละเอียดการปฏิบัติงาน", FontNormal));
-            cell.HorizontalAlignment = 1;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Phrase("ลายมือชื่อ", FontNormal));
-            cell.HorizontalAlignment = 1;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Phrase("เวลามา", FontNormal));
-            cell.HorizontalAlignment = 1;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Phrase("ลายมือชื่อ", FontNormal));
-            cell.HorizontalAlignment = 1;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Phrase("เวลากลับ", FontNormal));
-            cell.HorizontalAlignment = 1;
-            table.AddCell(cell);
-            cell = new PdfPCell(new Phrase("ปฏิบัติงานจำนวน", FontNormal));
-            cell.HorizontalAlignment = 1;
-            table.AddCell(cell);
-            table.AddCell(new Phrase("1", FontNormal));
-            table.AddCell(new Phrase("2", FontNormal));
-            table.AddCell(new Phrase("3", FontNormal));
-            table.AddCell(new Phrase("4", FontNormal));
-            table.AddCell(new Phrase("5", FontNormal));
-            table.AddCell(new Phrase("6", FontNormal));
-            table.AddCell(new Phrase("7", FontNormal));
-            doc.Add(table);
 
-            //SignName
-            PdfPTable SignName = new PdfPTable(4);
-            SignName.SetWidths(new float[] { 100f, 100f, 850f, 500f });
-            SignName.HorizontalAlignment = Element.ALIGN_LEFT;
-
-            PdfPCell SN = new PdfPCell(new Phrase("", FontNormal));
-            SN.Border = Rectangle.NO_BORDER;
-            SN.HorizontalAlignment = 2;
-            SignName.AddCell(SN);
-            SN = new PdfPCell(new Phrase("(ลงชื่อ)", FontNormal));
-            SN.Border = Rectangle.NO_BORDER;
-            SN.HorizontalAlignment = 2;
-            SignName.AddCell(SN);
-            SN = new PdfPCell(new Phrase("............................................................................................................", FontNormal));
-            SN.Border = Rectangle.NO_BORDER;
-            SN.HorizontalAlignment = 1;
-            SignName.AddCell(SN);
-            SN = new PdfPCell(new Phrase("ผู้ควบคุมการปฏิบัติงาน", FontNormal));
-            SN.Border = Rectangle.NO_BORDER;
-            SN.HorizontalAlignment = 3;
-            SignName.AddCell(SN);
-            SN = new PdfPCell(new Phrase("", FontNormal));
-            SN.Border = Rectangle.NO_BORDER;
-            SN.HorizontalAlignment = 3;
-            SignName.AddCell(SN);
-            SN = new PdfPCell(new Phrase("", FontNormal));
-            SN.Border = Rectangle.NO_BORDER;
-            SN.HorizontalAlignment = 3;
-            SignName.AddCell(SN);
-            SN = new PdfPCell(new Phrase("(..........................................................................................................)", FontNormal));
-            SN.Border = Rectangle.NO_BORDER;
-            SN.HorizontalAlignment = 3;
-            SignName.AddCell(SN);
-            SN = new PdfPCell(new Phrase("", FontNormal));
-            SN.Border = Rectangle.NO_BORDER;
-            SN.HorizontalAlignment = 3;
-            SignName.AddCell(SN);
-            doc.Add(SignName);
-
-            //FooterTable
-            PdfPTable FooterTable = new PdfPTable(2);
-            FooterTable.SetWidths(new float[] { 100f, 900f });
-            FooterTable.HorizontalAlignment = Element.ALIGN_LEFT;
-
-            PdfPCell celltext = new PdfPCell(new Phrase("หมายเหตุ", FontNormalBold));
-            celltext.HorizontalAlignment = 3;
-            celltext.Border = Rectangle.NO_BORDER;
-            FooterTable.AddCell(celltext);
-            celltext = new PdfPCell(new Phrase("ให้นักศึกษาลงลายมือชื่อและเวลาการปฏิบัติงานด้วยลายมือชื่อตนเองทุกครั้ง โดยให้นับเวลาการปฏิบัติงานดังนี้", FontNormal));
-            celltext.Border = Rectangle.NO_BORDER;
-            celltext.HorizontalAlignment = 3;
-            FooterTable.AddCell(celltext);
-            celltext = new PdfPCell(new Phrase("", FontNormal));
-            celltext.HorizontalAlignment = 3;
-            celltext.Border = Rectangle.NO_BORDER;
-            FooterTable.AddCell(celltext);
-            celltext = new PdfPCell(new Phrase("1. ให้นักศึกษาบันทึกรายละเอียดการปฏิบัติงานของนักศึกษาในแต่ละวันโดยละเอียด", FontNormal));
-            celltext.Border = Rectangle.NO_BORDER;
-            celltext.HorizontalAlignment = 3;
-            FooterTable.AddCell(celltext);
-            celltext = new PdfPCell(new Phrase("", FontNormal));
-            celltext.HorizontalAlignment = 3;
-            celltext.Border = Rectangle.NO_BORDER;
-            FooterTable.AddCell(celltext);
-            celltext = new PdfPCell(new Phrase("2. ให้ผู้ควบคุมการปฏิบัติงานที่ได้รับอนุมัติลงลายมือชื่อเพื่อยืนยันการปฏิบัติงานของนักศึกษา", FontNormal));
-            celltext.Border = Rectangle.NO_BORDER;
-            celltext.HorizontalAlignment = 3;
-            FooterTable.AddCell(celltext);
-            celltext = new PdfPCell(new Phrase("", FontNormal));
-            celltext.HorizontalAlignment = 3;
-            celltext.Border = Rectangle.NO_BORDER;
-            FooterTable.AddCell(celltext);
-            celltext = new PdfPCell(new Phrase("3. นักศึกษาปฏิบัติงานเต็มวัน จำนวน 7 ชั่วโมง ไม่รวมเวลาหยุดพัก ให้ได้รับค่าตอบแทน 300 บาท", FontNormal));
-            celltext.Border = Rectangle.NO_BORDER;
-            celltext.HorizontalAlignment = 3;
-            FooterTable.AddCell(celltext);
-            celltext = new PdfPCell(new Phrase("", FontNormal));
-            celltext.HorizontalAlignment = 3;
-            celltext.Border = Rectangle.NO_BORDER;
-            FooterTable.AddCell(celltext);
-            celltext = new PdfPCell(new Phrase("4. นักศึกษาปฏิบัติงานครึ่งวัน จำนวน 3 ชั่วโมงครึ่ง ให้ได้รับค่าตอบแทน 150 บาท", FontNormal));
-            celltext.Border = Rectangle.NO_BORDER;
-            celltext.HorizontalAlignment = 3;
-            FooterTable.AddCell(celltext);
-            celltext = new PdfPCell(new Phrase("", FontNormal));
-            celltext.HorizontalAlignment = 3;
-            celltext.Border = Rectangle.NO_BORDER;
-            FooterTable.AddCell(celltext);
-            doc.Add(FooterTable);
-            doc.Add(new Phrase("                5. นักศึกษาปฏิบัติงานไม่เข้าตาม ข้อ1 และ 2 ให้ได้รับค่าตอบแทนชั่วโมงละ 40 บาท เศษของชั่วโมงให้ปัดทิ้งไม่นำมานับ", FontNormal));
 
             doc.Close();
 

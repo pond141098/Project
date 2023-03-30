@@ -19,7 +19,8 @@
                     <td>@Get.Job_name  </td>
                     <td>@Get.status_name </td>
                     <td class="text-align-center">
-                        <button class="btn btn-danger btn-xs edit" value="@Get.Id"><i class="fa fa-file-pdf-o"></i> Export PDF</button>
+                        <a class="btn btn-danger btn-xs" id="ExportPDF" href="@Url.Action("TransactionPayment","Report",new { id = Get.Id})"><i class="fa fa-file-excel-o"></i> Export PDF</a>
+                        @*<button class="btn btn-danger btn-xs PDF" value="@Get.Id"><i class="fa fa-file-pdf-o"></i> Export PDF</button>*@
                     </td>
                 </tr>
                 Rows++;

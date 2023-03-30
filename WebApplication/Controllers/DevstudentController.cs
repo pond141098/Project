@@ -804,7 +804,7 @@ namespace SeniorProject.Controllers
 
             var Models = new List<Proofpayment>();
 
-            foreach (var j in GetJob.Where(w => w.create_by == CurrentUser.UserName))
+            foreach (var j in GetJob.Where(w => w.create_by == CurrentUser.Id))
             {
                 foreach (var r in GetRegister.Where(w => w.transaction_job_id == j.transaction_job_id))
                 {
