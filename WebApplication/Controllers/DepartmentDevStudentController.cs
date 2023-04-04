@@ -135,8 +135,10 @@ namespace SeniorProject.Controllers
         public IActionResult AllListStudent()
         {
             var Id = DB.TRANSACTION_REGISTER.Where(w => w.status_id == 7).Select(s => s.transaction_register_id).FirstOrDefault();
+
             ViewBag.id = Id;
-            ViewBag.Faculty = new SelectList(DB.MASTER_FACULTY.OrderBy(o => o.faculty_id).ToList(), "faculty_id", "faculty_name"); 
+            ViewBag.Faculty = new SelectList(DB.MASTER_FACULTY.OrderBy(o => o.faculty_id).ToList(), "faculty_id", "faculty_name");
+            ViewBag.Faculty2 = new SelectList(DB.MASTER_FACULTY.OrderBy(o => o.faculty_id).ToList(), "faculty_id", "faculty_name");
 
             return View("AllListStudent");
         }

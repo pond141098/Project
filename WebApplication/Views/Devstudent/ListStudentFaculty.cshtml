@@ -21,7 +21,7 @@
                 @*<a class="btn btn-success Excel" id="@ViewBag.Status" onclick="Excel('@ViewBag.Status')" value="Excel"><i class="fa fa-file-excel-o"></i> Export Excel</a>*@
                 @if(ViewBag.Status == 9)
                 {
-                    <a class="btn btn-success" id="ExportExcel" href="@Url.Action("ExampleExcel","Report",new { Status = ViewBag.Status})"><i class="fa fa-file-excel-o"></i> Export Excel</a>
+                    <a class="btn btn-success" id="ExportExcel" href="@Url.Action("TransactionRegister","Report",new { Status = ViewBag.Status})"><i class="fa fa-file-excel-o"></i> Export Excel</a>
                 }
                 else
                 {

@@ -19,7 +19,7 @@
             <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margin-bottom-5">
                 @Html.DropDownList("faculty_id", (IEnumerable<SelectListItem>)ViewBag.Faculty, new { @style = "width:25%" })
                 <a class="btn btn-success AllApprove" id="@ViewBag.id" onclick="AllApprove('@ViewBag.id')" value="AllApprove"><i class="fa fa-check-circle"></i>  อนุมัติทั้งหมด</a>
-                <button class="btn btn-primary" id="ExportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exportModal">Export Excel</button>
             </article>
         </div>
     </section>
@@ -45,6 +45,28 @@
     </section>
 </div>
 
+<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exportModalLabel">รายการสมัครงานของนักศึกษา</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="@Url.Action("AllTransactionRegister","Report")">
+                    <div class="form-group">
+                        <label for="exportFormat">เลือกคณะ/หน่วยงานมหาวิทยาลัยที่ต้องการออกรายงาน</label>
+                        @Html.DropDownList("faculty_id", (IEnumerable<SelectListItem>)ViewBag.Faculty2, new { @class = "form-control" })
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success" id="ExportExcel" ><i class="fa fa-file-excel-o"></i> Export</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts{
     <script src="~/js/plugin/datatables/jquery.dataTables.min.js"></script>
     <script src="~/js/plugin/datatables/dataTables.colVis.min.js"></script>
@@ -52,7 +74,7 @@
     <script src="~/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
     <script src="~/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
     <script src="~/js/plugin/select2/select2.min.js"></script>
-    <script type="text/javascript" src="~/js/DepartmentDevStudent/AllListStudent.js" ></script>
+    <script type="text/javascript" src="~/js/DepartmentDevStudent/AllListStudent.js"></script>
     <script type="text/javascript">
         function AllApprove(id) {
             $.SmartMessageBox({
