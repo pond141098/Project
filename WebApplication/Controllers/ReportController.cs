@@ -652,23 +652,23 @@ namespace SeniorProject.Controllers
         #region รายชื่อนักศึกษาที่มาสมัครงานทั้งหมด(Excel)
 
         [HttpPost]
-        public async Task<IActionResult> AllTransactionRegister(int Faculty)
+        public async Task<IActionResult> AllTransactionRegister(int faculty_id)
         {
             var CurrentUser = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             var GetJob = await DB.TRANSACTION_JOB.ToListAsync();
             var GetRegister = await DB.TRANSACTION_REGISTER.ToListAsync();
             var GetUser = await DB.Users.ToListAsync();
 
-            var Model = new List<Register>();
+            var Model = new List<AllRegister>();
             int row = 1;
 
-            foreach (var j in GetJob)
+            foreach (var j in GetJob.Where(w => w.faculty_id == faculty_id))
             {
                 foreach (var r in GetRegister.Where(w => w.status_id == 6 && w.transaction_job_id == j.transaction_job_id))
                 {
                     foreach (var u in GetUser.Where(w => w.Id == r.UserId))
                     {
-                        var data = new Register();
+                        var data = new AllRegister();
                         var prefix = DB.MASTER_PREFIX.Where(w => w.prefix_id == u.prefix_id).Select(s => s.prefix_name).FirstOrDefault();
                         var Firstname = DB.Users.Where(w => w.Id == j.create_by).Select(s => s.FirstName).FirstOrDefault();
                         var LastName = DB.Users.Where(w => w.Id == j.create_by).Select(s => s.LastName).FirstOrDefault();
@@ -866,14 +866,15 @@ namespace SeniorProject.Controllers
                     cel++;
                 }
 
+                var GetNameFile = await DB.MASTER_FACULTY.Where(w => w.faculty_id == faculty_id).Select(s => s.faculty_name).FirstOrDefaultAsync();
 
                 // Save the ExcelPackage to a MemoryStream
                 var stream = new System.IO.MemoryStream();
                 excelPackage.SaveAs(stream);
 
                 // Return the MemoryStream as a FileStreamResult
-                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "รายชื่อนักศึกษาที่สมัครงานภายในคณะ/หน่วยงาน.xlsx");
+                //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "รายชื่อนักศึกษาที่สมัครงานของ"+GetNameFile+".xlsx");
             }
         }
 
