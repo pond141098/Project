@@ -784,7 +784,7 @@ namespace SeniorProject.Controllers
 
         #endregion
 
-        #region เอกสารเบิกจ่ายค่าตอบเเทน
+        #region หลักฐานการจ่ายเงินค่าตอบแทน
 
         public IActionResult ProofPayment()
         {

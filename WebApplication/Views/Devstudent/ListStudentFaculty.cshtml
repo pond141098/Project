@@ -17,7 +17,7 @@
     <section id="widget-grid">
         <div class="row">
             <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margin-bottom-5">
-                <a class="btn btn-success AllApprove" id="@ViewBag.id" onclick="AllApprove('@ViewBag.id','@ViewBag.Register')" value="AllApprove"><i class="fa fa-check-circle"></i>
+                <a class="btn btn-success AllApprove" id="@ViewBag.id" onclick="AllApprove('@ViewBag.id','@ViewBag.Register')" value="AllApprove"><i class="fa fa-check-circle"></i>  อนุมัติทั้งหมด</a>
                 @if(ViewBag.Status == 9)
                 {
                     <a class="btn btn-success" id="ExportExcel" href="@Url.Action("TransactionRegister","Report",new { Status = ViewBag.Status})"><i class="fa fa-file-excel-o"></i> Export Excel</a>

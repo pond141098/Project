@@ -314,7 +314,7 @@ namespace SeniorProject.Controllers
 
         #endregion
 
-        #region เบิกจ่ายค่าตอบเเทน(PDF)
+        #region หลักฐานการจ่ายเงินค่าตอบแทน(PDF)
 
         [HttpGet]
         public async Task<IActionResult> TransactionPayment(int id)
@@ -642,8 +642,8 @@ namespace SeniorProject.Controllers
                 excelPackage.SaveAs(stream);
 
                 // Return the MemoryStream as a FileStreamResult
-                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "รายชื่อนักศึกษาที่สมัครงานภายในคณะ/หน่วยงาน.xlsx");
+                //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "รายชื่อนักศึกษาที่สมัครงานภายในคณะ"+Model.Select(s=>s.faculty)+".xlsx");
             }
         }
 

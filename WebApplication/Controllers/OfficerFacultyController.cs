@@ -532,7 +532,7 @@ namespace SeniorProject.Controllers
 
         #endregion
 
-        #region เอกสารเบิกจ่ายค่าตอบเเทน
+        #region หลักฐานการจ่ายเงินค่าตอบแทน
 
         public IActionResult ProofPayment()
         {
@@ -549,7 +549,7 @@ namespace SeniorProject.Controllers
 
             var Models = new List<ProofpaymentF>();
 
-            foreach (var j in GetJob.Where(w => w.create_by == CurrentUser.UserName))
+            foreach (var j in GetJob.Where(w => w.create_by == CurrentUser.Id))
             {
                 foreach (var r in GetRegister.Where(w => w.transaction_job_id == j.transaction_job_id))
                 {
